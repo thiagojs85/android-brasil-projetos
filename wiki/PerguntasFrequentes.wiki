@@ -1,0 +1,5 @@
+#labels Featured
+=Como faço pra participar do projeto? Não tenho experiência em desenvolvimento mas tenho dedicação e vontade.=
+
+Primeiramente você deve estudar o código tutorial [http://developer.android.com/resources/tutorials/hello-world.html Hello World] e depois o tutorial do [http://developer.android.com/resources/tutorials/notepad/index.html NotePad], após dar uma estudada nisso qualquer desenvolvedor que já tenha algum conhecimento sobre java e xml já pode começar a desenvovler uma aplicação.
+Se você sentir alguma dificuldade em alguma parte dos tutoriais você pode pedir ajuda no Android Brasil - Dev.
