@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="insertImage">&lt;&lt;Inserir imagem aqui&gt;&gt;</string>
+    <string name="app_name">EscolarMobile</string>
+<string name="openStudentsActivity">Alunos</string>
+<string name="openSubjectsActivity">Matérias</string>
+<string name="openGradesActivity">Notas</string>
+<string name="add">Novo...</string>
+<string name="subjectNameLabel">Nome da matéria</string>
+<string name="okButton">OK</string>
+<string name="cancelButton">Cancel</string>
+</resources>
