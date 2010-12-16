@@ -1,8 +1,14 @@
 #labels Featured
 ==Como faço pra participar do projeto? Não tenho experiência em desenvolvimento mas tenho dedicação e vontade.==
 
-Primeiramente você deve estudar o código tutorial [http://developer.android.com/resources/tutorials/hello-world.html Hello World] e depois o tutorial do [http://developer.android.com/resources/tutorials/notepad/index.html NotePad], após dar uma estudada nisso qualquer desenvolvedor que já tenha algum conhecimento sobre java e xml já pode começar a desenvovler uma aplicação.
-Se você sentir alguma dificuldade em alguma parte dos tutoriais você pode pedir ajuda no Android Brasil - Dev.
+Primeiramente você deve estudar o código tutorial [http://developer.android.com/resources/tutorials/hello-world.html Hello World] e depois o tutorial do [http://developer.android.com/resources/tutorials/notepad/index.html NotePad], após dar uma estudada nisso qualquer desenvolvedor que já tenha algum conhecimento sobre java e xml já pode começar a desenvolver uma aplicação.
+Se você sentir alguma dificuldade em alguma parte dos tutoriais você pode pedir ajuda no [https://groups.google.com/forum/?hl=pt#forum/androidbrasil-dev Android Brasil - Dev].
 
 ==Como faço para adicionar suporte ao SVN no eclipse?==
 Neste [http://wheelersoftware.com/articles/install-subclipse-eclipse-svn.html link] você encontra como fazer isso.
+
+==O projeto que quero participar está usando Scrum e não sei nada sobre isso, tem algum material interessante de estudo? ==
+Neste [http://www.devin.com.br/modelo-scrum/ link] você encontra como fazer isso.
+
+==Como faço para iniciar um novo projeto no grupo?==
+Depois de se inscrever no grupo [https://groups.google.com/forum/?hl=pt#forum/android-brasil-projetos Android Brasil - Projetos], basta criar uma nova thread descrevendo seu projeto, lá os usuários interessados podem te ajudar a documentar e desenvolver o projeto.
