@@ -1,5 +1,11 @@
 #labels Featured
-==Como faço pra participar do projeto? Não tenho experiência em desenvolvimento mas tenho dedicação e vontade.==
+==O que é o grupo?==
+Nós somos um grupo de pessoas interessadas em desenvolver aplicações de código aberto, de forma bem documentada e seguindo padrões de projetos.
+
+==Quem pode participar?==
+Qualquer um, mesmo que você não saiba programar, você pode participar propondo projetos, com ideias e testando os programas.
+
+==Como faço pra participar de um projeto? Não tenho experiência em desenvolvimento mas tenho dedicação e vontade.==
 
 Primeiramente você deve estudar o código tutorial [http://developer.android.com/resources/tutorials/hello-world.html Hello World] e depois o tutorial do [http://developer.android.com/resources/tutorials/notepad/index.html NotePad], após dar uma estudada nisso qualquer desenvolvedor que já tenha algum conhecimento sobre java e xml já pode começar a desenvolver uma aplicação.
 Se você sentir alguma dificuldade em alguma parte dos tutoriais você pode pedir ajuda no [https://groups.google.com/forum/?hl=pt#forum/androidbrasil-dev Android Brasil - Dev].
@@ -7,7 +13,7 @@ Se você sentir alguma dificuldade em alguma parte dos tutoriais você pode pedi
 ==Como faço para adicionar suporte ao SVN no eclipse?==
 Neste [http://wheelersoftware.com/articles/install-subclipse-eclipse-svn.html link] você encontra como fazer isso.
 
-==O projeto que quero participar está usando Scrum e não sei nada sobre isso, tem algum material interessante de estudo? ==
+==O projeto que quero participar está utilizando Scrum e não sei nada sobre isso, tem algum material interessante de estudo? ==
 Neste [http://www.devin.com.br/modelo-scrum/ link] você encontra como fazer isso.
 
 ==Como faço para iniciar um novo projeto no grupo?==
