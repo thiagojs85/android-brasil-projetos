@@ -15,6 +15,6 @@ Neste [http://wheelersoftware.com/articles/install-subclipse-eclipse-svn.html li
 
 ==O projeto que quero participar está utilizando Scrum e não sei nada sobre isso, tem algum material interessante de estudo? ==
 Neste [http://www.devin.com.br/modelo-scrum/ link] você encontra como fazer isso.
-
+Também vale a pena assistir esse [http://www.youtube.com/watch?v=xa-C0No2Uic vídeo].
 ==Como faço para iniciar um novo projeto no grupo?==
 Depois de se inscrever no grupo [https://groups.google.com/forum/?hl=pt#forum/android-brasil-projetos Android Brasil - Projetos], basta criar uma nova thread descrevendo seu projeto, lá os usuários interessados podem te ajudar a documentar e desenvolver o projeto.
