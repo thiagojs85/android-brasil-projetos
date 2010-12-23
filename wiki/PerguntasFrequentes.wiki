@@ -5,10 +5,14 @@ Nós somos um grupo de pessoas interessadas em desenvolver aplicações de códi
 ==Quem pode participar?==
 Qualquer um, mesmo que você não saiba programar, você pode participar propondo projetos, com ideias e testando os programas.
 
+==Como faço pra participar de um projeto? Acho que tenho condições de contribuir para o projeto==
+Mande um e-mail para o grupo dizendo que quer participar do projeto, as pessoas que já participam irão te adicionar no grupo de desenvolvedores daquele projeto.
+
 ==Como faço pra participar de um projeto? Não tenho experiência em desenvolvimento mas tenho dedicação e vontade.==
 
 Primeiramente você deve estudar o código tutorial [http://developer.android.com/resources/tutorials/hello-world.html Hello World] e depois o tutorial do [http://developer.android.com/resources/tutorials/notepad/index.html NotePad], após dar uma estudada nisso qualquer desenvolvedor que já tenha algum conhecimento sobre java e xml já pode começar a desenvolver uma aplicação.
 Se você sentir alguma dificuldade em alguma parte dos tutoriais você pode pedir ajuda no [https://groups.google.com/forum/?hl=pt#forum/androidbrasil-dev Android Brasil - Dev].
+
 
 ==Como faço para adicionar suporte ao SVN no eclipse?==
 Neste [http://wheelersoftware.com/articles/install-subclipse-eclipse-svn.html link] você encontra como fazer isso.
