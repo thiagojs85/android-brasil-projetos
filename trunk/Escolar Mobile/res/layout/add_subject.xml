@@ -5,7 +5,7 @@
 	android:layout_height="fill_parent"
 	android:orientation="vertical">
 	<TextView
-		android:text="@string/subjectNameLabel"
+		android:text="@string/materia"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"/>
 	<EditText
@@ -18,12 +18,12 @@
 		android:orientation="horizontal">
 		<Button
 			android:id="@+id/okButton"
-			android:text="@string/okButton"
+			android:text="@string/ok"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"/>
 		<Button
 			android:id="@+id/cancelButton"
-			android:text="@string/cancelButton"
+			android:text="@string/cancel"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"/>
 	</LinearLayout>
