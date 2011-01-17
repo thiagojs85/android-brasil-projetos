@@ -1,12 +1,15 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
-    <string name="insertImage">&lt;&lt;Inserir imagem aqui&gt;&gt;</string>
-    <string name="app_name">EscolarMobile</string>
-<string name="openStudentsActivity">Alunos</string>
-<string name="openSubjectsActivity">Matérias</string>
-<string name="openGradesActivity">Notas</string>
-<string name="add">Novo...</string>
-<string name="subjectNameLabel">Nome da matéria</string>
-<string name="okButton">OK</string>
-<string name="cancelButton">Cancel</string>
+	<string name="app_name">Boletim Mobile</string>
+	<string name="turmas">Turmas</string>
+	<string name="materia">Matéria</string>
+	<string name="materias">Matérias</string>
+	<string name="alunos">Alunos</string>
+	
+	<string name="visualizar">Visualizar</string>
+	<string name="escolha_turma">Selecione a Turma</string>
+	<string name="escolha_materia">Selecione a Matéria</string>
+	
+	<string name="ok">Ok</string>
+	<string name="cancel">Cancelar</string>
 </resources>

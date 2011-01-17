@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<string-array name="turmas"><item>1º &quot;A&quot;</item>
+<item>1º &quot;B&quot;</item>
+<item>1º &quot;C&quot;</item>
+<item>2º &quot;A&quot;</item>
+<item>2º &quot;B&quot;</item>
+<item>2º &quot;C&quot;</item>
+<item>3º &quot;A&quot;</item>
+<item>3º &quot;B&quot;</item>
+<item>3º &quot;C&quot;</item>
+<item>Todas</item>
+</string-array>
+
+</resources>
