@@ -14,4 +14,6 @@
 	<string name="cancel">Cancelar</string>
 	<string name="no_item">Nenhuma entrada!</string>
 	<string name="add">Adicionar</string>
+	<string name="base_menu_edit">Editar</string>
+	<string name="base_menu_delete">Remover</string>
 </resources>
