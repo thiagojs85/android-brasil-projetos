@@ -4,13 +4,14 @@ package org.android.group.escolarmobile.app;
 import org.group.dev.R;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 /**
  * Classe inicial do app.
@@ -18,7 +19,7 @@ import android.widget.Toast;
  * @author Neto
  *
  */
-public class EscolarMobile extends Activity {
+public class EscolarMobile extends Activity implements OnClickListener {
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,11 +48,14 @@ public class EscolarMobile extends Activity {
         alunos.setAdapter(adapter3);
         
         
-        btVisualizar.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-				// TODO Implementar função de busca e visualização.
-				Toast.makeText(EscolarMobile.this, "Botão Visualizar Pressionado!", Toast.LENGTH_LONG).show();
-			}
-		});
+        btVisualizar.setOnClickListener(this);
+
+
     }
+
+    @Override
+    public void onClick(View v) {
+	    	Intent i = new Intent(this, AddClass.class);
+	    	startActivityForResult(i, 0);
+		}
 }

@@ -15,7 +15,7 @@ import android.widget.Toast;
 import android.widget.AdapterView.OnItemLongClickListener;
 
 /**
- * Classe que exibirá os alunos já cadastrados no sistema.
+ * Classe que exibirï¿½ os alunos jï¿½ cadastrados no sistema.
  * @author Otavio
  *
  */
@@ -23,10 +23,10 @@ public class Students extends ListActivity implements OnItemLongClickListener {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		//FIXME Se forçar para o botão aparecer, a lista de alunos não será exibida.
+		//FIXME Se forï¿½ar para o botï¿½o aparecer, a lista de alunos nï¿½o serï¿½ exibida.
 		//setContentView(R.layout.list);
 		
-		//TODO Implementar acesso a banco de dados para recuperar matérias cadastradas.
+		//TODO Implementar acesso a banco de dados para recuperar matï¿½rias cadastradas.
 		setListAdapter(new ArrayAdapter<String>(this, R.layout.items, DUMMY_STUDENTS));
 		
 		ListView lv = getListView();
@@ -35,7 +35,7 @@ public class Students extends ListActivity implements OnItemLongClickListener {
 	}
 	
 	public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-		// Quando um item é pressionado por um tempo, abre-se um diálogo de opções.
+		// Quando um item ï¿½ pressionado por um tempo, abre-se um diï¿½logo de opï¿½ï¿½es.
 		return showDialog(EDIT_DELETE_DIALOG, null);
 	}
 	
@@ -45,10 +45,10 @@ public class Students extends ListActivity implements OnItemLongClickListener {
 		
 		switch(id) {
 		case EDIT_DELETE_DIALOG:
-			builder.setTitle("Selecione a ação:");
+			builder.setTitle("Selecione a ao:");
 			builder.setItems(DIALOG_OPTIONS, new DialogInterface.OnClickListener() {
 			    public void onClick(DialogInterface dialog, int item) {
-			    	// TODO verificar se é para editar ou deletar e executar a função correspondente.
+			    	// TODO verificar se ï¿½ para editar ou deletar e executar a funï¿½ï¿½o correspondente.
 			        Toast.makeText(getApplicationContext(), DIALOG_OPTIONS[item], Toast.LENGTH_SHORT).show();
 			    }
 			});
