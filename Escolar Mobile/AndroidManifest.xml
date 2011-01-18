@@ -13,10 +13,11 @@
         </activity>
 		<activity android:label="Alunos" android:name="org.android.group.escolarmobile.app.student.Students">
 			<activity android:name=".subjects.Subjects" android:label="Matérias"/>
-			<activity android:name=".subjects.Subjects" android:label="Matérias"/>
 		</activity>
 		<activity android:label="Matérias" android:name="org.android.group.escolarmobile.app.subject.Subjects"/>
 		<activity android:label="Nova Matéria" android:name="org.android.group.escolarmobile.app.subject.AddSubject"/>
-	</application>
+	<activity android:name="org.android.group.escolarmobile.app.AddClass"></activity>
+<activity android:name="org.android.group.escolarmobile.app.BaseListWindow"></activity>
+</application>
     <uses-sdk android:minSdkVersion="8" />
 </manifest> 

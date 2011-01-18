@@ -2,46 +2,42 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    >
-<TextView android:text="@string/turmas" 
-	android:id="@+id/TextView01" 
-	android:layout_width="wrap_content" 
-	android:layout_height="wrap_content">
-</TextView>
-<Spinner 
+    android:layout_height="fill_parent">
+	<TextView android:text="@string/turmas" 
+		android:id="@+id/TextView01" 
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content">
+	</TextView>
+	<Spinner 
         android:id="@+id/sp_turmas"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:prompt="@string/escolha_turma"
-    />
+        android:prompt="@string/escolha_turma"/>
 
-<TextView android:text="@string/materias" 
-	android:id="@+id/TextView02" 
-	android:layout_width="wrap_content" 
-	android:layout_height="wrap_content">
-</TextView>
-<Spinner 
+	<TextView android:text="@string/materias" 
+		android:id="@+id/TextView02" 
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content">
+	</TextView>
+	<Spinner 
         android:id="@+id/sp_materias"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:prompt="@string/escolha_materia"
-/>
-<TextView android:text="@string/alunos" 
-	android:id="@+id/TextView03" 
-	android:layout_width="wrap_content" 
-	android:layout_height="wrap_content">
-</TextView>
-<AutoCompleteTextView  
-	android:id="@+id/AC_alunos" 
-	android:layout_width="fill_parent" 
-	android:layout_height="wrap_content">
-</AutoCompleteTextView>
-<Button
-android:id="@+id/visualizar"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:text="@string/visualizar"
->
-</Button>
+        android:prompt="@string/escolha_materia"/>
+	<TextView android:text="@string/alunos" 
+		android:id="@+id/TextView03" 
+		android:layout_width="wrap_content" 
+		android:layout_height="wrap_content">
+	</TextView>
+	<AutoCompleteTextView  
+		android:id="@+id/AC_alunos" 
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content">
+	</AutoCompleteTextView>
+	<Button
+		android:id="@+id/visualizar"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="@string/visualizar">
+	</Button>
 </LinearLayout>
