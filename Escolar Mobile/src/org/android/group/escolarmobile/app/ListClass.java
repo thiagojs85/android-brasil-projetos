@@ -1,6 +1,5 @@
 package org.android.group.escolarmobile.app;
 
-import org.android.group.escolarmobile.conn.DbAdapter;
 import org.group.dev.R;
 
 import android.os.Bundle;
@@ -10,7 +9,7 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.Button;
 import android.widget.Toast;
 
-public class AddClass extends BaseListWindow {
+public class ListClass extends BasicListWindow {
 	
 
     @Override
@@ -20,13 +19,17 @@ public class AddClass extends BaseListWindow {
         ibt.setText("Adicionar Turma");
         
     }
-    
+    @Override
+	protected boolean isMultiItensSelectable() {
+		// Caso queira que os itens da lista sejam selecionaveis, fazer retornar true
+		return false;
+	}
 	@Override
 	public void onClick(View v) {
 		//TODO: Chamar CLASSE_DO_NETO abaixo
     	//Intent i = new Intent(this, CLASSE_DO_NETO.class);
-    	//startActivityForResult(i, 0);
-		Toast.makeText(AddClass.this, "Botão Adicionar Pressionado!", Toast.LENGTH_LONG).show();
+    	//startActivityForResult(i, ADD_ID);
+		Toast.makeText(ListClass.this, "Botão Adicionar Pressionado!", Toast.LENGTH_LONG).show();
 	}
 	
 	@Override
@@ -35,6 +38,7 @@ public class AddClass extends BaseListWindow {
 		this.itens = new String[]{"linha 0","linha 1","linha 2","linha 3","linha 4","linha 5","linha 6","linha 7","linha 8"};
 		//setItens(new String[]{});
 	}
+	
 	@Override
 	public void setActionOnEditItem(MenuItem item){
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
@@ -49,13 +53,13 @@ public class AddClass extends BaseListWindow {
     	startActivityForResult(i, EDIT_ID);
 */
 
-		Toast.makeText(AddClass.this, "Botão Editar Pressionado! "+itens[(int)info.id], Toast.LENGTH_LONG).show();
+		Toast.makeText(ListClass.this, "Botão Editar Pressionado! "+itens[(int)info.id], Toast.LENGTH_LONG).show();
 	}
 	
 	@Override
 	public void setActionOnDeleteItem(MenuItem item){
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-		Toast.makeText(AddClass.this, "Botão delete Pressionado!", Toast.LENGTH_LONG).show();
+		Toast.makeText(ListClass.this, "Botão delete Pressionado!", Toast.LENGTH_LONG).show();
 	}
 	
 }

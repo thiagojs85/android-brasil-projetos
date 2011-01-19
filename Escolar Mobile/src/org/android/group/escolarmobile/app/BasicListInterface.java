@@ -1,6 +1,6 @@
 package org.android.group.escolarmobile.app;
 
-public interface BaseListInterface  {
+public interface BasicListInterface  {
 
 	public void fillItens();
 }
