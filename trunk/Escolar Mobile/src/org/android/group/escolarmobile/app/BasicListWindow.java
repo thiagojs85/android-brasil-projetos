@@ -12,11 +12,13 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 
-public class BaseListWindow extends ListActivity implements OnClickListener,BaseListInterface{
+public class BasicListWindow extends ListActivity implements OnClickListener,BasicListInterface{
 
-    protected static final int EDIT_ID = Menu.FIRST;
-    protected static final int DELETE_ID = Menu.FIRST + 1;
+	protected static final int ADD_ID = Menu.FIRST;
+	protected static final int EDIT_ID = ADD_ID + 1;
+    protected static final int DELETE_ID = EDIT_ID + 1;
 	
 	protected Button btAdd;   
 	protected String[] itens;
@@ -29,10 +31,18 @@ public class BaseListWindow extends ListActivity implements OnClickListener,Base
         btAdd = (Button) findViewById(R.id.add);
 		fillItens();
 		registerForContextMenu(getListView());
-
-        setListAdapter(new ArrayAdapter<String>(this,R.layout.base_list_item,itens));
-		btAdd.setOnClickListener(this);
+		if(isMultiItensSelectable()){
+			setListAdapter(new ArrayAdapter<String>(this,android.R.layout.simple_list_item_multiple_choice,itens));
+	        getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+		}else{
+			setListAdapter(new ArrayAdapter<String>(this,R.layout.base_list_item,itens));
+		}
+        btAdd.setOnClickListener(this);
     }
+
+	protected boolean isMultiItensSelectable() {
+		return false;
+	}
 
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,

@@ -55,7 +55,7 @@ public class EscolarMobile extends Activity implements OnClickListener {
 
     @Override
     public void onClick(View v) {
-	    	Intent i = new Intent(this, AddClass.class);
+	    	Intent i = new Intent(this, ListClass.class);
 	    	startActivityForResult(i, 0);
 		}
 }
