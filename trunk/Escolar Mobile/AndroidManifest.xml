@@ -16,8 +16,8 @@
 		</activity>
 		<activity android:label="Matérias" android:name="org.android.group.escolarmobile.app.subject.Subjects"/>
 		<activity android:label="Nova Matéria" android:name="org.android.group.escolarmobile.app.subject.AddSubject"/>
-	<activity android:name="org.android.group.escolarmobile.app.AddClass"></activity>
-<activity android:name="org.android.group.escolarmobile.app.BaseListWindow"></activity>
+	<activity android:name="org.android.group.escolarmobile.app.ListClass"></activity>
+<activity android:name="org.android.group.escolarmobile.app.BasicListWindow"></activity>
 </application>
     <uses-sdk android:minSdkVersion="8" />
 </manifest> 
