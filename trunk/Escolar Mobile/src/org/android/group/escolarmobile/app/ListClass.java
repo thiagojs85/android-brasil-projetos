@@ -2,6 +2,7 @@ package org.android.group.escolarmobile.app;
 
 import org.group.dev.R;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,8 +28,8 @@ public class ListClass extends BasicListWindow {
 	@Override
 	public void onClick(View v) {
 		//TODO: Chamar CLASSE_DO_NETO abaixo
-    	//Intent i = new Intent(this, CLASSE_DO_NETO.class);
-    	//startActivityForResult(i, ADD_ID);
+    	Intent i = new Intent(this, cadastroTurmas.class);
+    	startActivityForResult(i, ADD_ID);
 		Toast.makeText(ListClass.this, "Botão Adicionar Pressionado!", Toast.LENGTH_LONG).show();
 	}
 	
