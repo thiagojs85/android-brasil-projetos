@@ -4,22 +4,22 @@
   android:layout_width="fill_parent"
   android:layout_height="wrap_content"
   android:orientation="vertical">
-  <TextView android:text="@string/nome_materia" 
-		android:id="@+id/tv_nome_materia" 
+  <TextView android:text="@string/nome_turma" 
+		android:id="@+id/tv_nome" 
 		android:layout_width="wrap_content" 
 		android:layout_height="wrap_content">
   </TextView>
   <EditText  
-		android:id="@+id/et_nome_materia" 
+		android:id="@+id/et_nome" 
 		android:layout_width="fill_parent" 
 		android:layout_height="wrap_content"
-		android:layout_below="@+id/tv_nome_materia">
+		android:layout_below="@+id/tv_nome">
 	</EditText>
 	<TextView android:text="@string/descricao" 
 		android:id="@+id/tv_descricao" 
 		android:layout_width="wrap_content" 
 		android:layout_height="wrap_content"
-		android:layout_below="@+id/et_nome_materia">
+		android:layout_below="@+id/et_nome">
   </TextView>
   <EditText  
 		android:id="@+id/et_descricao" 
@@ -42,7 +42,7 @@
 		android:layout_below="@+id/bt_ok">
 	</Button>
 	<Button
-		android:id="@+id/bt_cadastrar_turmas"
+		android:id="@+id/bt_cadastrar"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
 		android:text="@string/cadastrar_turmas"
