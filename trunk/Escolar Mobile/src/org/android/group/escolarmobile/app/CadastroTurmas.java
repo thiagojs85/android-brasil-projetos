@@ -19,7 +19,7 @@ public class CadastroTurmas extends Activity {
 	
 	private static final int DIALOG_CANCELAR = 0;
 	private Button ok, cancelar, cadastrarMaterias;
-	private EditText materia, descricao;
+	private EditText turma, descricao;
 	private long editId = -1;
 	private DbAdapter mDbAdapter = null;
 	
@@ -29,8 +29,8 @@ public class CadastroTurmas extends Activity {
         setContentView(R.layout.cadastro);
         ok = (Button) findViewById(R.id.bt_ok);
         cancelar = (Button) findViewById(R.id.bt_cancelar);
-        cadastrarMaterias = (Button) findViewById(R.id.bt_cadastrar_turmas);
-		materia = (EditText) findViewById(R.id.et_nome_materia);
+        cadastrarMaterias = (Button) findViewById(R.id.bt_cadastrar);
+		turma = (EditText) findViewById(R.id.et_nome);
 		descricao = (EditText) findViewById(R.id.et_descricao);
 		
 		mDbAdapter = new DbAdapter(this).open();
@@ -41,7 +41,7 @@ public class CadastroTurmas extends Activity {
         	TurmaVO turmaVO = mDbAdapter.consultarTurma(editId);
         	
         	if(turmaVO != null) {
-        		materia.setText(turmaVO.getNome());
+        		turma.setText(turmaVO.getNome());
         		descricao.setText(turmaVO.getDescricao());
         	}
         }
@@ -52,8 +52,8 @@ public class CadastroTurmas extends Activity {
         	public void onClick(View v) {
         		TurmaVO turmaVO = new TurmaVO();
         		
-        		// Valida as informações antes de salvar no banco.
-        		if(materia.getText().toString().trim().length() < 1) {
+        		// Valida as informaï¿½ï¿½es antes de salvar no banco.
+        		if(turma.getText().toString().trim().length() < 1) {
         			Toast.makeText(CadastroTurmas.this, R.string.error_name_invalid, Toast.LENGTH_LONG).show();
         			return;
         		} else if(descricao.getText().toString().trim().length() < 1) {
@@ -61,14 +61,14 @@ public class CadastroTurmas extends Activity {
         			return;
         		}
         		
-        		turmaVO.setNome(materia.getText().toString().trim());
+        		turmaVO.setNome(turma.getText().toString().trim());
         		turmaVO.setDescricao(descricao.getText().toString().trim());
         		
         		mDbAdapter = new DbAdapter(CadastroTurmas.this).open();
         		
         		boolean registroOk = false;
         		
-        		// Se não houver id, é uma nova entrada; caso contrário, é atualização de um registro existente.
+        		// Se nï¿½o houver id, ï¿½ uma nova entrada; caso contrï¿½rio, ï¿½ atualizaï¿½ï¿½o de um registro existente.
         		if(editId == -1) {
         			if(mDbAdapter.inserirTurma(turmaVO) > -1) {
         				registroOk = true;
@@ -89,7 +89,7 @@ public class CadastroTurmas extends Activity {
         
         cancelar.setOnClickListener(new View.OnClickListener() {
         	public void onClick(View v) {
-        		// Invoca a caixa de diálogo e sai sem salvar nada.
+        		// Invoca a caixa de diï¿½logo e sai sem salvar nada.
         		showDialog(DIALOG_CANCELAR);
 			}
         });
@@ -103,9 +103,9 @@ public class CadastroTurmas extends Activity {
 	}
 	
 	/**
-	 * Função que cria os diálogos utilizados nesta activity.
+	 * Funï¿½ï¿½o que cria os diï¿½logos utilizados nesta activity.
 	 * 
-	 * @param id identificação do diálogo que deve ser criado.
+	 * @param id identificaï¿½ï¿½o do diï¿½logo que deve ser criado.
 	 */
 	protected Dialog onCreateDialog(int id) {
 		switch(id) {

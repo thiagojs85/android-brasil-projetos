@@ -19,7 +19,7 @@
 	<string name="add">Adicionar</string>
 	<string name="base_menu_edit">Editar</string>
 	<string name="base_menu_delete">Remover</string>
-	<string name="nome_materia">Nome da Matéria</string>
+	<string name="nome_turma">Nome da Turma</string>
 	<string name="descricao">Descrição</string>
 	<string name="cadastrar_turmas">Cadastrar Turmas</string>
 	
