@@ -9,7 +9,7 @@ package org.android.group.escolarmobile.turma;
 public class TurmaVO {
 	private String nome;
 	private String descricao;
-	private int id;
+	private long id;
 	
 	public String getNome() {
 		return nome;
@@ -23,10 +23,10 @@ public class TurmaVO {
 	public void setDescricao(String descricao) {
 		this.descricao = descricao;
 	}
-	public int getId() {
+	public long getId() {
 		return id;
 	}
-	public void setId(int id) {
-		this.id = id;
+	public void setId(long l) {
+		this.id = l;
 	}
 }

@@ -1,66 +1,91 @@
 package org.android.group.escolarmobile.app;
 
+import org.android.group.escolarmobile.conn.DbAdapter;
 import org.group.dev.R;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.Button;
-import android.widget.Toast;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 
 public class ListClass extends BasicListWindow {
 	
+	private static final int DIALOG_DELETAR = 0;
+	private long idDelete;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Button ibt = (Button)findViewById(R.id.add);
         ibt.setText("Adicionar Turma");
-        
     }
+    
     @Override
 	protected boolean isMultiItensSelectable() {
 		// Caso queira que os itens da lista sejam selecionaveis, fazer retornar true
 		return false;
 	}
+    
 	@Override
 	public void onClick(View v) {
-		//TODO: Chamar CLASSE_DO_NETO abaixo
-    	Intent i = new Intent(this, cadastroTurmas.class);
+    	Intent i = new Intent(this, CadastroTurmas.class);
     	startActivityForResult(i, ADD_ID);
-		Toast.makeText(ListClass.this, "Bot√£o Adicionar Pressionado!", Toast.LENGTH_LONG).show();
 	}
 	
 	@Override
 	public void fillItens() {
-		//TODO: Preencher com o nome de cada turma
-		this.itens = new String[]{"linha 0","linha 1","linha 2","linha 3","linha 4","linha 5","linha 6","linha 7","linha 8"};
-		//setItens(new String[]{});
+		this.itens = mDbAdapter.consultarTodos(DbAdapter.TABLE_TURMA, DbAdapter.COLUMN_NOME).toArray(new String[]{});
 	}
 	
 	@Override
 	public void setActionOnEditItem(MenuItem item){
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-		
-/*
-		//TODO: Chamar CLASSE_DO_NETO abaixo
-    	Intent i = new Intent(this, CLASSE_DO_NETO.class);
+				
+    	Intent i = new Intent(this, CadastroTurmas.class);
+
+    	// Repassa o id da linha selecionada.
 		Bundle b = new Bundle();
-		//TODO: itens[(int)info.id] retorna o nome da turma que pode ser passado para a CLASSE_DO_NETO quando for editar uma turma
-		b.putInt(DbAdapter.COLUMN_NOME, itens[(int)info.id]);
+		b.putLong(DbAdapter.COLUMN_ID, ((Long) getListAdapter().getItem(info.position)).longValue());
 		i.putExtras(b);
     	startActivityForResult(i, EDIT_ID);
-*/
-
-		Toast.makeText(ListClass.this, "Bot√£o Editar Pressionado! "+itens[(int)info.id], Toast.LENGTH_LONG).show();
 	}
 	
 	@Override
 	public void setActionOnDeleteItem(MenuItem item){
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-		Toast.makeText(ListClass.this, "Bot√£o delete Pressionado!", Toast.LENGTH_LONG).show();
+		idDelete = ((Long) getListAdapter().getItem(info.position)).longValue();
+		showDialog(DIALOG_DELETAR);
+	}
+	
+	/**
+	 * FunÁ„o que cria os di·logos utilizados nesta activity.
+	 * 
+	 * @param id identificaÁ„o do di·logo que deve ser criado.
+	 */
+	protected Dialog onCreateDialog(int id) {
+		switch(id) {
+			case DIALOG_DELETAR:
+				AlertDialog.Builder builder = new AlertDialog.Builder(this);
+				builder.setMessage(R.string.dialog_delete).setCancelable(false);
+				builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						mDbAdapter.removerTurma(idDelete);
+					}
+				});
+				builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						dialog.cancel();
+					}
+				});
+				return builder.create();
+			default:
+				return null;
+		}
 	}
 	
 }

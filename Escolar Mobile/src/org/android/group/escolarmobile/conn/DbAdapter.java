@@ -1,5 +1,8 @@
 package org.android.group.escolarmobile.conn;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.android.group.escolarmobile.turma.TurmaVO;
 
 import android.content.ContentValues;
@@ -11,7 +14,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 /**
- * Classe para comunicaÁ„o com o banco de dados. Realiza todas as operaÁıes de criaÁ„o, inserÁ„o, remoÁ„o, atualizaÁ„o e consulta.
+ * Classe para comunica√ß√£o com o banco de dados. Realiza todas as opera√ß√µes de cria√ß√£o, inser√ß√£o, remo√ß√£o, atualiza√ß√£o e consulta.
  * 
  * @author Otavio
  *
@@ -21,7 +24,6 @@ public class DbAdapter {
 	public static final int DB_VERSION = 1;
 	
 	public static final String TABLE_ALUNO = "Aluno";
-	public static final String TABLE_ALUNO_TURMA = "Aluno_Turma";
 	public static final String TABLE_MATERIA = "Materia";
 	public static final String TABLE_MATRICULA = "Matricula";
 	public static final String TABLE_PROFESSOR = "Professor";
@@ -30,7 +32,7 @@ public class DbAdapter {
 	public static final String COLUMN_DATA_NASCIMENTO = "dt_nascimento";
 	public static final String COLUMN_DESCRICAO = "descricao";
 	public static final String COLUMN_HORAS = "horas";
-	public static final String COLUMN_ID = "id";
+	public static final String COLUMN_ID = "_id";
 	public static final String COLUMN_ID_ALUNO = "id_aluno";
 	public static final String COLUMN_ID_ALUNO_TURMA = "id_aluno_turma";
 	public static final String COLUMN_ID_MATERIA = "id_materia";
@@ -44,24 +46,22 @@ public class DbAdapter {
 	private static final String TAG = "DbAdapter";
 	
 	private static final String CREATE_TURMA = 
-		"CREATE TABLE Turma (id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT NOT NULL, descricao TEXT);";
+		"CREATE TABLE Turma (_id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT NOT NULL, descricao TEXT);";
 	private static final String CREATE_ALUNO = 
-		"CREATE TABLE Aluno (id INTEGER PRIMARY KEY AUTOINCREMENT, registro TEXT NOT NULL, nome TEXT NOT NULL, dt_nascimento DATE);";
+		"CREATE TABLE Aluno (_id INTEGER PRIMARY KEY AUTOINCREMENT, id_turma INTEGER NOT NULL, registro TEXT NOT NULL, nome TEXT NOT NULL, dt_nascimento DATE);";
 	private static final String CREATE_PROFESSOR = 
-		"CREATE TABLE Professor (id INTEGER PRIMARY KEY AUTOINCREMENT, login TEXT NOT NULL, nome TEXT NOT NULL, senha TEXT NOT NULL);";		
-	private static final String CREATE_ALUNO_TURMA = 
-		"CREATE TABLE Aluno_Turma (id INTEGER PRIMARY KEY AUTOINCREMENT, id_aluno INTEGER NOT NULL, id_turma INTEGER NOT NULL);";
+		"CREATE TABLE Professor (_id INTEGER PRIMARY KEY AUTOINCREMENT, login TEXT NOT NULL, nome TEXT NOT NULL, senha TEXT NOT NULL);";		
 	private static final String CREATE_MATERIA = 
-		"CREATE TABLE Materia (id INTEGER PRIMARY KEY AUTOINCREMENT, id_professor INTEGER NOT NULL, id_turma INTEGER NOT NULL, nome TEXT NOT NULL, horas INTEGER, descricao TEXT);";
+		"CREATE TABLE Materia (_id INTEGER PRIMARY KEY AUTOINCREMENT, id_professor INTEGER NOT NULL, id_turma INTEGER NOT NULL, nome TEXT NOT NULL, horas INTEGER, descricao TEXT);";
 	private static final String CREATE_MATRICULA = 
-		"CREATE TABLE Matricula (id INTEGER PRIMARY KEY AUTOINCREMENT, id_aluno_turma INTEGER NOT NULL, id_materia INTEGER NOT NULL);";
+		"CREATE TABLE Matricula (_id INTEGER PRIMARY KEY AUTOINCREMENT, id_aluno_turma INTEGER NOT NULL, id_materia INTEGER NOT NULL);";
 
 	private final Context mCtx;
 	private DatabaseHelper mDbHelper;
 	private SQLiteDatabase mDb;
 
 	/**
-	 * Esta inner class È respons·vel pelos controles de criaÁ„o, atualizaÁ„o e instanciaÁ„o do gerenciador do banco de dados.
+	 * Esta inner class √© respons√°vel pelos controles de cria√ß√£o, atualiza√ß√£o e instancia√ß√£o do gerenciador do banco de dados.
 	 * @author Otavio
 	 *
 	 */
@@ -74,10 +74,25 @@ public class DbAdapter {
 		public void onCreate(SQLiteDatabase db) {
 			db.execSQL(CREATE_ALUNO);
 			db.execSQL(CREATE_TURMA);
-			db.execSQL(CREATE_ALUNO_TURMA);
 			db.execSQL(CREATE_PROFESSOR);
 			db.execSQL(CREATE_MATERIA);
 			db.execSQL(CREATE_MATRICULA);
+			
+			insertDummyData(db);
+		}
+		
+		/**
+		 * Este m√©todo deve apenas inserir alguns dados para fins de testes.
+		 * N√£o est√° claro se dever√° ficar na vers√£o final como valores default.
+		 * 
+		 * @param db
+		 */
+		private void insertDummyData(SQLiteDatabase db) {
+			String sqlTurma = "INSERT INTO Turma(Nome, Descricao) VALUES(?,?)";
+			db.execSQL(sqlTurma, new String[]{"1a. A", "Primeiro Ano - Classe A"});
+			db.execSQL(sqlTurma, new String[]{"1a. B", "Primeiro Ano - Classe B"});
+			db.execSQL(sqlTurma, new String[]{"2a. A", "Segundo Ano - Classe A"});
+			db.execSQL(sqlTurma, new String[]{"3a. A", "Terceiro Ano - Classe A"});
 		}
 
 		@Override
@@ -86,7 +101,6 @@ public class DbAdapter {
 					newVersion + ", which will destroy all old data");
 			db.execSQL("DROP TABLE IF EXISTS " + TABLE_MATRICULA);
 			db.execSQL("DROP TABLE IF EXISTS " + TABLE_MATERIA);
-			db.execSQL("DROP TABLE IF EXISTS " + TABLE_ALUNO_TURMA);
 			db.execSQL("DROP TABLE IF EXISTS " + TABLE_ALUNO);
 			db.execSQL("DROP TABLE IF EXISTS " + TABLE_TURMA);
 			db.execSQL("DROP TABLE IF EXISTS " + TABLE_PROFESSOR);
@@ -104,11 +118,11 @@ public class DbAdapter {
 	}
 	
 	/**
-     * Abre o banco de dados. Se n„o puder ser aberto, tenta criar uma nova inst‚ncia do banco.
-     * Se n„o puder ser criada, lanÁa uma exceÁ„o para sinalizar a falha.
+     * Abre o banco de dados. Se n√£o puder ser aberto, tenta criar uma nova inst√¢ncia do banco.
+     * Se n√£o puder ser criada, lan√ßaa uma exce√ß√£o para sinalizar a falha.
      * 
-     * @return this (auto-referÍncia, permitindo encadear mÈtodos na inicializaÁ„o).
-     * @throws SQLException se o banco n„o puder ser criado ou instanciado.
+     * @return this (auto-referÔøΩncia, permitindo encadear m√©todos na inicializa√ß√£o).
+     * @throws SQLException se o banco n√£o puder ser criado ou instanciado.
      */
 	public DbAdapter open() throws SQLException {
 		mDbHelper = new DatabaseHelper(mCtx);
@@ -121,17 +135,17 @@ public class DbAdapter {
 	}
 	
 	/**
-	 * Cria um novo registro de turma na tabela. Se o registro for incluÌdo com
-	 * sucesso, o RowID ser· retornado. Em caso de erro, retorna -1.
+	 * Cria um novo registro de turma na tabela. Se o registro for inclu√≠do com
+	 * sucesso, o RowID ser√° retornado. Em caso de erro, retorna -1.
 	 * 
 	 * @param turmaVO DAO com os dados da turma.
 	 * @return rowID ou -1 se falhou.
 	 */
 	public long inserirTurma(TurmaVO turmaVO) {
-		// Apesar de ID ser a verdadeira chave do registro, os nomes das turmas devem ser ˙nicos.
+		// Apesar de ID ser a verdadeira chave do registro, os nomes das turmas devem ser √∫nicos.
 		if(consultarTurma(turmaVO.getNome()) == null) {
 			ContentValues initialValues = new ContentValues();
-			initialValues.put(COLUMN_ID, turmaVO.getId());
+			//initialValues.put(COLUMN_ID, turmaVO.getId());
 			initialValues.put(COLUMN_NOME, turmaVO.getNome());
 			initialValues.put(COLUMN_DESCRICAO, turmaVO.getDescricao());
 			
@@ -160,27 +174,51 @@ public class DbAdapter {
 	 * Retorna o registro da turma com o ID fornecido, se existir.
 	 * 
 	 * @param id
-	 * @return
+	 * @return null se n√£o encontrar a turma especificada.
 	 */
-	public Cursor consultarTurma(long id) {
-		return consultarTurma(COLUMN_ID, String.valueOf(id));
-	}
+	public TurmaVO consultarTurma(long id) {
+		TurmaVO turma = null;
+		Cursor c = consultarTurma(COLUMN_ID, String.valueOf(id));
+		
+		if(c != null) {
+			c.moveToFirst();
+			turma = new TurmaVO();
+			turma.setId(c.getInt(0));
+			turma.setNome(c.getString(1));
+			turma.setDescricao(c.getString(2));
+		}
+		
+		return turma;
+	}	
 	
 	/**
-	 * Retorna o registro da turma com o nome fornecido, se existir. Caso exista mais de uma turma com o mesmo nome, 
-	 * o cursor apontar· para o primeiro resultado encontrado.
+	 * Retorna os dados da turma indicada.
 	 * 
 	 * @param nome
-	 * @return
+	 * @return null se n√£o encontrar a turma especificada.
 	 */
-	public Cursor consultarTurma(String nome) {
-		return consultarTurma(COLUMN_NOME, nome);
+	public TurmaVO consultarTurma(String nome) {
+		TurmaVO turma = null;
+		Cursor c = consultarTurma(COLUMN_NOME, nome);
+		
+		if(c != null) {
+			c.moveToFirst();
+			
+			if(!c.isAfterLast()) {
+				turma = new TurmaVO();
+				turma.setId(c.getLong(0));
+				turma.setNome(c.getString(1));
+				turma.setDescricao(c.getString(2));
+			}
+		}
+		
+		return turma;
 	}
 	
 	/**
-	 * MÈtodo privado para realizar consultas de turmas.
+	 * M√©todo privado para realizar consultas de turmas.
 	 * 
-	 * @param key Nome da coluna usada como par‚metro na consulta.
+	 * @param key Nome da coluna usada como par√¢metro na consulta.
 	 * @param value Valor a ser procurado na coluna especificada.
 	 * @return
 	 */
@@ -188,7 +226,7 @@ public class DbAdapter {
 		String[] colunas = new String[] {COLUMN_ID, COLUMN_NOME, COLUMN_DESCRICAO};
 		
 		Cursor mCursor = 
-			mDb.query(false, TABLE_TURMA, colunas, key + " = " + value, null, null, null, null, null);
+			mDb.query(false, TABLE_TURMA, colunas, key + " = '" + value + "'", null, null, null, null, null);
 		
 		if(mCursor != null) {
 			mCursor.moveToFirst();
@@ -214,7 +252,7 @@ public class DbAdapter {
 	 * @return
 	 */
 	public boolean removerTurma(String nome) {
-		Cursor cursor = consultarTurma(nome);
+		Cursor cursor = consultarTurma(COLUMN_NOME, nome);
 		
 		if(cursor != null) {
 			return removerTurma(cursor.getLong(cursor.getColumnIndex(COLUMN_ID)));
@@ -226,7 +264,7 @@ public class DbAdapter {
 	/**
 	 * Retorna um Cursor para todos os registros encontrados para a tabela definida.
 	 * 
-	 * @param tabela Tabela de onde ser„o consultados os registros.
+	 * @param tabela Tabela de onde ser√£o consultados os registros.
 	 * @param colunas Colunas a serem exibidas.
 	 * @return Cursor posicionado no primeiro elemento encontrado.
 	 */
@@ -239,5 +277,26 @@ public class DbAdapter {
 		}
 		
 		return mCursor;
+	}
+	
+	/**
+	 * Retorna uma lista com todos os valores encontrados para a coluna da tabela definida.
+	 * 
+	 * @param tabela Tabela de onde ser√£o consultados os registros.
+	 * @param coluna Coluna a ser exibida.
+	 * @return Lista com os valores encontrados. Retorna uma lista vazia se n√£o encontrar nenhum valor v√°lido.
+	 */
+	public List<String> consultarTodos(String tabela, String coluna) {
+		List<String> resultado = new ArrayList<String>();
+		Cursor cursor = consultarTodos(tabela, new String[]{coluna});
+		
+		while(!cursor.isAfterLast()) {
+			resultado.add(cursor.getString(0));
+			cursor.moveToNext();
+		}
+		
+		cursor.close();
+		
+		return resultado;
 	}
 }

@@ -1,5 +1,6 @@
 package org.android.group.escolarmobile.app;
 
+import org.android.group.escolarmobile.conn.DbAdapter;
 import org.group.dev.R;
 
 import android.app.ListActivity;
@@ -23,10 +24,15 @@ public class BasicListWindow extends ListActivity implements OnClickListener,Bas
 	protected Button btAdd;   
 	protected String[] itens;
 	
+	protected DbAdapter mDbAdapter;
+	
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        mDbAdapter = new DbAdapter(this).open();
+        
         setContentView(R.layout.base_list_window);
         btAdd = (Button) findViewById(R.id.add);
 		fillItens();

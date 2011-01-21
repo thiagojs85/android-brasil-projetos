@@ -18,7 +18,7 @@
 		<activity android:label="Nova Matéria" android:name="org.android.group.escolarmobile.app.subject.AddSubject"/>
 	<activity android:name="org.android.group.escolarmobile.app.ListClass"></activity>
 <activity android:name="org.android.group.escolarmobile.app.BasicListWindow"></activity>
-<activity android:name="org.android.group.escolarmobile.app.cadastroTurmas"><intent-filter>
+<activity android:name="org.android.group.escolarmobile.app.CadastroTurmas"><intent-filter>
 <action android:name="android.intent.action.MAIN"></action>
 </intent-filter>
 </activity>
