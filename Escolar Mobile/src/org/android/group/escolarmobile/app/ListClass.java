@@ -7,6 +7,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,8 +39,8 @@ public class ListClass extends BasicListWindow {
 	}
 	
 	@Override
-	public void fillItens() {
-		this.itens = mDbAdapter.consultarTodos(DbAdapter.TABLE_TURMA, DbAdapter.COLUMN_NOME).toArray(new String[]{});
+	public Cursor getItensCursor() {
+		return mDbAdapter.consultarTodos(DbAdapter.TABLE_TURMA, new String[]{DbAdapter.COLUMN_ID, DbAdapter.COLUMN_NOME});
 	}
 	
 	@Override
@@ -50,7 +51,7 @@ public class ListClass extends BasicListWindow {
 
     	// Repassa o id da linha selecionada.
 		Bundle b = new Bundle();
-		b.putLong(DbAdapter.COLUMN_ID, ((Long) getListAdapter().getItem(info.position)).longValue());
+		b.putLong(DbAdapter.COLUMN_ID, (new Long(info.id).longValue()));
 		i.putExtras(b);
     	startActivityForResult(i, EDIT_ID);
 	}
@@ -58,14 +59,14 @@ public class ListClass extends BasicListWindow {
 	@Override
 	public void setActionOnDeleteItem(MenuItem item){
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-		idDelete = ((Long) getListAdapter().getItem(info.position)).longValue();
+		idDelete = (new Long(info.id).longValue());
 		showDialog(DIALOG_DELETAR);
 	}
 	
 	/**
-	 * FunÁ„o que cria os di·logos utilizados nesta activity.
+	 * Fun√ß√£o que cria os di√°logos utilizados nesta activity.
 	 * 
-	 * @param id identificaÁ„o do di·logo que deve ser criado.
+	 * @param id identifica√ß√£o do di√°logo que deve ser criado.
 	 */
 	protected Dialog onCreateDialog(int id) {
 		switch(id) {

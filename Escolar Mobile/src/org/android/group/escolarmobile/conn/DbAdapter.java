@@ -3,6 +3,7 @@ package org.android.group.escolarmobile.conn;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.android.group.escolarmobile.app.teacher.ProfessorVO;
 import org.android.group.escolarmobile.turma.TurmaVO;
 
 import android.content.ContentValues;
@@ -223,16 +224,9 @@ public class DbAdapter {
 	 * @return
 	 */
 	private Cursor consultarTurma(String key, String value) {
-		String[] colunas = new String[] {COLUMN_ID, COLUMN_NOME, COLUMN_DESCRICAO};
-		
-		Cursor mCursor = 
-			mDb.query(false, TABLE_TURMA, colunas, key + " = '" + value + "'", null, null, null, null, null);
-		
-		if(mCursor != null) {
-			mCursor.moveToFirst();
-		}
-		
-		return mCursor;
+		return consultar(TABLE_TURMA, 
+				new String[] {COLUMN_ID, COLUMN_NOME, COLUMN_DESCRICAO},
+				key, value);		
 	}
 	
 	/**
@@ -242,15 +236,17 @@ public class DbAdapter {
 	 * @return
 	 */
 	public boolean removerTurma(long id) {
-		return mDb.delete(TABLE_TURMA, COLUMN_ID + " = " + id, null) > 0;
+		return remover(TABLE_TURMA, id);
 	}
 	
 	/**
+	 * <b>Aparentemente, este método não é mais utilizado e, portanto, pode ser removido da classe.</b>
 	 * Remove a turma com o nome especificado.
 	 * 
 	 * @param nome
 	 * @return
 	 */
+	@Deprecated
 	public boolean removerTurma(String nome) {
 		Cursor cursor = consultarTurma(COLUMN_NOME, nome);
 		
@@ -259,6 +255,148 @@ public class DbAdapter {
 		} else {
 			return false;
 		}
+	}
+	
+	/**
+	 * Cria um novo registro de professor na tabela. Se o registro for incluído com
+	 * sucesso, o RowID será retornado. Em caso de erro, retorna -1.
+	 * 
+	 * @param professorVO DAO com os dados do professor.
+	 * @return rowID ou -1 se falhou.
+	 */
+	public long inserirProfessor(ProfessorVO professorVO) {
+		// Apesar de ID ser a verdadeira chave do registro, os nomes e logins dos professores devem ser únicos.
+		if(consultarProfessor(professorVO.getNome(), false) == null &&
+				consultarProfessor(professorVO.getLogin(), true) == null) {
+			ContentValues initialValues = new ContentValues();
+			//initialValues.put(COLUMN_ID, professorVO.getId());
+			initialValues.put(COLUMN_LOGIN, professorVO.getLogin());
+			initialValues.put(COLUMN_NOME, professorVO.getNome());
+			initialValues.put(COLUMN_SENHA, professorVO.getSenha());
+			
+			return mDb.insert(TABLE_PROFESSOR, null, initialValues);
+		} else {
+			return -1;
+		}
+	}
+
+	/**
+	 * Atualiza o registro de professor com os dados fornecidos.
+	 * 
+	 * @param professorVO
+	 * @return
+	 */
+	public boolean atualizarProfessor(ProfessorVO professorVO) {
+		ContentValues updatedValues = new ContentValues();
+		updatedValues.put(COLUMN_ID, professorVO.getId());
+		updatedValues.put(COLUMN_LOGIN, professorVO.getLogin());
+		updatedValues.put(COLUMN_NOME, professorVO.getNome());
+		updatedValues.put(COLUMN_SENHA, professorVO.getSenha());
+			
+		return mDb.update(TABLE_PROFESSOR, updatedValues, COLUMN_ID + " = " + professorVO.getId(), null) > 0;
+	}
+	
+	/**
+	 * Retorna o registro da professor com o ID fornecido, se existir.
+	 * 
+	 * @param id
+	 * @return null se não encontrar o professor especificado.
+	 */
+	public ProfessorVO consultarProfessor(long id) {
+		ProfessorVO professor = null;
+		Cursor c = consultarTurma(COLUMN_ID, String.valueOf(id));
+		
+		if(c != null) {
+			c.moveToFirst();
+			professor = new ProfessorVO();
+			professor.setId(c.getInt(0));
+			professor.setLogin(c.getString(1));
+			professor.setNome(c.getString(2));
+			professor.setSenha(c.getString(3));
+		}
+		
+		return professor;
+	}	
+	
+	/**
+	 * Retorna os dados do professor indicado.
+	 * 
+	 * @param key Nome ou login para ser procurado.
+	 * @param isLogin <b>True</b> indica que o valor passado como chave é um login. <b>False</b> indica que é um nome.
+	 * @return null se não encontrar o professor especificado.
+	 */
+	public ProfessorVO consultarProfessor(String key, boolean isLogin) {
+		ProfessorVO professor = null;
+		Cursor c = consultarProfessor(isLogin ? COLUMN_LOGIN : COLUMN_NOME, key);
+		
+		if(c != null) {
+			c.moveToFirst();
+			
+			if(!c.isAfterLast()) {
+				professor = new ProfessorVO();
+				professor.setId(c.getLong(0));
+				professor.setLogin(c.getString(1));
+				professor.setNome(c.getString(2));
+				professor.setSenha(c.getString(3));
+			}
+		}
+		
+		return professor;
+	}
+	
+	/**
+	 * Método privado para realizar consultas de professores.
+	 * 
+	 * @param key Nome da coluna usada como parâmetro na consulta.
+	 * @param value Valor a ser procurado na coluna especificada.
+	 * @return
+	 */
+	private Cursor consultarProfessor(String key, String value) {
+		return consultar(TABLE_PROFESSOR, 
+				new String[] {COLUMN_ID, COLUMN_LOGIN, COLUMN_NOME, COLUMN_DESCRICAO},
+				key, value);
+	}
+	
+	/**
+	 * Remove o professor com o id especificado.
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public boolean removerProfessor(long id) {
+		return remover(TABLE_PROFESSOR, id);
+	}
+	
+	/**
+	 * Método genérico para remover entradas nas tabelas baseadas no id fornecido.
+	 * 
+	 * @param table Tabela onde será executada a deleção.
+	 * @param id Chave da linha a ser deletada
+	 * @return <b>True</b> se a operação foi bem-sucedida; <b>false</b> em caso de erro.
+	 */
+	private boolean remover(String table, long id) {
+		return mDb.delete(table, COLUMN_ID + " = " + id, null) > 0;
+	}
+	
+	/**
+	 * Método genérico para efetuar consultas às tabelas, utilizando a chave fornecida.
+	 * 
+	 * @param table Tabela onde será executada a busca.
+	 * @param colunas Colunas que devem ser consideradas no retorno da busca.
+	 * @param key Coluna que deverá conter a palavra-chave definida como <b>value</b>.
+	 * @param value Palavra-chave da busca.
+	 * @return Cursor na primeira posição, caso algum dado tenha sido encontrado. Se nenhum dado foi encontrado, retorna <b>null</b>.
+	 */
+	private Cursor consultar(String table, String[] colunas, String key, String value) {
+		Cursor mCursor = 
+			mDb.query(false, table, colunas, key + " = '" + value + "'", null, null, null, null, null);
+		
+		if(mCursor != null) {
+			mCursor.moveToFirst();
+		}
+		
+		return mCursor;
+
 	}
 	
 	/**

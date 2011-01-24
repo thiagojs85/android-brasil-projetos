@@ -4,6 +4,7 @@ import org.android.group.escolarmobile.conn.DbAdapter;
 import org.group.dev.R;
 
 import android.app.ListActivity;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -14,8 +15,9 @@ import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 
-public class BasicListWindow extends ListActivity implements OnClickListener,BasicListInterface{
+public abstract class BasicListWindow extends ListActivity implements OnClickListener {
 
 	protected static final int ADD_ID = Menu.FIRST;
 	protected static final int EDIT_ID = ADD_ID + 1;
@@ -35,13 +37,21 @@ public class BasicListWindow extends ListActivity implements OnClickListener,Bas
         
         setContentView(R.layout.base_list_window);
         btAdd = (Button) findViewById(R.id.add);
-		fillItens();
 		registerForContextMenu(getListView());
 		if(isMultiItensSelectable()){
+			// TODO [Otavio] Esta parte ainda não foi testada, pois nenhuma activity usou esta funcionalidade!
 			setListAdapter(new ArrayAdapter<String>(this,android.R.layout.simple_list_item_multiple_choice,itens));
 	        getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 		}else{
-			setListAdapter(new ArrayAdapter<String>(this,R.layout.base_list_item,itens));
+			// A criação deste ListAdapter é praticamente a mesma utilizada no tutorial do Notepad.
+			// Mais informações no Step 12 em http://developer.android.com/resources/tutorials/notepad/notepad-ex1.html
+			Cursor c = getItensCursor();
+			startManagingCursor(c);
+			setListAdapter(new SimpleCursorAdapter(this, 
+					R.layout.base_list_item, 
+					c, 
+					new String[]{DbAdapter.COLUMN_NOME}, 
+					new int[]{R.id.n_prontuario}));
 		}
         btAdd.setOnClickListener(this);
     }
@@ -98,9 +108,13 @@ public class BasicListWindow extends ListActivity implements OnClickListener,Bas
 
 	public void setItens(String[] itens) {
 		this.itens = itens;
-	}
-	public void fillItens() {
-		this.itens = new String[]{};
-	}  
+	} 
+	
+	/**
+	 * Recupera o cursor apontando para os itens que deverão ser exibidos na lista da Activity.
+	 * 
+	 * @return Cursor resultante da consulta à tabela para recuperar os itens a serem exibidos.
+	 */
+	public abstract Cursor getItensCursor();
 
 }
