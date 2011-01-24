@@ -7,6 +7,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -47,36 +48,40 @@ public class ListaProfessores extends BasicListWindow {
     	//Intent i = new Intent(this, ClasseDoDiego.class);
     	//startActivityForResult(i, ADD_ID);
 	}
-	
+
+
 	@Override
-	public void fillItens() {
-		this.itens = mDbAdapter.consultarTodos(DbAdapter.TABLE_PROFESSOR, DbAdapter.COLUMN_NOME).toArray(new String[]{});
+	public Cursor getItensCursor() {
+		return mDbAdapter.consultarTodos(DbAdapter.TABLE_PROFESSOR, 
+				new String[]{DbAdapter.COLUMN_ID, DbAdapter.COLUMN_NOME});
 	}
 	
 	@Override
 	public void setActionOnEditItem(MenuItem item){
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-				
-		/*Intent i = new Intent(this, ClasseDoDiego.class);
+		
+		//TODO [Otavio] Corrigir nome da classe da Activity para inserção/edição de professores. 
+    	//Intent i = new Intent(this, CadastroProfessor.class);
+		Intent i = new Intent(this, ListaProfessores.class);		
 
-    	 Repassa o id da linha selecionada.
+    	// Repassa o id da linha selecionada.
 		Bundle b = new Bundle();
-		b.putLong(DbAdapter.COLUMN_ID, ((Long) getListAdapter().getItem(info.position)).longValue());
+		b.putLong(DbAdapter.COLUMN_ID, (new Long(info.id).longValue()));
 		i.putExtras(b);
-    	startActivityForResult(i, EDIT_ID);*/
+    	startActivityForResult(i, EDIT_ID);
 	}
 	
 	@Override
 	public void setActionOnDeleteItem(MenuItem item){
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-		idDelete = ((Long) getListAdapter().getItem(info.position)).longValue();
+		idDelete = (new Long(info.id).longValue());
 		showDialog(DIALOG_DELETAR);
 	}
 	
 	/**
-	 * Fun��o que cria os di�logos utilizados nesta activity.
+	 * Função que cria os diálogos utilizados nesta activity.
 	 * 
-	 * @param id identifica��o do di�logo que deve ser criado.
+	 * @param id identificação do diálogo que deve ser criado.
 	 */
 	protected Dialog onCreateDialog(int id) {
 		switch(id) {
@@ -98,5 +103,4 @@ public class ListaProfessores extends BasicListWindow {
 				return null;
 		}
 	}
-
 }
