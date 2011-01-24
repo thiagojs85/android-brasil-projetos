@@ -67,6 +67,7 @@ public class EscolarMobile extends Activity implements OnClickListener {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.principal, menu);
+        inflater.inflate(R.menu.professores, menu);//adiciona o menu dos professores
         return true;
     }
     
@@ -77,6 +78,10 @@ public class EscolarMobile extends Activity implements OnClickListener {
         switch (item.getItemId()) {
         case R.id.menu_turma:
         	i = new Intent(this, ListClass.class);
+    	    startActivityForResult(i, 0);
+            return true;
+        case R.id.professores://seleciona o menu de acordo com o nome do xml
+        	i = new Intent(this, ListaProfessores.class);
     	    startActivityForResult(i, 0);
             return true;
         default:

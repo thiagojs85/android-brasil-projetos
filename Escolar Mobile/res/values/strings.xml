@@ -30,4 +30,6 @@
 	<string name="error_description_invalid">Erro! Descrição inválida!</string>
 	<string name="data_inserted_success">Registro inserido com sucesso!</string>
 	<string name="data_inserted_error">Erro ao inserir registro!</string>
+<string name="adicionar_professor">Adicionar Professor</string>
+<string name="professores">Professores</string>
 </resources>
