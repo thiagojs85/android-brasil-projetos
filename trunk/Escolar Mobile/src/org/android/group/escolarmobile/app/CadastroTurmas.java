@@ -15,134 +15,135 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 public class CadastroTurmas extends Activity {
-	
+
 	private static final int DIALOG_CANCELAR = 0;
 	private Button ok, cancelar, cadastrarMaterias;
 	private EditText turma, descricao;
 	private long editId = -1;
 	private DbAdapter mDbAdapter = null;
-	
+
 	@Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        
-        //Layout padrão para cadastros
-        setContentView(R.layout.base_cadastro);
-        LinearLayout rl = (LinearLayout) findViewById(R.id.container);
-        LayoutInflater layoutInflater = (LayoutInflater)this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);    
-        // Essa parte pode ser controlada por um metodo que retorne qual o layout a ser inserido
-        //no layout padrão para cadastro 
-        rl.addView( layoutInflater.inflate(R.layout.cadastro, null, false) ); 
-     
-        ok = (Button) findViewById(R.id.bt_ok);
-        cancelar = (Button) findViewById(R.id.bt_cancelar);
-        cadastrarMaterias = (Button) findViewById(R.id.bt_cadastrar);
-		turma = (EditText) findViewById(R.id.nome_turma);
-		descricao = (EditText) findViewById(R.id.tv_descricao);
-		
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+
+		// Layout padrão para cadastros
+		setContentView(R.layout.base_cadastro);
+		LinearLayout rl = (LinearLayout) findViewById(R.id.container);
+		LayoutInflater layoutInflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		// Essa parte pode ser controlada por um metodo que retorne qual o
+		// layout a ser inserido
+		// no layout padrão para cadastro
+		rl.addView(layoutInflater.inflate(R.layout.cadastro, null, false));
+
+		ok = (Button) findViewById(R.id.bt_ok);
+		cancelar = (Button) findViewById(R.id.bt_cancelar);
+		cadastrarMaterias = (Button) findViewById(R.id.bt_cadastrar);
+		turma = (EditText) findViewById(R.id.et_turma);
+		descricao = (EditText) findViewById(R.id.et_descricao);
+
 		mDbAdapter = new DbAdapter(this).open();
 		Bundle bundle = getIntent().getExtras();
-		
-        if(bundle != null) {        
-        	editId = bundle.getLong(DbAdapter.COLUMN_ID);
-        	TurmaVO turmaVO = mDbAdapter.consultarTurma(editId);
-        	
-        	if(turmaVO != null) {
-        		turma.setText(turmaVO.getNome());
-        		descricao.setText(turmaVO.getDescricao());
-        	}
-        }
-        
-        
-        
-        ok.setOnClickListener(new View.OnClickListener() {
-        	public void onClick(View v) {
-        		TurmaVO turmaVO = new TurmaVO();
-        		
-        		// Valida as informações antes de salvar no banco.
-        		if(turma.getText().toString().trim().length() < 1) {
-        			Toast.makeText(CadastroTurmas.this, R.string.error_name_invalid, Toast.LENGTH_LONG).show();
-        			return;
-        		} else if(descricao.getText().toString().trim().length() < 1) {
-        			Toast.makeText(CadastroTurmas.this, R.string.error_description_invalid, Toast.LENGTH_LONG).show();
-        			return;
-        		}
-        		
-        		turmaVO.setNome(turma.getText().toString().trim());
-        		turmaVO.setDescricao(descricao.getText().toString().trim());
-        		
-        		mDbAdapter = new DbAdapter(CadastroTurmas.this).open();
-        		
-        		boolean registroOk = false;
-        		
-        		// Se não houver id, é uma nova entrada; caso contrário, é atualização de um registro existente.
-        		if(editId == -1) {
-        			if(mDbAdapter.inserirTurma(turmaVO) > -1) {
-        				registroOk = true;
-        			}	
-        		} else {
-        			turmaVO.setId(editId);
-        			registroOk = mDbAdapter.atualizarTurma(turmaVO);
-        		}
-        		
-        		if(registroOk) {
-        			Toast.makeText(CadastroTurmas.this, R.string.data_inserted_success, Toast.LENGTH_LONG).show();
-        			CadastroTurmas.this.finish();
-        		} else {
-        			Toast.makeText(CadastroTurmas.this, R.string.data_inserted_error, Toast.LENGTH_LONG).show();
-        		}
+
+		if (bundle != null) {
+			editId = bundle.getLong(DbAdapter.COLUMN_ID);
+			TurmaVO turmaVO = mDbAdapter.consultarTurma(editId);
+
+			if (turmaVO != null) {
+				turma.setText(turmaVO.getNome());
+				descricao.setText(turmaVO.getDescricao());
 			}
-        });
-        
-        cancelar.setOnClickListener(new View.OnClickListener() {
-        	public void onClick(View v) {
-        		// Invoca a caixa de diálogo e sai sem salvar nada.
-        		showDialog(DIALOG_CANCELAR);
+		}
+
+		ok.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				TurmaVO turmaVO = new TurmaVO();
+
+				// Valida as informações antes de salvar no banco.
+				if (turma.getText().toString().trim().length() < 1) {
+					Toast.makeText(CadastroTurmas.this, R.string.error_name_invalid, Toast.LENGTH_LONG).show();
+					return;
+				} else if (descricao.getText().toString().trim().length() < 1) {
+					Toast.makeText(CadastroTurmas.this, R.string.error_description_invalid, Toast.LENGTH_LONG).show();
+					return;
+				}
+
+				turmaVO.setNome(turma.getText().toString().trim());
+				turmaVO.setDescricao(descricao.getText().toString().trim());
+
+				mDbAdapter = new DbAdapter(CadastroTurmas.this).open();
+
+				boolean registroOk = false;
+
+				// Se não houver id, é uma nova entrada; caso contrário, é
+				// atualização de um registro existente.
+				if (editId == -1) {
+					if (mDbAdapter.inserirTurma(turmaVO) > -1) {
+						registroOk = true;
+					}
+				} else {
+					turmaVO.setId(editId);
+					registroOk = mDbAdapter.atualizarTurma(turmaVO);
+				}
+
+				if (registroOk) {
+					Toast.makeText(CadastroTurmas.this, R.string.data_inserted_success, Toast.LENGTH_LONG).show();
+					CadastroTurmas.this.finish();
+				} else {
+					Toast.makeText(CadastroTurmas.this, R.string.data_inserted_error, Toast.LENGTH_LONG).show();
+				}
 			}
-        });
-	
-        cadastrarMaterias.setOnClickListener(new View.OnClickListener() {
-        	public void onClick(View v) {
-        		//TODO: Chamar a tela de cadastro de matérias
-        		Toast.makeText(CadastroTurmas.this, "Botão cadastro de matérias Pressionado!", Toast.LENGTH_SHORT).show();
+		});
+
+		cancelar.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				// Invoca a caixa de diálogo e sai sem salvar nada.
+				showDialog(DIALOG_CANCELAR);
 			}
-        });
+		});
+
+		cadastrarMaterias.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				// TODO: Chamar a tela de cadastro de matérias
+				Toast.makeText(CadastroTurmas.this, "Botão cadastro de matérias Pressionado!", Toast.LENGTH_SHORT)
+						.show();
+			}
+		});
 	}
-	
+
 	/**
 	 * Fun��o que cria os di�logos utilizados nesta activity.
 	 * 
-	 * @param id identifica��o do di�logo que deve ser criado.
+	 * @param id
+	 *            identifica��o do di�logo que deve ser criado.
 	 */
 	protected Dialog onCreateDialog(int id) {
-		switch(id) {
-			case DIALOG_CANCELAR:
-				AlertDialog.Builder builder = new AlertDialog.Builder(this);
-				builder.setMessage(R.string.dialog_cancel).setCancelable(false);
-				builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-						CadastroTurmas.this.finish();
-					}
-				});
-				builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-						dialog.cancel();
-					}
-				});
-				return builder.create();
-			default:
-				return null;
+		switch (id) {
+		case DIALOG_CANCELAR:
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setMessage(R.string.dialog_cancel).setCancelable(false);
+			builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					CadastroTurmas.this.finish();
+				}
+			});
+			builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					dialog.cancel();
+				}
+			});
+			return builder.create();
+		default:
+			return null;
 		}
 	}
-	
+
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		if(mDbAdapter != null) {
+		if (mDbAdapter != null) {
 			mDbAdapter.close();
 		}
 	}
