@@ -10,28 +10,35 @@
 		android:id="@+id/container"
 		android:layout_width="fill_parent"
   		android:layout_height="wrap_content"
-  		android:orientation="vertical">
+  		android:orientation="vertical"
+  		android:gravity="top">
 	</LinearLayout>
-	<Button
-		android:id="@+id/bt_ok"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		android:text="@string/ok"
-		android:layout_below="@+id/container">
-	</Button>
-	<Button
-		android:id="@+id/bt_cancelar"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		android:text="@string/cancel"
-		android:layout_below="@+id/bt_ok">
-	</Button>
-	<Button
-		android:id="@+id/bt_cadastrar"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		android:text="@string/cadastrar_turmas"
-		android:layout_below="@+id/bt_cancelar">
-	</Button>
+	<RelativeLayout
+  		android:layout_width="fill_parent"
+  		android:layout_height="fill_parent"
+		android:orientation="vertical"
+		android:layout_below="@+id/container"
+  		android:gravity="bottom">
+		<Button
+			android:id="@+id/bt_ok"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:text="@string/ok">
+		</Button>
+		<Button
+			android:id="@+id/bt_cancelar"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:text="@string/cancel"
+			android:layout_below="@+id/bt_ok">
+		</Button>
+		<Button
+			android:id="@+id/bt_cadastrar"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:text="@string/cadastrar_turmas"
+			android:layout_below="@+id/bt_cancelar">
+		</Button>
 
+	</RelativeLayout>
 </RelativeLayout>
