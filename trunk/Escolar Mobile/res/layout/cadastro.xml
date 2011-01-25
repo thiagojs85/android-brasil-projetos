@@ -1,52 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/include_me"
   android:layout_width="fill_parent"
   android:layout_height="wrap_content"
-  android:orientation="vertical">
-  <TextView android:text="@string/nome_turma" 
-		android:id="@+id/tv_nome" 
-		android:layout_width="wrap_content" 
+  android:orientation="vertical"
+  android:layout_weight="1">
+  <TextView
+		android:text="Nome da Turma" 
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content" />
+  <EditText 
+		android:id="@+id/nome_turma" 
+		android:layout_width="fill_parent" 
 		android:layout_height="wrap_content">
-  </TextView>
-  <EditText  
-		android:id="@+id/et_nome" 
-		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content"
-		android:layout_below="@+id/tv_nome">
-	</EditText>
-	<TextView android:text="@string/descricao" 
+  </EditText>
+  <TextView 
+		android:text="Descrição" 
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content" />
+  <EditText
 		android:id="@+id/tv_descricao" 
-		android:layout_width="wrap_content" 
-		android:layout_height="wrap_content"
-		android:layout_below="@+id/et_nome">
-  </TextView>
-  <EditText  
-		android:id="@+id/et_descricao" 
 		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content"
-		android:layout_below="@+id/tv_descricao">
-	</EditText>
-	<Button
-		android:id="@+id/bt_ok"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		android:text="@string/ok"
-		android:layout_below="@+id/et_descricao">
-	</Button>
-	<Button
-		android:id="@+id/bt_cancelar"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		android:text="@string/cancel"
-		android:layout_below="@+id/bt_ok">
-	</Button>
-	<Button
-		android:id="@+id/bt_cadastrar"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		android:text="@string/cadastrar_turmas"
-		android:layout_below="@+id/bt_cancelar">
-	</Button>
+		android:layout_height="wrap_content">
+  </EditText>
 
-</RelativeLayout>
+</LinearLayout>

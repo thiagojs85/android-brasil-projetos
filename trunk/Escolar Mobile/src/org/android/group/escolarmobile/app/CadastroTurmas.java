@@ -4,15 +4,18 @@ import org.android.group.escolarmobile.conn.DbAdapter;
 import org.android.group.escolarmobile.turma.TurmaVO;
 import org.group.dev.R;
 
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 public class CadastroTurmas extends Activity {
@@ -26,12 +29,20 @@ public class CadastroTurmas extends Activity {
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.cadastro);
+        
+        //Layout padrão para cadastros
+        setContentView(R.layout.base_cadastro);
+        LinearLayout rl = (LinearLayout) findViewById(R.id.container);
+        LayoutInflater layoutInflater = (LayoutInflater)this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);    
+        // Essa parte pode ser controlada por um metodo que retorne qual o layout a ser inserido
+        //no layout padrão para cadastro 
+        rl.addView( layoutInflater.inflate(R.layout.cadastro, null, false) ); 
+     
         ok = (Button) findViewById(R.id.bt_ok);
         cancelar = (Button) findViewById(R.id.bt_cancelar);
         cadastrarMaterias = (Button) findViewById(R.id.bt_cadastrar);
-		turma = (EditText) findViewById(R.id.et_nome);
-		descricao = (EditText) findViewById(R.id.et_descricao);
+		turma = (EditText) findViewById(R.id.nome_turma);
+		descricao = (EditText) findViewById(R.id.tv_descricao);
 		
 		mDbAdapter = new DbAdapter(this).open();
 		Bundle bundle = getIntent().getExtras();
@@ -52,7 +63,7 @@ public class CadastroTurmas extends Activity {
         	public void onClick(View v) {
         		TurmaVO turmaVO = new TurmaVO();
         		
-        		// Valida as informa��es antes de salvar no banco.
+        		// Valida as informações antes de salvar no banco.
         		if(turma.getText().toString().trim().length() < 1) {
         			Toast.makeText(CadastroTurmas.this, R.string.error_name_invalid, Toast.LENGTH_LONG).show();
         			return;
@@ -68,7 +79,7 @@ public class CadastroTurmas extends Activity {
         		
         		boolean registroOk = false;
         		
-        		// Se n�o houver id, � uma nova entrada; caso contr�rio, � atualiza��o de um registro existente.
+        		// Se não houver id, é uma nova entrada; caso contrário, é atualização de um registro existente.
         		if(editId == -1) {
         			if(mDbAdapter.inserirTurma(turmaVO) > -1) {
         				registroOk = true;
@@ -89,7 +100,7 @@ public class CadastroTurmas extends Activity {
         
         cancelar.setOnClickListener(new View.OnClickListener() {
         	public void onClick(View v) {
-        		// Invoca a caixa de di�logo e sai sem salvar nada.
+        		// Invoca a caixa de diálogo e sai sem salvar nada.
         		showDialog(DIALOG_CANCELAR);
 			}
         });

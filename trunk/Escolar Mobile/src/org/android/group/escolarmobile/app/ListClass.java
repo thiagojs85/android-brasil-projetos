@@ -16,14 +16,13 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 
 public class ListClass extends BasicListWindow {
 	
-	private static final int DIALOG_DELETAR = 0;
 	private long idDelete;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Button ibt = (Button)findViewById(R.id.add);
-        ibt.setText("Adicionar Turma");
+        ibt.setText(R.string.adicionar_turma);
     }
     
     @Override
@@ -34,12 +33,19 @@ public class ListClass extends BasicListWindow {
     
 	@Override
 	public void onClick(View v) {
+		/* Inicia a tela de cadastro de turma
+		 * 
+		 */
+		 
     	Intent i = new Intent(this, CadastroTurmas.class);
     	startActivityForResult(i, ADD_ID);
 	}
 	
 	@Override
 	public Cursor getItensCursor() {
+		/**
+		 * Preenche a lista de turmas com base nos dados do BD
+		 */
 		return mDbAdapter.consultarTodos(DbAdapter.TABLE_TURMA, new String[]{DbAdapter.COLUMN_ID, DbAdapter.COLUMN_NOME});
 	}
 	
@@ -49,7 +55,7 @@ public class ListClass extends BasicListWindow {
 				
     	Intent i = new Intent(this, CadastroTurmas.class);
 
-    	// Repassa o id da linha selecionada.
+    	// Repassa o id da linha selecionada para a tela de edição
 		Bundle b = new Bundle();
 		b.putLong(DbAdapter.COLUMN_ID, (new Long(info.id).longValue()));
 		i.putExtras(b);
@@ -60,7 +66,7 @@ public class ListClass extends BasicListWindow {
 	public void setActionOnDeleteItem(MenuItem item){
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 		idDelete = (new Long(info.id).longValue());
-		showDialog(DIALOG_DELETAR);
+		showDialog(DELETE_ID);
 	}
 	
 	/**
@@ -70,7 +76,7 @@ public class ListClass extends BasicListWindow {
 	 */
 	protected Dialog onCreateDialog(int id) {
 		switch(id) {
-			case DIALOG_DELETAR:
+			case DELETE_ID:
 				AlertDialog.Builder builder = new AlertDialog.Builder(this);
 				builder.setMessage(R.string.dialog_delete).setCancelable(false);
 				builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {

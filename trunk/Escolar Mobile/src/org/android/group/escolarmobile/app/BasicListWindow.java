@@ -85,15 +85,9 @@ public abstract class BasicListWindow extends ListActivity implements OnClickLis
 
 	}
 
-    public void setActionOnEditItem(MenuItem item){
-		
-	}
-	public void setActionOnDeleteItem(MenuItem item){
-	
-	}
 
-    public void onClick(View v) {
-	}
+
+    public abstract void onClick(View v);
 	public Button getBtAdd() {
 		return btAdd;
 	}
@@ -116,5 +110,13 @@ public abstract class BasicListWindow extends ListActivity implements OnClickLis
 	 * @return Cursor resultante da consulta à tabela para recuperar os itens a serem exibidos.
 	 */
 	public abstract Cursor getItensCursor();
+	
+	/**
+	 *  Metodos que devem ser implementados ao se extender uma classe
+	 * para as ações de  Editar um item da lista e para Deletar um item
+	 */
+    public abstract void setActionOnEditItem(MenuItem item);
+    
+	public abstract void setActionOnDeleteItem(MenuItem item);
 
 }
