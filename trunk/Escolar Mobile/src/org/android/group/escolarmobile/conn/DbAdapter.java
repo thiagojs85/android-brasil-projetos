@@ -304,7 +304,7 @@ public class DbAdapter {
 	 */
 	public ProfessorVO consultarProfessor(long id) {
 		ProfessorVO professor = null;
-		Cursor c = consultarTurma(COLUMN_ID, String.valueOf(id));
+		Cursor c = consultarProfessor(COLUMN_ID, String.valueOf(id));
 		
 		if(c != null) {
 			c.moveToFirst();
@@ -353,7 +353,7 @@ public class DbAdapter {
 	 */
 	private Cursor consultarProfessor(String key, String value) {
 		return consultar(TABLE_PROFESSOR, 
-				new String[] {COLUMN_ID, COLUMN_LOGIN, COLUMN_NOME, COLUMN_DESCRICAO},
+				new String[] {COLUMN_ID, COLUMN_LOGIN, COLUMN_NOME, COLUMN_SENHA},
 				key, value);
 	}
 	

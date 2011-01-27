@@ -44,9 +44,8 @@ public class ListaProfessores extends BasicListWindow {
 	@Override
 	public void onClick(View v) {
 		
-		//TODO: Inciar a classe de edição de professores
-    	//Intent i = new Intent(this, ClasseDoDiego.class);
-    	//startActivityForResult(i, ADD_ID);
+    	Intent i = new Intent(this, CadastroProfessor.class);
+    	startActivityForResult(i, ADD_ID);
 	}
 
 
@@ -60,13 +59,11 @@ public class ListaProfessores extends BasicListWindow {
 	public void setActionOnEditItem(MenuItem item){
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 		
-		//TODO [Otavio] Corrigir nome da classe da Activity para inserção/edição de professores. 
-    	//Intent i = new Intent(this, CadastroProfessor.class);
-		Intent i = new Intent(this, ListaProfessores.class);		
+    	Intent i = new Intent(this, CadastroProfessor.class);
 
     	// Repassa o id da linha selecionada.
 		Bundle b = new Bundle();
-		b.putLong(DbAdapter.COLUMN_ID, (new Long(info.id).longValue()));
+		b.putLong(DbAdapter.COLUMN_ID, info.id);
 		i.putExtras(b);
     	startActivityForResult(i, EDIT_ID);
 	}
@@ -90,7 +87,7 @@ public class ListaProfessores extends BasicListWindow {
 				builder.setMessage(R.string.dialog_delete).setCancelable(false);
 				builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
-						mDbAdapter.removerTurma(idDelete);
+						mDbAdapter.removerProfessor(idDelete);
 					}
 				});
 				builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
