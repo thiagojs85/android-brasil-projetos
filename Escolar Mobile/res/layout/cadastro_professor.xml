@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/include_me"
+  android:layout_width="fill_parent"
+  android:layout_height="wrap_content"
+  android:orientation="vertical"
+  android:layout_weight="1">
+  
+  <TextView 
+		android:text="Nome" 
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content" />
+  <EditText
+		android:id="@+id/et_nome_professor" 
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content">
+  </EditText>
+  
+  <TextView
+		android:text="Login" 
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content" />
+  <EditText 
+		android:id="@+id/et_login_professor" 
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content">
+  </EditText>
+  
+  <TextView 
+		android:text="Senha" 
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content" />
+  <EditText
+		android:id="@+id/et_senha_professor"
+		android:password="true" 
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content">
+  </EditText>
+
+</LinearLayout>
