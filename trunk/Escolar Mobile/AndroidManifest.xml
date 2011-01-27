@@ -25,6 +25,7 @@
 <activity android:name="org.android.group.escolarmobile.app.ListaProfessores"><intent-filter><action android:name="android.intent.action.MAIN"></action>
 </intent-filter>
 </activity>
+<activity android:name="org.android.group.escolarmobile.app.CadastroProfessor"/>
 </application>
     <uses-sdk android:minSdkVersion="8" />
 </manifest> 
