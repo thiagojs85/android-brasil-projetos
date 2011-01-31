@@ -35,7 +35,7 @@ public class CadastroProfessor extends Activity implements OnClickListener{
 		super.onCreate(savedInstanceState);
 
 		// Layout padrão para cadastros
-		setContentView(R.layout.base_cadastro);
+		setContentView(R.layout.base_cadastro2);
 		LinearLayout rl = (LinearLayout) findViewById(R.id.container);
 		
 		LayoutInflater layoutInflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -150,9 +150,6 @@ public class CadastroProfessor extends Activity implements OnClickListener{
 	private void recuperaComponentesTela() {
 		botaoOk = (Button) findViewById(R.id.bt_ok);
 		botaoCancelar = (Button) findViewById(R.id.bt_cancelar);
-		botaoCadastrar = (Button) findViewById(R.id.bt_cadastrar);
-		// Não exibe o botão cadastrar
-		botaoCadastrar.setVisibility(Button.INVISIBLE);
 		
 		// Registra um evento de click para os botões
 		botaoOk.setOnClickListener(this);
