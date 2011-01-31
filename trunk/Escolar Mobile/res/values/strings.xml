@@ -33,15 +33,15 @@
 	<string name="adicionar_turma">Adicionar Turma</string>
 	<string name="adicionar_professor">Adicionar Professor</string>
 	<string name="professores">Professores</string>
-<string name="adicionar_materia">Adicionar Matéria</string>
-<string name="lancar_notas">Lançar Notas</string>
-<string name="base_menu_lançar"></string>
-<string name="fazer_chamada">Fazer_chamada</string>
-<string name="nome_materia">Nome da Matéria</string>
-<string name="horas_aula">Horas / aula</string>
-<string name="cadastrar_alunos">Cadastrar Alunos</string>
-<string name="adicionar_aluno">Adicionar Aluno</string>
-<string name="nome_aluno">Nome do Aluno</string>
-<string name="rm">Registro de Matrícula</string>
-<string name="idade_aluno">Idade</string>
+	<string name="adicionar_materia">Adicionar Matéria</string>
+	<string name="lancar_notas">Lançar Notas</string>
+	<string name="base_menu_lancar"></string>
+	<string name="fazer_chamada">Fazer_chamada</string>
+	<string name="nome_materia">Nome da Matéria</string>
+	<string name="horas_aula">Horas / aula</string>
+	<string name="cadastrar_alunos">Cadastrar Alunos</string>
+	<string name="adicionar_aluno">Adicionar Aluno</string>
+	<string name="nome_aluno">Nome do Aluno</string>
+	<string name="rm">Registro de Matrícula</string>
+	<string name="idade_aluno">Idade</string>
 </resources>
