@@ -1,7 +1,6 @@
 package org.android.group.escolarmobile.app;
 
 import org.android.group.escolarmobile.conn.DbAdapter;
-import org.android.group.escolarmobile.turma.TurmaVO;
 import org.group.dev.R;
 
 import android.app.Activity;
@@ -17,34 +16,36 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-public class CadastroTurmas extends Activity {
-
+public class CadastroAlunos extends Activity{
+	
 	private static final int DIALOG_CANCELAR = 0;
-	private Button ok, cancelar, cadastrarMaterias;
-	private EditText turma, descricao;
+	private Button ok, cancelar;
+	private EditText nomeAluno, idade, registroMatricula;
 	private long editId = -1;
 	private DbAdapter mDbAdapter = null;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		
 		// Layout padrão para cadastros
-		setContentView(R.layout.base_cadastro);
+		setContentView(R.layout.base_cadastro2);
 		LinearLayout rl = (LinearLayout) findViewById(R.id.container);
 		LayoutInflater layoutInflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		// Essa parte pode ser controlada por um metodo que retorne qual o
 		// layout a ser inserido
 		// no layout padrão para cadastro
-		rl.addView(layoutInflater.inflate(R.layout.cadastro_turmas, null, false));
+		rl.addView(layoutInflater.inflate(R.layout.cadastro_alunos, null, false));
 
 		ok = (Button) findViewById(R.id.bt_ok);
 		cancelar = (Button) findViewById(R.id.bt_cancelar);
-		cadastrarMaterias = (Button) findViewById(R.id.bt_cadastrar);
-		turma = (EditText) findViewById(R.id.et_turma);
-		descricao = (EditText) findViewById(R.id.et_descricao);
+		nomeAluno = (EditText) findViewById(R.id.et_nome_aluno);
+		idade = (EditText) findViewById(R.id.et_idade_aluno);
+		registroMatricula = (EditText) findViewById(R.id.et_registro_matricula);
+		
+		
 
-		mDbAdapter = new DbAdapter(this).open();
+		/*mDbAdapter = new DbAdapter(this).open();
 		Bundle bundle = getIntent().getExtras();
 
 		if (bundle != null) {
@@ -55,11 +56,11 @@ public class CadastroTurmas extends Activity {
 				turma.setText(turmaVO.getNome());
 				descricao.setText(turmaVO.getDescricao());
 			}
-		}
+		}*/
 
 		ok.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				TurmaVO turmaVO = new TurmaVO();
+				/*TurmaVO turmaVO = new TurmaVO();
 
 				// Valida as informações antes de salvar no banco.
 				if (turma.getText().toString().trim().length() < 1) {
@@ -93,7 +94,7 @@ public class CadastroTurmas extends Activity {
 					CadastroTurmas.this.finish();
 				} else {
 					Toast.makeText(CadastroTurmas.this, R.string.data_inserted_error, Toast.LENGTH_LONG).show();
-				}
+				}*/
 			}
 		});
 
@@ -104,13 +105,7 @@ public class CadastroTurmas extends Activity {
 			}
 		});
 
-		cadastrarMaterias.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View v) {
-				// TODO: Chamar a tela de cadastro de matérias
-				Toast.makeText(CadastroTurmas.this, "Botão cadastro de matérias Pressionado!", Toast.LENGTH_SHORT)
-						.show();
-			}
-		});
+		
 	}
 
 	/**
@@ -126,7 +121,7 @@ public class CadastroTurmas extends Activity {
 			builder.setMessage(R.string.dialog_cancel).setCancelable(false);
 			builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
-					CadastroTurmas.this.finish();
+					CadastroAlunos.this.finish();
 				}
 			});
 			builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
@@ -147,4 +142,5 @@ public class CadastroTurmas extends Activity {
 			mDbAdapter.close();
 		}
 	}
+
 }

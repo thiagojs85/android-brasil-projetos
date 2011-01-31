@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/include_me"
+  android:layout_width="fill_parent"
+  android:layout_height="wrap_content"
+  android:orientation="vertical"
+  android:layout_weight="1">
+  <TextView
+		android:text="@string/nome_materia" 
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content" />
+  <EditText 
+		android:id="@+id/et_nome_materia" 
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content">
+  </EditText>
+  <TextView
+		android:text="@string/horas_aula" 
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content" />
+  <EditText 
+		android:id="@+id/et_horas_aula" 
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"
+		android:inputType="numberDecimal">
+  </EditText>
+  <TextView 
+		android:text="@string/descricao" 
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content" />
+  <EditText
+		android:id="@+id/et_descricao" 
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content">
+  </EditText>
+</LinearLayout>

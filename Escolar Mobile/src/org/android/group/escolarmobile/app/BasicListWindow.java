@@ -50,7 +50,7 @@ public abstract class BasicListWindow extends ListActivity implements OnClickLis
 			setListAdapter(new SimpleCursorAdapter(this, 
 					R.layout.base_list_item, 
 					c, 
-					new String[]{DbAdapter.COLUMN_NOME}, 
+					new String[]{DbAdapter.COLUMN_NOME}, //tem que adicionar a coluna DbAdapter.COLUMN_REGISTRO aqui
 					new int[]{R.id.n_prontuario}));
 		}
         btAdd.setOnClickListener(this);
