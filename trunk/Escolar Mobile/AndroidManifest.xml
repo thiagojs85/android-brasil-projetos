@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="org.group.dev"
 	android:versionCode="1"
-	android:versionName="1.0">
+	android:versionName="1.0" android:installLocation="preferExternal">
     <application android:icon="@drawable/icon" android:label="@string/app_name">
 		<activity android:label="@string/app_name" android:name="org.android.group.escolarmobile.app.EscolarMobile">
 			<activity android:name=".subjects.Subjects" android:label="Matérias"/>
@@ -26,6 +26,18 @@
 </intent-filter>
 </activity>
 <activity android:name="org.android.group.escolarmobile.app.CadastroProfessor"/>
+<activity android:name="org.android.group.escolarmobile.app.ListaMaterias"><intent-filter><action android:name="android.intent.action.MAIN"></action>
+</intent-filter>
+</activity>
+<activity android:name="org.android.group.escolarmobile.app.CadastroMateria"><intent-filter><action android:name="android.intent.action.MAIN"></action>
+</intent-filter>
+</activity>
+<activity android:name="org.android.group.escolarmobile.app.ListaAlunos"><intent-filter><action android:name="android.intent.action.MAIN"></action>
+</intent-filter>
+</activity>
+<activity android:name="org.android.group.escolarmobile.app.CadastroAlunos"><intent-filter><action android:name="android.intent.action.MAIN"></action>
+</intent-filter>
+</activity>
 </application>
-    <uses-sdk android:minSdkVersion="8" />
+    <uses-sdk android:minSdkVersion="7"/>
 </manifest> 
