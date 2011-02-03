@@ -10,12 +10,12 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ContextMenu.ContextMenuInfo;
-import android.widget.Button;
 import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.Button;
 
 /**
 * Classe responsavel por listar as materias cadastradas e adicionar mais se necessário

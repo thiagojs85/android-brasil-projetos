@@ -1,7 +1,6 @@
 package org.android.group.escolarmobile.app;
 
 import org.android.group.escolarmobile.conn.DbAdapter;
-import org.android.group.escolarmobile.turma.TurmaVO;
 import org.group.dev.R;
 
 import android.app.Activity;

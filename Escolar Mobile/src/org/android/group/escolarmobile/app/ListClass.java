@@ -11,8 +11,8 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.Button;
 
 public class ListClass extends BasicListWindow {
 	
@@ -28,7 +28,7 @@ public class ListClass extends BasicListWindow {
     @Override
 	protected boolean isMultiItensSelectable() {
 		// Caso queira que os itens da lista sejam selecionaveis, fazer retornar true
-		return false;
+		return true;
 	}
     
 	@Override

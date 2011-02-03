@@ -11,8 +11,8 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.Button;
 
 /**
 * Classe responsavel por listar os professores cadastrados e adicionar mais se necessário

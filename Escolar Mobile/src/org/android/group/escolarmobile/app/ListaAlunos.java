@@ -1,24 +1,18 @@
 package org.android.group.escolarmobile.app;
 
 import org.android.group.escolarmobile.conn.DbAdapter;
-import org.android.group.escolarmobile.turma.TurmaVO;
 import org.group.dev.R;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.Button;
 
 public class ListaAlunos extends BasicListWindow {
 
@@ -29,6 +23,7 @@ public class ListaAlunos extends BasicListWindow {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Button ibt = (Button)findViewById(R.id.add);
+        ibt.setVisibility(4);
         ibt.setText(R.string.adicionar_aluno);//sobrescreve a string original do xml
     }
     
