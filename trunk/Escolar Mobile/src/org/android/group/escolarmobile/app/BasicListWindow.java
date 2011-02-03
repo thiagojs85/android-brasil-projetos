@@ -38,15 +38,22 @@ public abstract class BasicListWindow extends ListActivity implements OnClickLis
         setContentView(R.layout.base_list_window);
         btAdd = (Button) findViewById(R.id.add);
 		registerForContextMenu(getListView());
+		Cursor c = getItensCursor();
+		startManagingCursor(c);
 		if(isMultiItensSelectable()){
 			// TODO [Otavio] Esta parte ainda não foi testada, pois nenhuma activity usou esta funcionalidade!
-			setListAdapter(new ArrayAdapter<String>(this,android.R.layout.simple_list_item_multiple_choice,itens));
-	        getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+
+			setListAdapter(new SimpleCursorAdapter(this, 
+					android.R.layout.simple_list_item_multiple_choice, 
+					c, 
+					new String[]{DbAdapter.COLUMN_NOME}, //tem que adicionar a coluna DbAdapter.COLUMN_REGISTRO aqui
+					new int[]{android.R.id.text1}));
+			
+			getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 		}else{
 			// A criação deste ListAdapter é praticamente a mesma utilizada no tutorial do Notepad.
 			// Mais informações no Step 12 em http://developer.android.com/resources/tutorials/notepad/notepad-ex1.html
-			Cursor c = getItensCursor();
-			startManagingCursor(c);
+
 			setListAdapter(new SimpleCursorAdapter(this, 
 					R.layout.base_list_item, 
 					c, 

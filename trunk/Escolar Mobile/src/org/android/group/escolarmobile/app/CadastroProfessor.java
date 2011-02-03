@@ -34,7 +34,7 @@ public class CadastroProfessor extends Activity implements OnClickListener{
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		// Layout padrão para cadastros
+		// Layout padrï¿½o para cadastros
 		setContentView(R.layout.base_cadastro2);
 		LinearLayout rl = (LinearLayout) findViewById(R.id.container);
 		
@@ -44,12 +44,12 @@ public class CadastroProfessor extends Activity implements OnClickListener{
 		// Recupera os componentes da Tela
 		recuperaComponentesTela();
 
-		// Recupera a lista de parametros enviados pela tela de seleção de professores
+		// Recupera a lista de parametros enviados pela tela de seleï¿½ï¿½o de professores
 		Bundle bundle = getIntent().getExtras();
 
 		if (bundle != null) {
 			
-			// Recupera informações para edição
+			// Recupera informaï¿½ï¿½es para ediï¿½ï¿½o
 			recuperaInformacoesParaEdicao(bundle);
 		}
 		
@@ -59,14 +59,14 @@ public class CadastroProfessor extends Activity implements OnClickListener{
 	protected Dialog onCreateDialog(int id, Bundle args) {
 		
 		switch (id) {
-			// Dialog exibido ao clicar no botão cancelar
+			// Dialog exibido ao clicar no botï¿½o cancelar
 			case DIALOG_CANCELAR:
 				
 				// Cria o Dialog
 				AlertDialog.Builder builder = new AlertDialog.Builder(CadastroProfessor.this);
 				builder.setMessage(R.string.dialog_cancel).setCancelable(false);
 				
-				// Opção Positiva
+				// Opï¿½ï¿½o Positiva
 				builder.setPositiveButton(R.string.yes,
 					new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int id) {
@@ -75,7 +75,7 @@ public class CadastroProfessor extends Activity implements OnClickListener{
 					}
 				);
 				
-				// Opção Negativa
+				// Opï¿½ï¿½o Negativa
 				builder.setNegativeButton(R.string.no,
 					new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int id) {
@@ -100,22 +100,22 @@ public class CadastroProfessor extends Activity implements OnClickListener{
 	@Override
 	public void onClick(View v) {
 		
-		// Botão "OK" acionado
+		// Botï¿½o "OK" acionado
 		if(v.getId() == R.id.bt_ok){
 			
-			// Executa as ações referente ao Botão "OK"
+			// Executa as aï¿½ï¿½es referente ao Botï¿½o "OK"
 			executaAcoesBotaoOK();
 		}
-		// Botão "CANCELAR" acionado
+		// Botï¿½o "CANCELAR" acionado
 		else if(v.getId() == R.id.bt_cancelar){
 			
-			// Executa as ações referente ao Botão "CANCELAR"
+			// Executa as aï¿½ï¿½es referente ao Botï¿½o "CANCELAR"
 			executaAcoesBotaoCancelar();
 		}
 	}
 	
 	/**
-	 * Recupera informações para edição
+	 * Recupera informaï¿½ï¿½es para ediï¿½ï¿½o
 	 *
 	 * @author Diego
 	 * @since Jan 27, 2011
@@ -124,7 +124,7 @@ public class CadastroProfessor extends Activity implements OnClickListener{
 	 */
 	private void recuperaInformacoesParaEdicao(Bundle bundle) {
 		
-		// Abre a conexão com o banco de dados
+		// Abre a conexï¿½o com o banco de dados
 		mDbAdapter = new DbAdapter(CadastroProfessor.this).open();
 		
 		// Recupera o Parametro ID
@@ -151,7 +151,7 @@ public class CadastroProfessor extends Activity implements OnClickListener{
 		botaoOk = (Button) findViewById(R.id.bt_ok);
 		botaoCancelar = (Button) findViewById(R.id.bt_cancelar);
 		
-		// Registra um evento de click para os botões
+		// Registra um evento de click para os botï¿½es
 		botaoOk.setOnClickListener(this);
 		botaoCancelar.setOnClickListener(this);
 
@@ -161,25 +161,25 @@ public class CadastroProfessor extends Activity implements OnClickListener{
 	}
 
 	/**
-	 * Executa as ações referente ao Botão "CANCELAR"
+	 * Executa as aï¿½ï¿½es referente ao Botï¿½o "CANCELAR"
 	 *
 	 * @author Diego
 	 * @since Jan 27, 2011
 	 */
 	private void executaAcoesBotaoCancelar() {
-		// Exibe um Dialog de confirmação
+		// Exibe um Dialog de confirmaï¿½ï¿½o
 		showDialog(DIALOG_CANCELAR);
 	}
 
 	/**
-	 * Executa as ações referentes ao Botão "OK"
+	 * Executa as aï¿½ï¿½es referentes ao Botï¿½o "OK"
 	 *
 	 * @author Diego
 	 * @since Jan 27, 2011
 	 */
 	private void executaAcoesBotaoOK() {
 		
-		// Valida os campos de preenchimento obrigatório
+		// Valida os campos de preenchimento obrigatï¿½rio
 		validaCamposObrigatorios();
 
 		// Preenche o VO com os campos da tela
@@ -188,13 +188,13 @@ public class CadastroProfessor extends Activity implements OnClickListener{
 		professorVO.setLogin(login.getText().toString().trim());
 		professorVO.setSenha(senha.getText().toString().trim());
 
-		// Abre a conexão com o banco de dados
+		// Abre a conexï¿½o com o banco de dados
 		mDbAdapter = new DbAdapter(CadastroProfessor.this).open();
 
 		// Indica se o registro foi salvo com sucesso
 		boolean registroOk = false;
 
-		// Verifica se o Registro está sendo criado ou atualizado
+		// Verifica se o Registro estï¿½ sendo criado ou atualizado
 		if (idProfessor == -1) {
 			if (mDbAdapter.inserirProfessor(professorVO) > -1) {
 				registroOk = true;
@@ -215,7 +215,7 @@ public class CadastroProfessor extends Activity implements OnClickListener{
 	}
 
 	/**
-	 * Valida os campos de preenchimento obrigatório
+	 * Valida os campos de preenchimento obrigatï¿½rio
 	 *
 	 * @author Diego
 	 * @since Jan 27, 2011
