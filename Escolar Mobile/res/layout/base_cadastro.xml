@@ -19,11 +19,18 @@
 		android:orientation="vertical"
 		android:layout_below="@+id/container"
   		android:gravity="bottom">
+  		<Button
+			android:id="@+id/bt_cadastrar"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:text="@string/cadastrar_turmas">
+		</Button>
 		<Button
 			android:id="@+id/bt_ok"
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
-			android:text="@string/ok">
+			android:text="@string/ok"
+			android:layout_below="@+id/bt_cadastrar">
 		</Button>
 		<Button
 			android:id="@+id/bt_cancelar"
@@ -32,13 +39,5 @@
 			android:text="@string/cancel"
 			android:layout_below="@+id/bt_ok">
 		</Button>
-		<Button
-			android:id="@+id/bt_cadastrar"
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content"
-			android:text="@string/cadastrar_turmas"
-			android:layout_below="@+id/bt_cancelar">
-		</Button>
-
 	</RelativeLayout>
 </RelativeLayout>
