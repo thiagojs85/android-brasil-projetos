@@ -18,7 +18,7 @@ import android.widget.LinearLayout;
 public class CadastroAlunos extends Activity{
 	
 	private static final int DIALOG_CANCELAR = 0;
-	private Button ok, cancelar;
+	private Button ok, cancelar, cadastrar;
 	private EditText nomeAluno, idade, registroMatricula;
 	private long editId = -1;
 	private DbAdapter mDbAdapter = null;
@@ -28,7 +28,7 @@ public class CadastroAlunos extends Activity{
 		super.onCreate(savedInstanceState);
 		
 		// Layout padrÃ£o para cadastros
-		setContentView(R.layout.base_cadastro2);
+		setContentView(R.layout.base_cadastro);
 		LinearLayout rl = (LinearLayout) findViewById(R.id.container);
 		LayoutInflater layoutInflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		// Essa parte pode ser controlada por um metodo que retorne qual o
@@ -38,10 +38,12 @@ public class CadastroAlunos extends Activity{
 
 		ok = (Button) findViewById(R.id.bt_ok);
 		cancelar = (Button) findViewById(R.id.bt_cancelar);
+		cadastrar = (Button) findViewById(R.id.bt_cadastrar);
 		nomeAluno = (EditText) findViewById(R.id.et_nome_aluno);
 		idade = (EditText) findViewById(R.id.et_idade_aluno);
 		registroMatricula = (EditText) findViewById(R.id.et_registro_matricula);
 		
+		cadastrar.setVisibility(4); //deixa o botão cadastrar invisível
 		
 
 		/*mDbAdapter = new DbAdapter(this).open();

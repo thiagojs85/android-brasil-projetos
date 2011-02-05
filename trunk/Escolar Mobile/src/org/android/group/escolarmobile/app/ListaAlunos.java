@@ -23,7 +23,6 @@ public class ListaAlunos extends BasicListWindow {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Button ibt = (Button)findViewById(R.id.add);
-        ibt.setVisibility(4);
         ibt.setText(R.string.adicionar_aluno);//sobrescreve a string original do xml
     }
     

@@ -1,5 +1,6 @@
 package org.android.group.escolarmobile.app;
 
+import org.android.group.escolarmobile.app.subject.MateriaVO;
 import org.android.group.escolarmobile.conn.DbAdapter;
 import org.group.dev.R;
 
@@ -44,58 +45,60 @@ public class CadastroMateria extends Activity{
 		horasAula = (EditText) findViewById(R.id.et_horas_aula);
 		descricao = (EditText) findViewById(R.id.et_descricao);
 		
+		cadastrarAlunos.setVisibility(4);//ocultando o bot�o cadastrar
+		
 		cadastrarAlunos.setText(R.string.cadastrar_alunos);//sobrescrevendo a string original do botão cadastrar
 
-		/*mDbAdapter = new DbAdapter(this).open();
+		mDbAdapter = new DbAdapter(this).open();
 		Bundle bundle = getIntent().getExtras();
 
 		if (bundle != null) {
 			editId = bundle.getLong(DbAdapter.COLUMN_ID);
-			TurmaVO turmaVO = mDbAdapter.consultarTurma(editId);
+			MateriaVO materiaVO = mDbAdapter.consultarMateria(editId);
 
-			if (turmaVO != null) {
-				turma.setText(turmaVO.getNome());
-				descricao.setText(turmaVO.getDescricao());
+			if (materiaVO != null) {
+				materia.setText(materiaVO.getNome());
+				descricao.setText(materiaVO.getDescricao());
 			}
-		}*/
+		}
 
 		ok.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				/*TurmaVO turmaVO = new TurmaVO();
+				MateriaVO materiaVo = new MateriaVO();
 
 				// Valida as informações antes de salvar no banco.
-				if (turma.getText().toString().trim().length() < 1) {
-					Toast.makeText(CadastroTurmas.this, R.string.error_name_invalid, Toast.LENGTH_LONG).show();
+				if (materia.getText().toString().trim().length() < 1) {
+					Toast.makeText(CadastroMateria.this, R.string.error_name_invalid, Toast.LENGTH_LONG).show();
 					return;
 				} else if (descricao.getText().toString().trim().length() < 1) {
-					Toast.makeText(CadastroTurmas.this, R.string.error_description_invalid, Toast.LENGTH_LONG).show();
+					Toast.makeText(CadastroMateria.this, R.string.error_description_invalid, Toast.LENGTH_LONG).show();
 					return;
 				}
 
-				turmaVO.setNome(turma.getText().toString().trim());
-				turmaVO.setDescricao(descricao.getText().toString().trim());
+				materiaVo.setNome(materia.getText().toString().trim());
+				materiaVo.setDescricao(descricao.getText().toString().trim());
 
-				mDbAdapter = new DbAdapter(CadastroTurmas.this).open();
+				mDbAdapter = new DbAdapter(CadastroMateria.this).open();
 
 				boolean registroOk = false;
 
 				// Se não houver id, é uma nova entrada; caso contrário, é
 				// atualização de um registro existente.
 				if (editId == -1) {
-					if (mDbAdapter.inserirTurma(turmaVO) > -1) {
+					if (mDbAdapter.inserirMateria(materiaVo) > -1) {
 						registroOk = true;
 					}
 				} else {
-					turmaVO.setId(editId);
-					registroOk = mDbAdapter.atualizarTurma(turmaVO);
+					materiaVo.setId(editId);
+					registroOk = mDbAdapter.atualizarMateria(materiaVo);
 				}
 
 				if (registroOk) {
-					Toast.makeText(CadastroTurmas.this, R.string.data_inserted_success, Toast.LENGTH_LONG).show();
-					CadastroTurmas.this.finish();
+					Toast.makeText(CadastroMateria.this, R.string.data_inserted_success, Toast.LENGTH_LONG).show();
+					CadastroMateria.this.finish();
 				} else {
-					Toast.makeText(CadastroTurmas.this, R.string.data_inserted_error, Toast.LENGTH_LONG).show();
-				}*/
+					Toast.makeText(CadastroMateria.this, R.string.data_inserted_error, Toast.LENGTH_LONG).show();
+				}
 			}
 		});
 
