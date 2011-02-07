@@ -241,13 +241,47 @@ public class DbAdapter {
 	}
 	
 	/**
-	 * Remove o aluno com o id especificado.
+	 * Remove o aluno com o id especificado. Remove as entradas dependentes também (entradas na tabela de Matricula).
 	 * 
 	 * @param id
 	 * @return
 	 */
 	public boolean removerAluno(long id) {
-		return remover(TABLE_ALUNO, id);
+		boolean resultado = false;
+		mDb.beginTransaction();
+		
+		try {
+			removerMatricula(COLUMN_ID_ALUNO, id);
+			remover(TABLE_ALUNO, id);
+			mDb.setTransactionSuccessful();
+			resultado = true;
+		} finally {
+			mDb.endTransaction();
+		}
+		
+		return resultado;
+	}
+	
+	/**
+	 * Remove os alunos que possuam o valor <b>id</b> na coluna <b>column</b>.
+	 * 
+	 * @param column
+	 * @param id
+	 * @return
+	 */
+	public boolean removerAluno(String column, long id) {
+		Cursor cursor = consultar(TABLE_ALUNO, new String[]{COLUMN_ID}, column, String.valueOf(id));
+		
+		if(cursor != null) {
+			cursor.moveToFirst();
+			
+			while(!cursor.isAfterLast()) {
+				removerAluno(cursor.getLong(0));
+				cursor.moveToNext();
+			}
+		}
+		
+		return true;
 	}
 	
 	/**
@@ -363,7 +397,61 @@ public class DbAdapter {
 	 * @return
 	 */
 	public boolean removerMateria(long id) {
-		return remover(TABLE_MATERIA, id);
+		boolean resultado = false;
+		
+		mDb.beginTransaction();
+		
+		try {
+			removerMatricula(COLUMN_ID_MATERIA, id);
+			remover(TABLE_MATERIA, id);
+			mDb.setTransactionSuccessful();
+			resultado = true;
+		} finally {
+			mDb.endTransaction();
+		}
+		
+		return resultado;		
+	}
+	
+	/**
+	 * Remove as materias da tabela que possuam o valor <b>value</b> na coluna <b>column</b>.
+	 * 
+	 * @param column Coluna considerada para deleção.
+	 * @param value Valor considerado para deleção.
+	 * @return
+	 */
+	public boolean removerMateria(String column, long value) {
+		boolean resultado = false;
+		boolean transacaoExterna = true;
+		
+		if(!mDb.inTransaction()) {
+			mDb.beginTransaction();
+			transacaoExterna = false;
+		}			
+			
+		try {
+			Cursor cursor = consultar(TABLE_MATERIA, new String[]{COLUMN_ID}, column, String.valueOf(value));
+			
+			if(cursor != null) {
+				cursor.moveToFirst();
+				
+				while(!cursor.isAfterLast()) {
+					removerMatricula(COLUMN_ID_MATERIA, cursor.getLong(0));
+					cursor.moveToNext();
+				}
+			}
+			
+			removerMateria(cursor.getLong(0));
+			
+			mDb.setTransactionSuccessful();
+			resultado = true;
+		} finally {
+			if(!transacaoExterna) {
+				mDb.endTransaction();
+			}
+		}
+		
+		return resultado;
 	}
 	
 	/**
@@ -442,6 +530,18 @@ public class DbAdapter {
 	 */
 	public boolean removerMatricula(long id) {
 		return remover(TABLE_MATRICULA, id);
+	}
+	
+	/**
+	 * Deleta as matriculas que possuam o valor <b>id</b> na coluna <b>column</b>.
+	 * 
+	 * @param column Coluna a ser considerada para definir as entradas que serão deletadas.
+	 * @param id Valor a ser considerado nas entradas que serão deletadas.
+	 * @return <b>TRUE</b>.
+	 */
+	public boolean removerMatricula(String column, long id) {
+		mDb.execSQL("DELETE FROM Matricula WHERE " + column + " = ?", new String[]{String.valueOf(id)});
+		return true;
 	}
 	
 	/**
@@ -551,7 +651,17 @@ public class DbAdapter {
 	 * @return
 	 */
 	public boolean removerProfessor(long id) {
-		return remover(TABLE_PROFESSOR, id);
+		boolean resultado = false;
+		mDb.beginTransaction();
+		try {
+			removerMateria(COLUMN_ID_PROFESSOR, id);
+			remover(TABLE_PROFESSOR, id);
+			mDb.setTransactionSuccessful();
+			resultado = true;
+		} finally {
+			mDb.endTransaction();
+		}
+		return resultado;
 	}
 	
 	/**
@@ -655,7 +765,19 @@ public class DbAdapter {
 	 * @return
 	 */
 	public boolean removerTurma(long id) {
-		return remover(TABLE_TURMA, id);
+		boolean resultado = false;
+		mDb.beginTransaction();
+		
+		try {
+			removerMateria(COLUMN_ID_TURMA, id);
+			removerAluno(COLUMN_ID_TURMA, id);
+			remover(TABLE_TURMA, id);
+			mDb.setTransactionSuccessful();
+			resultado = true;
+		} finally {
+			mDb.endTransaction();
+		}
+		return resultado;
 	}
 	
 	/**
