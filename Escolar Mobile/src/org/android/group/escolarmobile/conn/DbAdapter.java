@@ -1,11 +1,14 @@
 package org.android.group.escolarmobile.conn;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.android.group.escolarmobile.app.student.AlunoVO;
 import org.android.group.escolarmobile.app.student.MatriculaVO;
+import org.android.group.escolarmobile.app.student.PresencaVO;
 import org.android.group.escolarmobile.app.subject.MateriaVO;
+import org.android.group.escolarmobile.app.subject.NotaVO;
 import org.android.group.escolarmobile.app.teacher.ProfessorVO;
 import org.android.group.escolarmobile.turma.TurmaVO;
 
@@ -28,11 +31,14 @@ public class DbAdapter {
 	public static final int DB_VERSION = 1;
 	
 	public static final String TABLE_ALUNO = "Aluno";
+	public static final String TABLE_PRESENCA = "presenca";
 	public static final String TABLE_MATERIA = "Materia";
 	public static final String TABLE_MATRICULA = "Matricula";
+	public static final String TABLE_NOTA = "Nota";
 	public static final String TABLE_PROFESSOR = "Professor";
 	public static final String TABLE_TURMA = "Turma";
 	
+	public static final String COLUMN_DATA = "data";
 	public static final String COLUMN_DATA_NASCIMENTO = "dt_nascimento";
 	public static final String COLUMN_DESCRICAO = "descricao";
 	public static final String COLUMN_HORAS = "horas";
@@ -40,23 +46,32 @@ public class DbAdapter {
 	public static final String COLUMN_ID_ALUNO = "id_aluno";
 	//public static final String COLUMN_ID_ALUNO_TURMA = "id_aluno_turma";
 	public static final String COLUMN_ID_MATERIA = "id_materia";
+	public static final String COLUMN_ID_MATRICULA = "id_matricula";
 	public static final String COLUMN_ID_PROFESSOR = "id_professor";
 	public static final String COLUMN_ID_TURMA = "id_turma";
 	public static final String COLUMN_LOGIN = "login";
 	public static final String COLUMN_NOME = "nome";
+	public static final String COLUMN_NOTA = "nota";
+	public static final String COLUMN_PERIODO = "periodo";
+	public static final String COLUMN_PRESENCA = "presenca";
 	public static final String COLUMN_REGISTRO = "registro";
 	public static final String COLUMN_SENHA = "senha";
+	
 	
 	private static final String TAG = "DbAdapter";
 	
 	private static final String CREATE_ALUNO = 
 		"CREATE TABLE Aluno (_id INTEGER PRIMARY KEY AUTOINCREMENT, registro TEXT NOT NULL, nome TEXT NOT NULL, id_turma INTEGER NOT NULL, dt_nascimento DATE);";
+	private static final String CREATE_PRESENCA = 
+		"CREATE TABLE Aluno (_id INTEGER PRIMARY KEY AUTOINCREMENT, data DATE NOT NULL, id_matricula INTEGER NOT NULL, presenca TEXT NOT NULL);";
 	private static final String CREATE_PROFESSOR = 
 		"CREATE TABLE Professor (_id INTEGER PRIMARY KEY AUTOINCREMENT, login TEXT NOT NULL, nome TEXT NOT NULL, senha TEXT NOT NULL);";		
 	private static final String CREATE_MATERIA = 
 		"CREATE TABLE Materia (_id INTEGER PRIMARY KEY AUTOINCREMENT, id_professor INTEGER NOT NULL, id_turma INTEGER NOT NULL, nome TEXT NOT NULL, horas INTEGER, descricao TEXT);";
 	private static final String CREATE_MATRICULA = 
 		"CREATE TABLE Matricula (_id INTEGER PRIMARY KEY AUTOINCREMENT, id_aluno INTEGER NOT NULL, id_turma INTEGER NOT NULL, id_materia INTEGER NOT NULL);";
+	private static final String CREATE_NOTA = 
+		"CREATE TABLE Aluno (_id INTEGER PRIMARY KEY AUTOINCREMENT, id_matricula INTEGER NOT NULL, periodo INTEGER NOT NULL, nota FLOAT NOT NULL);";
 	private static final String CREATE_TURMA = 
 		"CREATE TABLE Turma (_id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT NOT NULL, descricao TEXT);";
 	
@@ -81,6 +96,8 @@ public class DbAdapter {
 			db.execSQL(CREATE_PROFESSOR);
 			db.execSQL(CREATE_MATERIA);
 			db.execSQL(CREATE_MATRICULA);
+			db.execSQL(CREATE_PRESENCA);
+			db.execSQL(CREATE_NOTA);
 			
 			insertDummyData(db);
 		}
@@ -103,6 +120,8 @@ public class DbAdapter {
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 			Log.w(TAG, "Upgrading database from version " + oldVersion + " to " +
 					newVersion + ", which will destroy all old data");
+			db.execSQL("DROP TABLE IF EXISTS " + TABLE_PRESENCA);
+			db.execSQL("DROP TABLE IF EXISTS " + TABLE_NOTA);
 			db.execSQL("DROP TABLE IF EXISTS " + TABLE_MATRICULA);
 			db.execSQL("DROP TABLE IF EXISTS " + TABLE_MATERIA);
 			db.execSQL("DROP TABLE IF EXISTS " + TABLE_ALUNO);
@@ -545,6 +564,255 @@ public class DbAdapter {
 	}
 	
 	/**
+	 * Atualiza o registro de nota com os dados fornecidos.
+	 * 
+	 * @param notaVO
+	 * @return
+	 */
+	public boolean atualizarNota(NotaVO notaVO) {
+		ContentValues updatedValues = new ContentValues();
+		updatedValues.put(COLUMN_ID, notaVO.getId());
+		updatedValues.put(COLUMN_ID_MATRICULA, notaVO.getIdMatricula());
+		updatedValues.put(COLUMN_PERIODO, notaVO.getPeriodo());
+		updatedValues.put(COLUMN_NOTA, notaVO.getNota());
+			
+		return mDb.update(TABLE_NOTA, updatedValues, COLUMN_ID + " = " + notaVO.getId(), null) > 0;
+	}
+	
+	/**
+	 * Consulta as notas de uma matricula em um determinado periodo.
+	 * 
+	 * @param matricula
+	 * @param periodo
+	 * @return
+	 */
+	public List<NotaVO> consultarNota(long matricula, int periodo) {
+		List<NotaVO> notas = new ArrayList<NotaVO>();
+		Cursor c = consultarNota(new String[]{COLUMN_ID_MATRICULA, COLUMN_PERIODO},
+				new String[]{String.valueOf(matricula), String.valueOf(periodo)});
+		
+		
+		if(c != null) {
+			c.moveToFirst();
+			
+			while(!c.isAfterLast()) {
+				NotaVO nota = new NotaVO();
+				nota.setId(c.getInt(0));
+				nota.setIdMatricula(c.getInt(1));
+				nota.setPeriodo(c.getInt(2));
+				nota.setNota(c.getFloat(3));
+				notas.add(nota);
+				c.moveToNext();
+			}
+		}
+		return notas;
+	}
+	
+	
+	/**
+	 * Método privado para realizar consultas de notas.
+	 * 
+	 * @param key Nome da coluna usada como parâmetro na consulta.
+	 * @param value Valor a ser procurado na coluna especificada.
+	 * @return
+	 */
+	@Deprecated
+	private Cursor consultarNota(String key, String value) {
+		return consultar(TABLE_NOTA, 
+				new String[] {COLUMN_ID, COLUMN_ID_MATRICULA, COLUMN_PERIODO, COLUMN_NOTA},
+				key, value);
+	}
+	
+	/**
+	 * Método privado para realizar consultas de notas.
+	 * 
+	 * @param key Nome da coluna usada como parâmetro na consulta.
+	 * @param value Valor a ser procurado na coluna especificada.
+	 * @return
+	 */
+	private Cursor consultarNota(String[] key, String[] value) {
+		return consultar(TABLE_NOTA, 
+				new String[] {COLUMN_ID, COLUMN_ID_MATRICULA, COLUMN_PERIODO, COLUMN_NOTA},
+				key, value);
+	}
+
+	/**
+	 * Cria um novo registro de nota na tabela. Se o registro for incluído com
+	 * sucesso, o RowID será retornado. Em caso de erro, retorna -1.
+	 * 
+	 * @param notaVO DAO com os dados da nota.
+	 * @return rowID ou -1 se falhou.
+	 */
+	public long inserirNota(NotaVO notaVO) {
+		// Apesar de ID ser a verdadeira chave do registro, os nomes dos alunos devem ser únicos.
+		if(consultarNota(notaVO.getIdMatricula(), notaVO.getPeriodo()).isEmpty()) {
+			ContentValues initialValues = new ContentValues();
+			//initialValues.put(COLUMN_ID, notaVO.getId());
+			initialValues.put(COLUMN_ID_MATRICULA, notaVO.getIdMatricula());
+			initialValues.put(COLUMN_PERIODO, notaVO.getPeriodo());
+			initialValues.put(COLUMN_NOTA, notaVO.getNota());
+			
+			return mDb.insert(TABLE_NOTA, null, initialValues);
+		} else {
+			return -1;
+		}
+	}
+	
+	/**
+	 * Remove a nota com o id especificado.
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public boolean removerNota(long id) {
+		return remover(TABLE_NOTA, id);
+	}
+	
+	/**
+	 * Remove as notas que possuam o valor <b>value</b> na coluna <b>column</b>.
+	 * 
+	 * @param column
+	 * @param id
+	 * @return
+	 */
+	public boolean removerNota(String column, String value) {
+		Cursor cursor = consultar(TABLE_NOTA, new String[]{COLUMN_ID}, column, String.valueOf(value));
+		
+		if(cursor != null) {
+			cursor.moveToFirst();
+			
+			while(!cursor.isAfterLast()) {
+				removerNota(cursor.getLong(0));
+				cursor.moveToNext();
+			}
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Consulta todas as presenças de uma matricula.
+	 * 
+	 * @param matricula
+	 * @return
+	 */
+	public List<PresencaVO> consultarPresenca(long matricula) {
+		List<PresencaVO> notas = new ArrayList<PresencaVO>();
+		Cursor c = consultarPresenca(new String[]{COLUMN_ID_MATRICULA},
+				new String[]{String.valueOf(matricula)});
+				
+		if(c != null) {
+			c.moveToFirst();
+			
+			while(!c.isAfterLast()) {
+				PresencaVO presenca = new PresencaVO();
+				presenca.setId(c.getInt(0));
+				presenca.setData(Date.valueOf(c.getString(1)));
+				presenca.setIdMatricula(c.getInt(2));
+				presenca.setPresente(c.getInt(3) > 0 ? true : false);
+				notas.add(presenca);
+				c.moveToNext();
+			}
+		}
+		return notas;
+	}
+	
+	/**
+	 * Consulta as presenças de uma matricula para uma determinada data.
+	 * 
+	 * @param matricula
+	 * @param data
+	 * @return
+	 */
+	public List<PresencaVO> consultarPresenca(long matricula, Date data) {
+		List<PresencaVO> notas = new ArrayList<PresencaVO>();
+		Cursor c = consultarPresenca(new String[]{COLUMN_ID_MATRICULA},
+				new String[]{String.valueOf(matricula), data.toString()});
+				
+		if(c != null) {
+			c.moveToFirst();
+			
+			while(!c.isAfterLast()) {
+				PresencaVO presenca = new PresencaVO();
+				presenca.setId(c.getInt(0));
+				presenca.setData(Date.valueOf(c.getString(1)));
+				presenca.setIdMatricula(c.getInt(2));
+				presenca.setPresente(c.getInt(3) > 0 ? true : false);
+				notas.add(presenca);
+				c.moveToNext();
+			}
+		}
+		return notas;
+	}
+	
+	/**
+	 * Método privado para realizar consultas de presenças.
+	 * 
+	 * @param key Nome da coluna usada como parâmetro na consulta.
+	 * @param value Valor a ser procurado na coluna especificada.
+	 * @return
+	 */
+	private Cursor consultarPresenca(String[] key, String[] value) {
+		return consultar(TABLE_PRESENCA, 
+				new String[] {COLUMN_ID, COLUMN_DATA, COLUMN_ID_MATRICULA, COLUMN_PRESENCA},
+				key, value);
+	}
+	
+	/**
+	 * Cria um novo registro de presença na tabela. Se o registro for incluído com
+	 * sucesso, o RowID será retornado. Em caso de erro, retorna -1.
+	 * 
+	 * @param presencaoVO DAO com os dados da presença.
+	 * @return rowID ou -1 se falhou.
+	 */
+	public long inserirPresenca(PresencaVO presencaoVO) {
+		// Apesar de ID ser a verdadeira chave do registro, as datas da presença nas matérias devem ser únicas.
+		if(consultarPresenca(presencaoVO.getIdMatricula(),presencaoVO.getData()).isEmpty()) {
+			ContentValues initialValues = new ContentValues();
+			//initialValues.put(COLUMN_ID, presencaVO.getId());
+			initialValues.put(COLUMN_ID_MATRICULA, presencaoVO.getIdMatricula());
+			initialValues.put(COLUMN_DATA, presencaoVO.getData().toString());
+			initialValues.put(COLUMN_PRESENCA, presencaoVO.isPresente());
+			
+			return mDb.insert(TABLE_PRESENCA, null, initialValues);
+		} else {
+			return -1;
+		}
+	}
+	
+	/**
+	 * Remove a presenca com o id especificado.
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public boolean removerPresenca(long id) {
+		return remover(TABLE_PRESENCA, id);
+	}
+	
+	/**
+	 * Remove as presenças que possuam o valor <b>value</b> na coluna <b>column</b>.
+	 * 
+	 * @param column
+	 * @param id
+	 * @return
+	 */
+	public boolean removerPresenca(String column, String value) {
+		Cursor cursor = consultar(TABLE_PRESENCA, new String[]{COLUMN_ID}, column, String.valueOf(value));
+		
+		if(cursor != null) {
+			cursor.moveToFirst();
+			
+			while(!cursor.isAfterLast()) {
+				removerNota(cursor.getLong(0));
+				cursor.moveToNext();
+			}
+		}
+		
+		return true;
+	}
+	
+	/**
 	 * Atualiza o registro de professor com os dados fornecidos.
 	 * 
 	 * @param professorVO
@@ -790,8 +1058,32 @@ public class DbAdapter {
 	 * @return Cursor na primeira posição, caso algum dado tenha sido encontrado. Se nenhum dado foi encontrado, retorna <b>null</b>.
 	 */
 	private Cursor consultar(String table, String[] colunas, String key, String value) {
+		return consultar(table, colunas, new String[]{key}, new String[]{value});
+
+	}
+	
+	/**
+	 * Método genérico para efetuar consultas às tabelas, utilizando a chave fornecida.
+	 * 
+	 * @param table Tabela onde será executada a busca.
+	 * @param colunas Colunas que devem ser consideradas no retorno da busca.
+	 * @param key Coluna que deverá conter a palavra-chave definida como <b>value</b>.
+	 * @param value Palavra-chave da busca.
+	 * @return Cursor na primeira posição, caso algum dado tenha sido encontrado. Se nenhum dado foi encontrado, retorna <b>null</b>.
+	 */
+	private Cursor consultar(String table, String[] colunas, String[] key, String[] value) {
+		String condicao = new String();
+		int parada = key.length < value.length ? key.length : value.length;
+		
+		for(int i = 0; i < parada; i++) { 
+			condicao = key[0] + " = '" + value + "' AND ";
+		}
+		
+		// O loop-for acima deixará um " AND " sobrando, então deve-se remove-lo.
+		condicao = condicao.substring(0, condicao.length() - 5);
+		
 		Cursor mCursor = 
-			mDb.query(false, table, colunas, key + " = '" + value + "'", null, null, null, null, null);
+			mDb.query(false, table, colunas, condicao, null, null, null, null, null);
 		
 		if(mCursor != null) {
 			mCursor.moveToFirst();
