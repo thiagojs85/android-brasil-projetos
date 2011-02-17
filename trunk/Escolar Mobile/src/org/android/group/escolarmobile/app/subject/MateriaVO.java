@@ -3,7 +3,7 @@ package org.android.group.escolarmobile.app.subject;
 public class MateriaVO {
 	private long id;
 	private long idProfessor;
-	private long idTurma;
+	private long[] idTurmas;
 	private String nome;
 	private int horas;
 	private String descricao;
@@ -20,11 +20,11 @@ public class MateriaVO {
 	public void setIdProfessor(long idProfessor) {
 		this.idProfessor = idProfessor;
 	}
-	public long getIdTurma() {
-		return idTurma;
+	public long[] getIdTurmas() {
+		return idTurmas;
 	}
-	public void setIdTurma(long idTurma) {
-		this.idTurma = idTurma;
+	public void setIdTurma(long[] idTurmas) {
+		this.idTurmas = idTurmas;
 	}
 	public String getNome() {
 		return nome;

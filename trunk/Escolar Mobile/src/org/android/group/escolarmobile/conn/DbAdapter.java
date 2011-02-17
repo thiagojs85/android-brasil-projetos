@@ -31,8 +31,9 @@ public class DbAdapter {
 	public static final int DB_VERSION = 1;
 	
 	public static final String TABLE_ALUNO = "Aluno";
-	public static final String TABLE_PRESENCA = "presenca";
+	public static final String TABLE_PRESENCA = "Presenca";
 	public static final String TABLE_MATERIA = "Materia";
+	public static final String TABLE_MATERIA_TURMA = "MateriaTurma";
 	public static final String TABLE_MATRICULA = "Matricula";
 	public static final String TABLE_NOTA = "Nota";
 	public static final String TABLE_PROFESSOR = "Professor";
@@ -63,17 +64,20 @@ public class DbAdapter {
 	private static final String CREATE_ALUNO = 
 		"CREATE TABLE Aluno (_id INTEGER PRIMARY KEY AUTOINCREMENT, registro TEXT NOT NULL, nome TEXT NOT NULL, id_turma INTEGER NOT NULL, dt_nascimento DATE);";
 	private static final String CREATE_PRESENCA = 
-		"CREATE TABLE Aluno (_id INTEGER PRIMARY KEY AUTOINCREMENT, data DATE NOT NULL, id_matricula INTEGER NOT NULL, presenca TEXT NOT NULL);";
+		"CREATE TABLE Presenca (_id INTEGER PRIMARY KEY AUTOINCREMENT, data DATE NOT NULL, id_matricula INTEGER NOT NULL, presenca TEXT NOT NULL);";
 	private static final String CREATE_PROFESSOR = 
 		"CREATE TABLE Professor (_id INTEGER PRIMARY KEY AUTOINCREMENT, login TEXT NOT NULL, nome TEXT NOT NULL, senha TEXT NOT NULL);";		
 	private static final String CREATE_MATERIA = 
-		"CREATE TABLE Materia (_id INTEGER PRIMARY KEY AUTOINCREMENT, id_professor INTEGER NOT NULL, id_turma INTEGER NOT NULL, nome TEXT NOT NULL, horas INTEGER, descricao TEXT);";
+		//"CREATE TABLE Materia (_id INTEGER PRIMARY KEY AUTOINCREMENT, id_professor INTEGER NOT NULL, id_turma INTEGER NOT NULL, nome TEXT NOT NULL, horas INTEGER, descricao TEXT);";
+		"CREATE TABLE Materia (_id INTEGER PRIMARY KEY AUTOINCREMENT, id_professor INTEGER NOT NULL, nome TEXT NOT NULL, horas INTEGER, descricao TEXT);";
 	private static final String CREATE_MATRICULA = 
 		"CREATE TABLE Matricula (_id INTEGER PRIMARY KEY AUTOINCREMENT, id_aluno INTEGER NOT NULL, id_turma INTEGER NOT NULL, id_materia INTEGER NOT NULL);";
 	private static final String CREATE_NOTA = 
-		"CREATE TABLE Aluno (_id INTEGER PRIMARY KEY AUTOINCREMENT, id_matricula INTEGER NOT NULL, periodo INTEGER NOT NULL, nota FLOAT NOT NULL);";
+		"CREATE TABLE Nota (_id INTEGER PRIMARY KEY AUTOINCREMENT, id_matricula INTEGER NOT NULL, periodo INTEGER NOT NULL, nota FLOAT NOT NULL);";
 	private static final String CREATE_TURMA = 
 		"CREATE TABLE Turma (_id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT NOT NULL, descricao TEXT);";
+	private static final String CREATE_MATERIA_TURMA = 
+		"CREATE TABLE Turma (_id INTEGER PRIMARY KEY AUTOINCREMENT, id_materia INTEGER NOT NULL, id_turma INTEGER NOT NULL);";
 	
 	private final Context mCtx;
 	private DatabaseHelper mDbHelper;
@@ -98,6 +102,7 @@ public class DbAdapter {
 			db.execSQL(CREATE_MATRICULA);
 			db.execSQL(CREATE_PRESENCA);
 			db.execSQL(CREATE_NOTA);
+			db.execSQL(CREATE_MATERIA_TURMA);
 			
 			insertDummyData(db);
 		}
@@ -120,6 +125,7 @@ public class DbAdapter {
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 			Log.w(TAG, "Upgrading database from version " + oldVersion + " to " +
 					newVersion + ", which will destroy all old data");
+			db.execSQL("DROP TABLE IF EXISTS " + TABLE_MATERIA_TURMA);
 			db.execSQL("DROP TABLE IF EXISTS " + TABLE_PRESENCA);
 			db.execSQL("DROP TABLE IF EXISTS " + TABLE_NOTA);
 			db.execSQL("DROP TABLE IF EXISTS " + TABLE_MATRICULA);
@@ -310,15 +316,28 @@ public class DbAdapter {
 	 * @return
 	 */
 	public boolean atualizarMateria(MateriaVO materiaVO) {
+		boolean success = false;
 		ContentValues updatedValues = new ContentValues();
 		updatedValues.put(COLUMN_ID, materiaVO.getId());
 		updatedValues.put(COLUMN_REGISTRO, materiaVO.getIdProfessor());
-		updatedValues.put(COLUMN_REGISTRO, materiaVO.getIdTurma());
 		updatedValues.put(COLUMN_NOME, materiaVO.getNome());
-		updatedValues.put(COLUMN_ID_TURMA, materiaVO.getHoras());
+		//updatedValues.put(COLUMN_ID_TURMA, materiaVO.getIdTurma());
 		updatedValues.put(COLUMN_DATA_NASCIMENTO, materiaVO.getDescricao());
+		
+		mDb.beginTransaction();
+		try {
+			success = mDb.update(TABLE_MATERIA, updatedValues, COLUMN_ID + " = " + materiaVO.getId(), null) > 0;
+			success &= limparMateriaTurma(materiaVO.getId());
+			success &= inserirMateriaTurma(materiaVO);
 			
-		return mDb.update(TABLE_MATERIA, updatedValues, COLUMN_ID + " = " + materiaVO.getId(), null) > 0;
+			if(success) {
+				mDb.setTransactionSuccessful();
+			}
+	   } finally {
+		     mDb.endTransaction();
+		   }
+
+		return success;
 	}
 	
 	/**
@@ -336,10 +355,10 @@ public class DbAdapter {
 			materia = new MateriaVO();
 			materia.setId(c.getInt(0));
 			materia.setIdProfessor(c.getLong(1));
-			materia.setIdTurma(c.getLong(2));
-			materia.setNome(c.getString(3));
-			materia.setHoras(c.getInt(4));
-			materia.setDescricao(c.getString(5));
+			//materia.setIdTurma(c.getLong(2));
+			materia.setNome(c.getString(2));
+			materia.setHoras(c.getInt(3));
+			materia.setDescricao(c.getString(4));
 		}
 		
 		return materia;
@@ -362,10 +381,10 @@ public class DbAdapter {
 				materia = new MateriaVO();
 				materia.setId(c.getInt(0));
 				materia.setIdProfessor(c.getLong(1));
-				materia.setIdTurma(c.getLong(2));
-				materia.setNome(c.getString(3));
-				materia.setHoras(c.getInt(4));
-				materia.setDescricao(c.getString(5));
+				//materia.setIdTurma(c.getLong(2));
+				materia.setNome(c.getString(2));
+				materia.setHoras(c.getInt(3));
+				materia.setDescricao(c.getString(4));
 			}
 		}
 		
@@ -381,7 +400,8 @@ public class DbAdapter {
 	 */
 	private Cursor consultarMateria(String key, String value) {
 		return consultar(TABLE_MATERIA,
-				new String[] {COLUMN_ID, COLUMN_ID_PROFESSOR, COLUMN_ID_TURMA, COLUMN_NOME, COLUMN_HORAS, COLUMN_DESCRICAO},
+				//new String[] {COLUMN_ID, COLUMN_ID_PROFESSOR, COLUMN_ID_TURMA, COLUMN_NOME, COLUMN_HORAS, COLUMN_DESCRICAO},
+				new String[] {COLUMN_ID, COLUMN_ID_PROFESSOR, COLUMN_NOME, COLUMN_HORAS, COLUMN_DESCRICAO},
 				key, value);
 	}
 	
@@ -393,17 +413,33 @@ public class DbAdapter {
 	 * @return rowID ou -1 se falhou.
 	 */
 	public long inserirMateria(MateriaVO materiaVO) {
+		long newId = -1;
+		boolean success = false;
+		
 		// Apesar de ID ser a verdadeira chave do registro, os nomes das matérias devem ser únicos.
 		if(consultarAluno(materiaVO.getNome()) == null) {
 			ContentValues initialValues = new ContentValues();
 			//initialValues.put(COLUMN_ID, alunoVO.getId());
 			initialValues.put(COLUMN_ID_PROFESSOR, materiaVO.getIdProfessor());
-			initialValues.put(COLUMN_ID_TURMA, materiaVO.getIdTurma());
+			//initialValues.put(COLUMN_ID_TURMA, materiaVO.getIdTurma());
 			initialValues.put(COLUMN_NOME, materiaVO.getNome());
-			initialValues.put(COLUMN_HORAS, materiaVO.getIdTurma());
+			initialValues.put(COLUMN_HORAS, materiaVO.getHoras());
 			initialValues.put(COLUMN_DESCRICAO, materiaVO.getDescricao());
 			
-			return mDb.insert(TABLE_MATERIA, null, initialValues);
+			mDb.beginTransaction();
+			try {
+				newId = mDb.insert(TABLE_MATERIA, null, initialValues);
+				success = newId > 0;
+				success &= inserirMateriaTurma(materiaVO);
+				
+				if(success) {
+					mDb.setTransactionSuccessful();
+				}
+		   } finally {
+			     mDb.endTransaction();
+			   }
+
+			return newId;
 		} else {
 			return -1;
 		}
@@ -471,6 +507,39 @@ public class DbAdapter {
 		}
 		
 		return resultado;
+	}
+	
+	/**
+	 * Cria relações entre as matérias e as turmas às quais ela pertence.
+	 * 
+	 * @param materiaVO Informações sobre a matéria (id da matéria e id(s) da(s) turma(s)).
+	 * @return TRUE se bem sucedido; FALSE caso contrário.
+	 */
+	private boolean inserirMateriaTurma(MateriaVO materiaVO) {
+		boolean success = true;
+		
+		for(int i = 0; i < materiaVO.getIdTurmas().length; i++) {
+			long idTurma = materiaVO.getIdTurmas()[i];
+			ContentValues initialValues = new ContentValues();
+			initialValues.put(COLUMN_ID_MATERIA, materiaVO.getId());
+			initialValues.put(COLUMN_ID_TURMA, idTurma);
+			
+			success &= mDb.insert(TABLE_MATERIA_TURMA, null, initialValues) > 0;
+		}
+		
+		return success;
+	}
+	
+	/**
+	 * Remove todas as incidências de uma determinada matéria na tabela de relações Matérias X Turmas.
+	 * 
+	 * @param id Id da matéria.
+	 * @return TRUE.
+	 */
+	private boolean limparMateriaTurma(long id) {
+		mDb.execSQL("DELETE FROM " + TABLE_MATERIA_TURMA + " WHERE " + COLUMN_ID_MATERIA + " = ?", 
+				new String[]{String.valueOf(id)});
+		return true;
 	}
 	
 	/**

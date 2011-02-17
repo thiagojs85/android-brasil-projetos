@@ -1,7 +1,7 @@
 package org.android.group.escolarmobile.turma;
 
 /**
- * Esta classe é apenas um acesso para os dados de uma turma.
+ * Esta classe Ã© apenas um acesso para os dados de uma turma.
  * 
  * @author Otavio
  *
@@ -10,6 +10,7 @@ public class TurmaVO {
 	private String nome;
 	private String descricao;
 	private long id;
+	private long[] idMaterias;
 	
 	public String getNome() {
 		return nome;
@@ -28,5 +29,11 @@ public class TurmaVO {
 	}
 	public void setId(long l) {
 		this.id = l;
+	}
+	public long[] getIdMaterias() {
+		return idMaterias;
+	}
+	public void setIdMaterias(long[] idMaterias) {
+		this.idMaterias = idMaterias;
 	}
 }
