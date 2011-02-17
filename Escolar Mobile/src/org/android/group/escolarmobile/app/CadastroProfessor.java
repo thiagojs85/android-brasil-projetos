@@ -97,7 +97,7 @@ public class CadastroProfessor extends Activity implements OnClickListener{
 		}
 	}
 
-	@Override
+	
 	public void onClick(View v) {
 		
 		// Botï¿½o "OK" acionado
@@ -151,7 +151,7 @@ public class CadastroProfessor extends Activity implements OnClickListener{
 		botaoOk = (Button) findViewById(R.id.bt_ok);
 		botaoCancelar = (Button) findViewById(R.id.bt_cancelar);
 		botaoCadastrar = (Button) findViewById(R.id.bt_cadastrar);
-		botaoCadastrar.setVisibility(4); //deixa o botão cadastrar invisível
+		botaoCadastrar.setVisibility(4); //deixa o botï¿½o cadastrar invisï¿½vel
 		
 		// Registra um evento de click para os botï¿½es
 		botaoOk.setOnClickListener(this);
