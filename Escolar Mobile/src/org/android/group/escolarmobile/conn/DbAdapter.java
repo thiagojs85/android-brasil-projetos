@@ -77,7 +77,7 @@ public class DbAdapter {
 	private static final String CREATE_TURMA = 
 		"CREATE TABLE Turma (_id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT NOT NULL, descricao TEXT);";
 	private static final String CREATE_MATERIA_TURMA = 
-		"CREATE TABLE Turma (_id INTEGER PRIMARY KEY AUTOINCREMENT, id_materia INTEGER NOT NULL, id_turma INTEGER NOT NULL);";
+		"CREATE TABLE MateriaTurma (_id INTEGER PRIMARY KEY AUTOINCREMENT, id_materia INTEGER NOT NULL, id_turma INTEGER NOT NULL);";
 	
 	private final Context mCtx;
 	private DatabaseHelper mDbHelper;
