@@ -7,17 +7,16 @@ import android.app.ListActivity;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
-public abstract class BasicListWindow extends ListActivity implements OnClickListener {
+public abstract class TelaListaBasica extends ListActivity implements OnClickListener {
 
 	protected static final int ADD_ID = Menu.FIRST;
 	protected static final int EDIT_ID = ADD_ID + 1;

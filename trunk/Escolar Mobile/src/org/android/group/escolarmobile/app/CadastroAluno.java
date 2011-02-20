@@ -15,7 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
-public class CadastroAlunos extends Activity{
+public class CadastroAluno extends Activity{
 	
 	private static final int DIALOG_CANCELAR = 0;
 	private Button ok, cancelar, cadastrar;
@@ -43,7 +43,7 @@ public class CadastroAlunos extends Activity{
 		idade = (EditText) findViewById(R.id.et_idade_aluno);
 		registroMatricula = (EditText) findViewById(R.id.et_registro_matricula);
 		
-		cadastrar.setVisibility(4); //deixa o botão cadastrar invisível
+		cadastrar.setVisibility(4); //deixa o botï¿½o cadastrar invisï¿½vel
 		
 
 		/*mDbAdapter = new DbAdapter(this).open();
@@ -122,7 +122,7 @@ public class CadastroAlunos extends Activity{
 			builder.setMessage(R.string.dialog_cancel).setCancelable(false);
 			builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
-					CadastroAlunos.this.finish();
+					CadastroAluno.this.finish();
 				}
 			});
 			builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {

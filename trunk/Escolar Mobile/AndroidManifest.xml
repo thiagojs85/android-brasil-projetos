@@ -11,13 +11,8 @@
                	<category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-		<activity android:label="Alunos" android:name="org.android.group.escolarmobile.app.student.Students">
-			<activity android:label="Matérias" android:name=".subjects.Subjects"/>
-		</activity>
-		<activity android:label="Matérias" android:name="org.android.group.escolarmobile.app.subject.Subjects"/>
-		<activity android:label="Nova Matéria" android:name="org.android.group.escolarmobile.app.subject.AddSubject"/>
-	<activity android:name="org.android.group.escolarmobile.app.ListClass"></activity>
-<activity android:name="org.android.group.escolarmobile.app.BasicListWindow"></activity>
+	<activity android:name="org.android.group.escolarmobile.app.ListaTurmas"></activity>
+<activity android:name="org.android.group.escolarmobile.app.TelaListaBasica"></activity>
 <activity android:name="org.android.group.escolarmobile.app.CadastroTurmas"><intent-filter>
 <action android:name="android.intent.action.MAIN"></action>
 </intent-filter>
@@ -35,7 +30,7 @@
 <activity android:name="org.android.group.escolarmobile.app.ListaAlunos"><intent-filter><action android:name="android.intent.action.MAIN"></action>
 </intent-filter>
 </activity>
-<activity android:name="org.android.group.escolarmobile.app.CadastroAlunos"><intent-filter><action android:name="android.intent.action.MAIN"></action>
+<activity android:name="org.android.group.escolarmobile.app.CadastroAluno"><intent-filter><action android:name="android.intent.action.MAIN"></action>
 </intent-filter>
 </activity>
 </application>

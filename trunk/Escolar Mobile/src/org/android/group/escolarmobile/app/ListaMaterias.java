@@ -22,7 +22,7 @@ import android.widget.Button;
 *
 * @author Neto
 */
-public class ListaMaterias extends BasicListWindow{
+public class ListaMaterias extends TelaListaBasica{
 	
 	protected static final int LARCAR_NOTAS_ID = DELETE_ID + 1;
 	protected static final int FAZER_CHAMADA_ID = LARCAR_NOTAS_ID + 1;

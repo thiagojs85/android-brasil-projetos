@@ -114,10 +114,10 @@ public class CadastroTurmas extends Activity {
 	}
 
 	/**
-	 * Fun��o que cria os di�logos utilizados nesta activity.
+	 * Função que cria os diálogos utilizados nesta activity.
 	 * 
 	 * @param id
-	 *            identifica��o do di�logo que deve ser criado.
+	 *            identificação do diálogo que deve ser criado.
 	 */
 	protected Dialog onCreateDialog(int id) {
 		switch (id) {

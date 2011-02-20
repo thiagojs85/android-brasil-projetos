@@ -22,7 +22,7 @@
   <EditText
 		android:id="@+id/et_idade_aluno" 
 		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content">
+		android:layout_height="wrap_content" android:inputType="number">
   </EditText>
   <TextView 
 		android:text="@string/rm" 

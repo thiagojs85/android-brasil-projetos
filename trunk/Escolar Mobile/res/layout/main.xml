@@ -37,7 +37,13 @@
 	<Button
 		android:id="@+id/visualizar"
 		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:text="@string/visualizar">
+		android:layout_height="wrap_content" 
+		android:text="@string/visualizar_aluno">
+	</Button>
+	<Button
+		android:id="@+id/chamada"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content" 
+		android:text="@string/fazer_chamada">
 	</Button>
 </LinearLayout>

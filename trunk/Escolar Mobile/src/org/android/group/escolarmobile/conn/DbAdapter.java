@@ -406,6 +406,54 @@ public class DbAdapter {
 	}
 	
 	/**
+	 * Consulta todas as matérias da turma dada.
+	 * 
+	 * @param idTurma Código de ID da turma.
+	 * @return vetor de ids das matérias encontradas.
+	 */
+	private long[] consultarMateriasPorTurma(long idTurma) {
+		ArrayList<String> resultados = new ArrayList<String>();
+		
+		Cursor c = consultarMateria(COLUMN_ID_TURMA, String.valueOf(idTurma));
+		
+		if(c != null) {
+			c.moveToFirst();
+			
+			while(!c.isAfterLast()) {
+				resultados.add(String.valueOf(c.getLong(0)));
+			}
+			
+			if(!resultados.isEmpty()) {
+				long[] ids = new long[resultados.size()];
+				for(int i = 0; i < ids.length; i++) {
+					ids[i] = Long.parseLong(resultados.get(i));
+				}
+				return ids;
+			}
+		}
+		
+		// Se o programa chegar a este ponto, é porque não foi encontrada nenhuma matéria.
+		return null;
+	}
+	
+	/**
+	 * Devolve um Cursor com todas as  matérias de uma determinada turma.
+	 * 
+	 * @param idTurma Código de identificação da turma.
+	 * @return Cursor apontando para o primeiro elemento. Se não houver nenhuma matéria, retorna NULL.
+	 */
+	public Cursor acessarMateriasPorTurma(long idTurma) {
+		Cursor c = consultarMateria(COLUMN_ID_TURMA, String.valueOf(idTurma));
+		
+		if(c!= null) {
+			c.moveToFirst();
+			return c;
+		} else {
+			return null;
+		}
+	}
+	
+	/**
 	 * Cria um novo registro de matéria na tabela. Se o registro for incluído com
 	 * sucesso, o RowID será retornado. Em caso de erro, retorna -1.
 	 * 
@@ -677,7 +725,6 @@ public class DbAdapter {
 		return notas;
 	}
 	
-	
 	/**
 	 * Método privado para realizar consultas de notas.
 	 * 
@@ -685,12 +732,12 @@ public class DbAdapter {
 	 * @param value Valor a ser procurado na coluna especificada.
 	 * @return
 	 */
-	@Deprecated
-	private Cursor consultarNota(String key, String value) {
-		return consultar(TABLE_NOTA, 
-				new String[] {COLUMN_ID, COLUMN_ID_MATRICULA, COLUMN_PERIODO, COLUMN_NOTA},
-				key, value);
-	}
+//	@Deprecated
+//	private Cursor consultarNota(String key, String value) {
+//		return consultar(TABLE_NOTA, 
+//				new String[] {COLUMN_ID, COLUMN_ID_MATRICULA, COLUMN_PERIODO, COLUMN_NOTA},
+//				key, value);
+//	}
 	
 	/**
 	 * Método privado para realizar consultas de notas.
@@ -1032,6 +1079,8 @@ public class DbAdapter {
 			turma.setId(c.getInt(0));
 			turma.setNome(c.getString(1));
 			turma.setDescricao(c.getString(2));
+			
+			turma.setIdMaterias(consultarMateriasPorTurma(turma.getId()));
 		}
 		
 		return turma;
@@ -1055,6 +1104,8 @@ public class DbAdapter {
 				turma.setId(c.getLong(0));
 				turma.setNome(c.getString(1));
 				turma.setDescricao(c.getString(2));
+				
+				turma.setIdMaterias(consultarMateriasPorTurma(turma.getId()));
 			}
 		}
 		
@@ -1145,7 +1196,7 @@ public class DbAdapter {
 		int parada = key.length < value.length ? key.length : value.length;
 		
 		for(int i = 0; i < parada; i++) { 
-			condicao = key[0] + " = '" + value + "' AND ";
+			condicao += key[i] + " = '" + value[i] + "' AND ";
 		}
 		
 		// O loop-for acima deixará um " AND " sobrando, então deve-se remove-lo.
