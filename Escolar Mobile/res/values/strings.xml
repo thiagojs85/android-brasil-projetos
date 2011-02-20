@@ -8,6 +8,7 @@
 	<string name="alunos">Alunos</string>
 	
 	<string name="visualizar">Visualizar</string>
+	<string name="visualizar_aluno">Visualizar Aluno</string>
 	<string name="escolha_turma">Selecione a Turma</string>
 	<string name="escolha_materia">Selecione a Matéria</string>
 	
@@ -36,7 +37,7 @@
 	<string name="adicionar_materia">Adicionar Matéria</string>
 	<string name="lancar_notas">Lançar Notas</string>
 	<string name="base_menu_lancar"></string>
-	<string name="fazer_chamada">Fazer_chamada</string>
+	<string name="fazer_chamada">Fazer Chamada</string>
 	<string name="nome_materia">Nome da Matéria</string>
 	<string name="horas_aula">Horas / aula</string>
 	<string name="cadastrar_alunos">Cadastrar Alunos</string>

@@ -21,7 +21,7 @@ import android.widget.Button;
 */
 
 
-public class ListaProfessores extends BasicListWindow {
+public class ListaProfessores extends TelaListaBasica {
 	
 	private static final int DIALOG_DELETAR = 0;
 	private long idDelete;

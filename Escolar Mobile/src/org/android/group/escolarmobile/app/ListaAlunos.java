@@ -14,7 +14,7 @@ import android.view.View;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.Button;
 
-public class ListaAlunos extends BasicListWindow {
+public class ListaAlunos extends TelaListaBasica {
 
 	private static final int DIALOG_DELETAR = 0;
 	private long idDelete;
@@ -37,7 +37,7 @@ public class ListaAlunos extends BasicListWindow {
 	@Override
 	public void onClick(View v) {
 		
-    	Intent i = new Intent(this, CadastroAlunos.class);
+    	Intent i = new Intent(this, CadastroAluno.class);
     	startActivityForResult(i, ADD_ID);
 	}
 

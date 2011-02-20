@@ -13,11 +13,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
+import android.widget.Toast;
+import android.widget.AdapterView.OnItemSelectedListener;
 
 /**
  * Classe inicial do app.
@@ -25,7 +28,7 @@ import android.widget.Spinner;
  * @author Neto
  *
  */
-public class EscolarMobile extends Activity implements OnClickListener {
+public class EscolarMobile extends Activity {
 	private DbAdapter mDbAdapter = null;
 	
     /** Called when the activity is first created. */
@@ -35,16 +38,57 @@ public class EscolarMobile extends Activity implements OnClickListener {
         setContentView(R.layout.main);
         
         Button btVisualizar = (Button) findViewById(R.id.visualizar);
+        Button btChamada = (Button) findViewById(R.id.chamada);
         
         Spinner turmas = (Spinner) findViewById(R.id.sp_turmas);
+        final Spinner materias = (Spinner) findViewById(R.id.sp_materias);
+        
+       /* A parte abaixo não é mais funcional. Ela simplesmente insere valores hard-coded no Spinner.
+        * Na versão atual, os valores são recuperados do banco de dados.
         ArrayAdapter<CharSequence> adapterTurmas = ArrayAdapter.createFromResource(
+        
                 this, R.array.turmas, android.R.layout.simple_spinner_item);
         adapterTurmas.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         turmas.setAdapter(adapterTurmas);
         turmas.setSelection(9);
+        */
+        mDbAdapter = new DbAdapter(this).open();
+
+		Cursor c = mDbAdapter.consultarTodos(DbAdapter.TABLE_TURMA, 
+				new String[]{DbAdapter.COLUMN_ID, DbAdapter.COLUMN_NOME});
+		
+		// TODO [Otavio] Segundo a documentação, a classe SimpleCursorAdapter está deprecated.
+		// Aconselha-se atualizar segundo a documentação.
+		turmas.setAdapter(new SimpleCursorAdapter(this, 
+				R.layout.base_list_item, 
+				c, 
+				new String[]{DbAdapter.COLUMN_NOME},
+				//new int[]{R.id.n_prontuario}));
+				new int[]{R.id.n_prontuario}));
+		turmas.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+				mDbAdapter = new DbAdapter(EscolarMobile.this).open();
+
+				Cursor c = mDbAdapter.acessarMateriasPorTurma(id);
+				
+				// TODO [Otavio] Segundo a documentação, a classe SimpleCursorAdapter está deprecated.
+				// Aconselha-se atualizar segundo a documentação.
+				materias.setAdapter(new SimpleCursorAdapter(EscolarMobile.this, 
+						R.layout.base_list_item, 
+						c, 
+						new String[]{DbAdapter.COLUMN_NOME},
+						new int[]{R.id.n_prontuario}));
+			}
+
+			public void onNothingSelected(AdapterView<?> arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
         
-        Spinner materias = (Spinner) findViewById(R.id.sp_materias);
-        /*
+        /* Esta parte não é mais funcional. Ela simplesmente insere valores hard-coded no Spinner.
+         * Na versão atual, os valores são recuperados do banco de dados.
         ArrayAdapter<CharSequence> adapterMaterias = ArrayAdapter.createFromResource(
                 this, R.array.materias, android.R.layout.simple_spinner_item);
         adapterMaterias.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -52,36 +96,25 @@ public class EscolarMobile extends Activity implements OnClickListener {
         materias.setSelection(6);
         */
         
-        //FIXME [Otavio] Esta parte não está funcionando! Apesar de não dar erro, o Spinner está em branco!
-        mDbAdapter = new DbAdapter(this).open();
-		Bundle bundle = getIntent().getExtras();
-
-		Cursor c = mDbAdapter.consultarTodos(DbAdapter.TABLE_MATERIA, 
-				new String[]{DbAdapter.COLUMN_ID, DbAdapter.COLUMN_NOME});
-		materias.setAdapter(new SimpleCursorAdapter(this, 
-				R.layout.base_list_item, 
-				c, 
-				new String[]{DbAdapter.COLUMN_NOME}, //tem que adicionar a coluna DbAdapter.COLUMN_REGISTRO aqui
-				new int[]{R.id.n_prontuario}));
-		// Fim do FIXME
-        
         AutoCompleteTextView alunos = (AutoCompleteTextView) findViewById(R.id.AC_alunos);
         String[] arrayAlunos = getResources().getStringArray(R.array.alunos);
         ArrayAdapter<String> adapter3 = new ArrayAdapter<String>(this, R.layout.list_item, arrayAlunos);
         alunos.setAdapter(adapter3);
         
+        btVisualizar.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				// TODO
+				Toast.makeText(EscolarMobile.this, "Botão de Visualizar Aluno não implementado!", Toast.LENGTH_LONG);
+			}
+		});
         
-        btVisualizar.setOnClickListener(this);
-
-
+        btChamada.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				// TODO
+				Toast.makeText(EscolarMobile.this, "Botão de Fazer Chamada não implementado!", Toast.LENGTH_LONG);
+			}
+		});
     }
-
-    
-    public void onClick(View v) {
-    	// TODO [Otavio] Visualizar os dados conforme a seleção das caixas.
-//    	Intent i = new Intent(this, ListClass.class);
-//	    startActivityForResult(i, 0);
-	}
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -100,7 +133,7 @@ public class EscolarMobile extends Activity implements OnClickListener {
     	
         switch (item.getItemId()) {
         case R.id.menu_turma:
-        	i = new Intent(this, ListClass.class);
+        	i = new Intent(this, ListaTurmas.class);
     	    startActivityForResult(i, 0);
             return true;
         case R.id.menu_professores://seleciona o menu de acordo com o nome do xml

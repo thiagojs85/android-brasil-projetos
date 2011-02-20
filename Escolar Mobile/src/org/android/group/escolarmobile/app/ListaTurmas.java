@@ -14,7 +14,7 @@ import android.view.View;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.Button;
 
-public class ListClass extends BasicListWindow {
+public class ListaTurmas extends TelaListaBasica {
 	
 	private long idDelete;
 
@@ -28,7 +28,7 @@ public class ListClass extends BasicListWindow {
     @Override
 	protected boolean isMultiItensSelectable() {
 		// Caso queira que os itens da lista sejam selecionaveis, fazer retornar true
-		return true;
+		return false;
 	}
     
 	@Override
