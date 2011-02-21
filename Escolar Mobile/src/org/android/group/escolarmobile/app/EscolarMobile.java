@@ -60,11 +60,10 @@ public class EscolarMobile extends Activity {
 		// TODO [Otavio] Segundo a documentação, a classe SimpleCursorAdapter está deprecated.
 		// Aconselha-se atualizar segundo a documentação.
 		turmas.setAdapter(new SimpleCursorAdapter(this, 
-				R.layout.base_list_item, 
+				android.R.layout.simple_spinner_item,
 				c, 
 				new String[]{DbAdapter.COLUMN_NOME},
-				//new int[]{R.id.n_prontuario}));
-				new int[]{R.id.n_prontuario}));
+				new int[]{android.R.id.text1}));
 		turmas.setOnItemSelectedListener(new OnItemSelectedListener() {
 
 			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -75,10 +74,10 @@ public class EscolarMobile extends Activity {
 				// TODO [Otavio] Segundo a documentação, a classe SimpleCursorAdapter está deprecated.
 				// Aconselha-se atualizar segundo a documentação.
 				materias.setAdapter(new SimpleCursorAdapter(EscolarMobile.this, 
-						R.layout.base_list_item, 
+						android.R.layout.simple_spinner_item, 
 						c, 
 						new String[]{DbAdapter.COLUMN_NOME},
-						new int[]{R.id.n_prontuario}));
+						new int[]{android.R.id.text1}));
 			}
 
 			public void onNothingSelected(AdapterView<?> arg0) {
