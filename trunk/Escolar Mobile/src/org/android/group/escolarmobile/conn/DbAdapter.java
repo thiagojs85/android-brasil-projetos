@@ -414,7 +414,8 @@ public class DbAdapter {
 	private long[] consultarMateriasPorTurma(long idTurma) {
 		ArrayList<String> resultados = new ArrayList<String>();
 		
-		Cursor c = consultarMateria(COLUMN_ID_TURMA, String.valueOf(idTurma));
+		Cursor c = consultar(TABLE_MATERIA_TURMA, new String[]{COLUMN_ID_MATERIA}, 
+				COLUMN_ID_TURMA, String.valueOf(idTurma));
 		
 		if(c != null) {
 			c.moveToFirst();
