@@ -444,8 +444,9 @@ public class DbAdapter {
 	 * @return Cursor apontando para o primeiro elemento. Se não houver nenhuma matéria, retorna NULL.
 	 */
 	public Cursor acessarMateriasPorTurma(long idTurma) {
-		Cursor c = consultarMateria(COLUMN_ID_TURMA, String.valueOf(idTurma));
-		
+
+		Cursor c = consultar(TABLE_MATERIA_TURMA, new String[]{COLUMN_ID_MATERIA}, 
+			    COLUMN_ID_TURMA, String.valueOf(idTurma));
 		if(c!= null) {
 			c.moveToFirst();
 			return c;
