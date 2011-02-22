@@ -45,7 +45,6 @@ public class DbAdapter {
 	public static final String COLUMN_HORAS = "horas";
 	public static final String COLUMN_ID = "_id";
 	public static final String COLUMN_ID_ALUNO = "id_aluno";
-	//public static final String COLUMN_ID_ALUNO_TURMA = "id_aluno_turma";
 	public static final String COLUMN_ID_MATERIA = "id_materia";
 	public static final String COLUMN_ID_MATRICULA = "id_matricula";
 	public static final String COLUMN_ID_PROFESSOR = "id_professor";
@@ -68,7 +67,6 @@ public class DbAdapter {
 	private static final String CREATE_PROFESSOR = 
 		"CREATE TABLE Professor (_id INTEGER PRIMARY KEY AUTOINCREMENT, login TEXT NOT NULL, nome TEXT NOT NULL, senha TEXT NOT NULL);";		
 	private static final String CREATE_MATERIA = 
-		//"CREATE TABLE Materia (_id INTEGER PRIMARY KEY AUTOINCREMENT, id_professor INTEGER NOT NULL, id_turma INTEGER NOT NULL, nome TEXT NOT NULL, horas INTEGER, descricao TEXT);";
 		"CREATE TABLE Materia (_id INTEGER PRIMARY KEY AUTOINCREMENT, id_professor INTEGER NOT NULL, nome TEXT NOT NULL, horas INTEGER, descricao TEXT);";
 	private static final String CREATE_MATRICULA = 
 		"CREATE TABLE Matricula (_id INTEGER PRIMARY KEY AUTOINCREMENT, id_aluno INTEGER NOT NULL, id_turma INTEGER NOT NULL, id_materia INTEGER NOT NULL);";
@@ -114,11 +112,38 @@ public class DbAdapter {
 		 * @param db
 		 */
 		private void insertDummyData(SQLiteDatabase db) {
-			String sqlTurma = "INSERT INTO Turma(Nome, Descricao) VALUES(?,?)";
-			db.execSQL(sqlTurma, new String[]{"1a. A", "Primeiro Ano - Classe A"});
-			db.execSQL(sqlTurma, new String[]{"1a. B", "Primeiro Ano - Classe B"});
-			db.execSQL(sqlTurma, new String[]{"2a. A", "Segundo Ano - Classe A"});
-			db.execSQL(sqlTurma, new String[]{"3a. A", "Terceiro Ano - Classe A"});
+			Log.v(TAG, "Creating dummy data in tables...");
+			String sql = "INSERT INTO Professor(login, nome, senha) VALUES(?,?,?)";
+			db.execSQL(sql, new String[]{"otavio", "Otavio K Rofatto", "123"});
+			db.execSQL(sql, new String[]{"julio", "Julio Cotta", "123"});
+			db.execSQL(sql, new String[]{"neto", "Neto", "123"});
+			
+			sql = "INSERT INTO Turma(nome, descricao) VALUES(?,?)";
+			db.execSQL(sql, new String[]{"1a. A", "Primeiro Ano - Classe A"});
+			db.execSQL(sql, new String[]{"1a. B", "Primeiro Ano - Classe B"});
+			db.execSQL(sql, new String[]{"2a. A", "Segundo Ano - Classe A"});
+			db.execSQL(sql, new String[]{"3a. A", "Terceiro Ano - Classe A"});
+			
+			sql = "INSERT INTO Materia(id_professor, nome, horas, descricao) VALUES(" +
+						"(SELECT _id FROM Professor WHERE login = ?),?,?,?)";
+			db.execSQL(sql, new String[]{"otavio", "Português (Matéria Teste)", "40", "Este é um teste"});
+			db.execSQL(sql, new String[]{"otavio", "Matemática (Matéria Teste)", "44", "Este é um teste"});
+			db.execSQL(sql, new String[]{"julio", "História (Matéria Teste)", "100", "Este é um teste"});
+			db.execSQL(sql, new String[]{"neto", "Física (Matéria Teste)", "85", "Este é um teste"});
+			db.execSQL(sql, new String[]{"neto", "Química (Matéria Teste)", "10", "Este é um teste"});
+			db.execSQL(sql, new String[]{"neto", "Biologia (Matéria Teste)", "5", "Este é um teste"});
+			
+			sql = "INSERT INTO MateriaTurma(id_materia, id_turma) VALUES(" +
+						"(SELECT _id FROM Materia WHERE horas = ?),(SELECT _id FROM Turma WHERE nome = ?))";
+			db.execSQL(sql, new String[]{"40", "1a. A"});
+			db.execSQL(sql, new String[]{"44", "1a. A"});
+			db.execSQL(sql, new String[]{"100", "1a. A"});
+			db.execSQL(sql, new String[]{"85", "1a. A"});
+			db.execSQL(sql, new String[]{"10", "1a. A"});
+			db.execSQL(sql, new String[]{"5", "1a. A"});
+			db.execSQL(sql, new String[]{"44", "2a. A"});
+			db.execSQL(sql, new String[]{"85", "2a. A"});
+				
 		}
 
 		@Override
@@ -161,6 +186,39 @@ public class DbAdapter {
 	
 	public void close() {
 		mDbHelper.close();
+	}
+	
+	/**
+	 * Recupera os nomes de todos os alunos matriculados na matéria definida.
+	 * 
+	 * @param id Código de identificação da matéria na tabela.
+	 * @return Cursor apontando para o primeiro elemento encontrado. NULL se não houver nenhuma entrada.
+	 */
+	public Cursor acessarAlunosPorMaterias(long id) {
+		Cursor c = consultar(TABLE_MATRICULA, new String[]{COLUMN_ID, COLUMN_ID_ALUNO}, 
+			    COLUMN_ID_MATERIA, String.valueOf(id));
+		if(c!= null) {
+			c.moveToFirst();
+			String values = new String();
+			
+			if(!c.isAfterLast()) {
+				while(!c.isAfterLast()) {
+					values += ", " + c.getLong(1);
+					c.moveToNext();
+				}
+				
+				values = values.substring(2);
+				
+				c = mDb.query(TABLE_ALUNO, 
+						new String[]{}, COLUMN_ID + " IN (" + values + ")", 
+						null, null, null, COLUMN_NOME + " asc");
+				return c;
+			} else {
+				return null;
+			}
+		} else {
+			return null;
+		}
 	}
 
 	/**
@@ -445,11 +503,27 @@ public class DbAdapter {
 	 */
 	public Cursor acessarMateriasPorTurma(long idTurma) {
 
-		Cursor c = consultar(TABLE_MATERIA_TURMA, new String[]{COLUMN_ID_MATERIA}, 
+		Cursor c = consultar(TABLE_MATERIA_TURMA, new String[]{COLUMN_ID, COLUMN_ID_MATERIA}, 
 			    COLUMN_ID_TURMA, String.valueOf(idTurma));
 		if(c!= null) {
 			c.moveToFirst();
-			return c;
+			String values = new String();
+			
+			if(!c.isAfterLast()) {
+				while(!c.isAfterLast()) {
+					values += ", " + c.getLong(1);
+					c.moveToNext();
+				}
+				
+				values = values.substring(2);
+				
+				c = mDb.query(TABLE_MATERIA, 
+						new String[]{}, COLUMN_ID + " IN (" + values + ")", 
+						null, null, null, null);
+				return c;
+			} else {
+				return null;
+			}
 		} else {
 			return null;
 		}

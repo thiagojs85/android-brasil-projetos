@@ -40,21 +40,61 @@ public class EscolarMobile extends Activity {
         Button btVisualizar = (Button) findViewById(R.id.visualizar);
         Button btChamada = (Button) findViewById(R.id.chamada);
         
-        Spinner turmas = (Spinner) findViewById(R.id.sp_turmas);
-        final Spinner materias = (Spinner) findViewById(R.id.sp_materias);
+        mDbAdapter = new DbAdapter(this).open();
         
-       /* A parte abaixo não é mais funcional. Ela simplesmente insere valores hard-coded no Spinner.
-        * Na versão atual, os valores são recuperados do banco de dados.
-        ArrayAdapter<CharSequence> adapterTurmas = ArrayAdapter.createFromResource(
-        
-                this, R.array.turmas, android.R.layout.simple_spinner_item);
+        /* A parte abaixo não é mais funcional. Ela simplesmente insere valores hard-coded no Spinner.
+         * Na versão atual, os valores são recuperados do banco de dados.
+         ArrayAdapter<CharSequence> adapterTurmas = ArrayAdapter.createFromResource(
+                         this, R.array.turmas, android.R.layout.simple_spinner_item);
         adapterTurmas.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         turmas.setAdapter(adapterTurmas);
         turmas.setSelection(9);
+        
+        ArrayAdapter<CharSequence> adapterMaterias = ArrayAdapter.createFromResource(
+                this, R.array.materias, android.R.layout.simple_spinner_item);
+        adapterMaterias.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        materias.setAdapter(adapterMaterias);
+        materias.setSelection(6);
         */
-        mDbAdapter = new DbAdapter(this).open();
-
-		Cursor c = mDbAdapter.consultarTodos(DbAdapter.TABLE_TURMA, 
+        
+        // Função para inserir os valores possíveis dentro dos spinners na tela.
+        populateSpinners();
+        
+        AutoCompleteTextView alunos = (AutoCompleteTextView) findViewById(R.id.AC_alunos);
+        String[] arrayAlunos = getResources().getStringArray(R.array.alunos);
+        ArrayAdapter<String> adapter3 = new ArrayAdapter<String>(this, R.layout.list_item, arrayAlunos);
+        alunos.setAdapter(adapter3);
+        
+        btVisualizar.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				// TODO
+				Toast.makeText(EscolarMobile.this, "Botão de Visualizar Aluno não implementado!", Toast.LENGTH_LONG).show();
+			}
+		});
+        
+        btChamada.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				// TODO
+				Toast.makeText(EscolarMobile.this, "Botão de Fazer Chamada não implementado!", Toast.LENGTH_LONG).show();
+			}
+		});
+    }
+    
+    @Override
+    protected void onRestart() {
+    	super.onRestart();
+    	populateSpinners();
+    }
+    
+    /**
+     * Este método busca os dados na tabela para inserir os valores aceitáveis dentro dos spinners.
+     * No caso de uma atualização (um insert ou update) na tabela de turmas ou materias, essa atualização será exibida. 
+     */
+    private void populateSpinners() {
+    	Spinner turmas = (Spinner) findViewById(R.id.sp_turmas);
+        final Spinner materias = (Spinner) findViewById(R.id.sp_materias);
+        
+    	Cursor c = mDbAdapter.consultarTodos(DbAdapter.TABLE_TURMA, 
 				new String[]{DbAdapter.COLUMN_ID, DbAdapter.COLUMN_NOME});
 		
 		// TODO [Otavio] Segundo a documentação, a classe SimpleCursorAdapter está deprecated.
@@ -71,6 +111,8 @@ public class EscolarMobile extends Activity {
 
 				Cursor c = mDbAdapter.acessarMateriasPorTurma(id);
 				
+				materias.setVisibility(View.VISIBLE);
+				
 				// TODO [Otavio] Segundo a documentação, a classe SimpleCursorAdapter está deprecated.
 				// Aconselha-se atualizar segundo a documentação.
 				materias.setAdapter(new SimpleCursorAdapter(EscolarMobile.this, 
@@ -81,36 +123,7 @@ public class EscolarMobile extends Activity {
 			}
 
 			public void onNothingSelected(AdapterView<?> arg0) {
-				// TODO Auto-generated method stub
-				
-			}
-		});
-        
-        /* Esta parte não é mais funcional. Ela simplesmente insere valores hard-coded no Spinner.
-         * Na versão atual, os valores são recuperados do banco de dados.
-        ArrayAdapter<CharSequence> adapterMaterias = ArrayAdapter.createFromResource(
-                this, R.array.materias, android.R.layout.simple_spinner_item);
-        adapterMaterias.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        materias.setAdapter(adapterMaterias);
-        materias.setSelection(6);
-        */
-        
-        AutoCompleteTextView alunos = (AutoCompleteTextView) findViewById(R.id.AC_alunos);
-        String[] arrayAlunos = getResources().getStringArray(R.array.alunos);
-        ArrayAdapter<String> adapter3 = new ArrayAdapter<String>(this, R.layout.list_item, arrayAlunos);
-        alunos.setAdapter(adapter3);
-        
-        btVisualizar.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				// TODO
-				Toast.makeText(EscolarMobile.this, "Botão de Visualizar Aluno não implementado!", Toast.LENGTH_LONG);
-			}
-		});
-        
-        btChamada.setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				// TODO
-				Toast.makeText(EscolarMobile.this, "Botão de Fazer Chamada não implementado!", Toast.LENGTH_LONG);
+				materias.setVisibility(View.INVISIBLE);				
 			}
 		});
     }

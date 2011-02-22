@@ -11,8 +11,10 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.AdapterView.OnItemClickListener;
 
 public class ListaTurmas extends TelaListaBasica {
 	
@@ -23,6 +25,15 @@ public class ListaTurmas extends TelaListaBasica {
         super.onCreate(savedInstanceState);
         Button ibt = (Button)findViewById(R.id.add);
         ibt.setText(R.string.adicionar_turma);
+        
+        // Quando o usuário clica em uma das turmas da lista, exibe a lista de matérias daquela turma.
+        this.getListView().setOnItemClickListener(new OnItemClickListener() {
+			public void onItemClick(AdapterView<?> context, View view, int position, long id) {
+				Intent i = new Intent(ListaTurmas.this, ListaMaterias.class).putExtra("id", id);
+		
+				startActivity(i);				
+			}
+		});
     }
     
     @Override
@@ -94,5 +105,4 @@ public class ListaTurmas extends TelaListaBasica {
 				return null;
 		}
 	}
-	
 }

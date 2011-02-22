@@ -15,6 +15,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView;
 import android.widget.Button;
 
 /**
@@ -34,6 +36,16 @@ public class ListaMaterias extends TelaListaBasica{
         super.onCreate(savedInstanceState);
         Button ibt = (Button)findViewById(R.id.add);
         ibt.setText(R.string.adicionar_materia);//sobrescreve a string original do xml
+        
+        // TODO FIXME ListaAlunos será a view para realizar chamadas?
+        // Quando o usuário clica em uma das matérias da lista, exibe a lista de alunos para chamada.
+        this.getListView().setOnItemClickListener(new OnItemClickListener() {
+			public void onItemClick(AdapterView<?> context, View view, int position, long id) {
+				Intent i = new Intent(ListaMaterias.this, ListaAlunos.class).putExtra("id", id);
+		
+				startActivity(i);				
+			}
+		});
     }
     
     
@@ -86,14 +98,22 @@ public class ListaMaterias extends TelaListaBasica{
 
 	@Override
 	public Cursor getItensCursor() {
-		return mDbAdapter.consultarTodos(DbAdapter.TABLE_MATERIA, 
-				new String[]{DbAdapter.COLUMN_ID, DbAdapter.COLUMN_NOME});
 		
+		long idTurma = this.getIntent().getLongExtra("id", 0);
+		
+		// Se não houver id nos Extras, mostre todas as matérias existentes.
+		if(idTurma < 1) {
+			return mDbAdapter.consultarTodos(DbAdapter.TABLE_MATERIA, 
+					new String[]{DbAdapter.COLUMN_ID, DbAdapter.COLUMN_NOME});
+		} else {
+			return mDbAdapter.acessarMateriasPorTurma(idTurma);
+		}
 	}
 	
 	@Override
 	public void setActionOnEditItem(MenuItem item){
-		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+		// TODO
+		//AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 		
     	//Intent i = new Intent(this, CadastroMateria.class);
 

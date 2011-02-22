@@ -44,13 +44,23 @@ public class ListaAlunos extends TelaListaBasica {
 
 	@Override
 	public Cursor getItensCursor() {
-		return mDbAdapter.consultarTodos(DbAdapter.TABLE_ALUNO, 
-				new String[]{DbAdapter.COLUMN_ID, DbAdapter.COLUMN_NOME});
+		
+		long idMateria = this.getIntent().getLongExtra("id", 0);
+		
+		// Se não houver id nos Extras, mostre todas as matérias existentes.
+		if(idMateria < 1) {
+			return mDbAdapter.consultarTodos(DbAdapter.TABLE_ALUNO, 
+					new String[]{DbAdapter.COLUMN_ID, DbAdapter.COLUMN_NOME});
+		
+		} else {
+			return mDbAdapter.acessarAlunosPorMaterias(idMateria);
+		}
 	}
 	
 	@Override
 	public void setActionOnEditItem(MenuItem item){
-		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+		// TODO
+		//AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 		
     	//Intent i = new Intent(this, CadastroAluno.class);
 
