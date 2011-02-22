@@ -45,7 +45,7 @@ public class CadastroTurmas extends Activity {
 		turma = (EditText) findViewById(R.id.et_turma);
 		descricao = (EditText) findViewById(R.id.et_descricao);
 		
-		cadastrarMaterias.setText("Casdastrar Materias");
+		cadastrarMaterias.setText(R.string.cadastrar_materias);
 
 		mDbAdapter = new DbAdapter(this).open();
 		Bundle bundle = getIntent().getExtras();
