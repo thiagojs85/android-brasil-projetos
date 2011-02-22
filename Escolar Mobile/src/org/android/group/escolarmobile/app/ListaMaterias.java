@@ -35,7 +35,7 @@ public class ListaMaterias extends TelaListaBasica{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Button ibt = (Button)findViewById(R.id.add);
-        ibt.setText(R.string.adicionar_materia);//sobrescreve a string original do xml
+        ibt.setText(R.string.cadastrar_materias);//sobrescreve a string original do xml
         
         // TODO FIXME ListaAlunos será a view para realizar chamadas?
         // Quando o usuário clica em uma das matérias da lista, exibe a lista de alunos para chamada.

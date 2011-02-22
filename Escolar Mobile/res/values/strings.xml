@@ -34,7 +34,7 @@
 	<string name="adicionar_turma">Adicionar Turma</string>
 	<string name="adicionar_professor">Adicionar Professor</string>
 	<string name="professores">Professores</string>
-	<string name="adicionar_materia">Adicionar Matéria</string>
+	<string name="cadastrar_materias">Cadastrar Matérias</string>
 	<string name="lancar_notas">Lançar Notas</string>
 	<string name="base_menu_lancar"></string>
 	<string name="fazer_chamada">Fazer Chamada</string>
