@@ -9,6 +9,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,6 +44,8 @@ public class CadastroTurmas extends Activity {
 		cadastrarMaterias = (Button) findViewById(R.id.bt_cadastrar);
 		turma = (EditText) findViewById(R.id.et_turma);
 		descricao = (EditText) findViewById(R.id.et_descricao);
+		
+		cadastrarMaterias.setText("Casdastrar Materias");
 
 		mDbAdapter = new DbAdapter(this).open();
 		Bundle bundle = getIntent().getExtras();
@@ -106,6 +109,7 @@ public class CadastroTurmas extends Activity {
 
 		cadastrarMaterias.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
+				
 				// TODO: Chamar a tela de cadastro de matérias
 				Toast.makeText(CadastroTurmas.this, "Botão cadastro de matérias Pressionado!", Toast.LENGTH_SHORT)
 						.show();
