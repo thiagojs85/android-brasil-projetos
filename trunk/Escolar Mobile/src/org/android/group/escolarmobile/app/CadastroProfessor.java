@@ -34,7 +34,7 @@ public class CadastroProfessor extends Activity implements OnClickListener{
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		// Layout padr�o para cadastros
+		// Layout padrão para cadastros
 		setContentView(R.layout.base_cadastro);
 		LinearLayout rl = (LinearLayout) findViewById(R.id.container);
 		
@@ -44,29 +44,28 @@ public class CadastroProfessor extends Activity implements OnClickListener{
 		// Recupera os componentes da Tela
 		recuperaComponentesTela();
 
-		// Recupera a lista de parametros enviados pela tela de sele��o de professores
+		// Recupera a lista de parametros enviados pela tela de seleção de professores
 		Bundle bundle = getIntent().getExtras();
 
 		if (bundle != null) {
 			
-			// Recupera informa��es para edi��o
+			// Recupera informações para edição
 			recuperaInformacoesParaEdicao(bundle);
 		}
 		
 	}
 
-	@Override
 	protected Dialog onCreateDialog(int id, Bundle args) {
 		
 		switch (id) {
-			// Dialog exibido ao clicar no bot�o cancelar
+			// Dialog exibido ao clicar no botão cancelar
 			case DIALOG_CANCELAR:
 				
 				// Cria o Dialog
 				AlertDialog.Builder builder = new AlertDialog.Builder(CadastroProfessor.this);
 				builder.setMessage(R.string.dialog_cancel).setCancelable(false);
 				
-				// Op��o Positiva
+				// Opção Positiva
 				builder.setPositiveButton(R.string.yes,
 					new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int id) {
@@ -75,7 +74,7 @@ public class CadastroProfessor extends Activity implements OnClickListener{
 					}
 				);
 				
-				// Op��o Negativa
+				// Opção Negativa
 				builder.setNegativeButton(R.string.no,
 					new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int id) {
@@ -100,22 +99,22 @@ public class CadastroProfessor extends Activity implements OnClickListener{
 	
 	public void onClick(View v) {
 		
-		// Bot�o "OK" acionado
+		// Botão "OK" acionado
 		if(v.getId() == R.id.bt_ok){
 			
-			// Executa as a��es referente ao Bot�o "OK"
+			// Executa as ações referente ao Botão "OK"
 			executaAcoesBotaoOK();
 		}
-		// Bot�o "CANCELAR" acionado
+		// Botão "CANCELAR" acionado
 		else if(v.getId() == R.id.bt_cancelar){
 			
-			// Executa as a��es referente ao Bot�o "CANCELAR"
+			// Executa as ações referente ao Botão "CANCELAR"
 			executaAcoesBotaoCancelar();
 		}
 	}
 	
 	/**
-	 * Recupera informa��es para edi��o
+	 * Recupera informações para edição
 	 *
 	 * @author Diego
 	 * @since Jan 27, 2011
@@ -124,7 +123,7 @@ public class CadastroProfessor extends Activity implements OnClickListener{
 	 */
 	private void recuperaInformacoesParaEdicao(Bundle bundle) {
 		
-		// Abre a conex�o com o banco de dados
+		// Abre a conexão com o banco de dados
 		mDbAdapter = new DbAdapter(CadastroProfessor.this).open();
 		
 		// Recupera o Parametro ID
@@ -151,9 +150,9 @@ public class CadastroProfessor extends Activity implements OnClickListener{
 		botaoOk = (Button) findViewById(R.id.bt_ok);
 		botaoCancelar = (Button) findViewById(R.id.bt_cancelar);
 		botaoCadastrar = (Button) findViewById(R.id.bt_cadastrar);
-		botaoCadastrar.setVisibility(4); //deixa o bot�o cadastrar invis�vel
+		botaoCadastrar.setVisibility(4); //deixa o botão cadastrar invisível
 		
-		// Registra um evento de click para os bot�es
+		// Registra um evento de click para os botões
 		botaoOk.setOnClickListener(this);
 		botaoCancelar.setOnClickListener(this);
 
@@ -163,25 +162,25 @@ public class CadastroProfessor extends Activity implements OnClickListener{
 	}
 
 	/**
-	 * Executa as a��es referente ao Bot�o "CANCELAR"
+	 * Executa as ações referente ao Botão "CANCELAR"
 	 *
 	 * @author Diego
 	 * @since Jan 27, 2011
 	 */
 	private void executaAcoesBotaoCancelar() {
-		// Exibe um Dialog de confirma��o
+		// Exibe um Dialog de confirmação
 		showDialog(DIALOG_CANCELAR);
 	}
 
 	/**
-	 * Executa as a��es referentes ao Bot�o "OK"
+	 * Executa as ações referentes ao Botão "OK"
 	 *
 	 * @author Diego
 	 * @since Jan 27, 2011
 	 */
 	private void executaAcoesBotaoOK() {
 		
-		// Valida os campos de preenchimento obrigat�rio
+		// Valida os campos de preenchimento obrigatório
 		validaCamposObrigatorios();
 
 		// Preenche o VO com os campos da tela
@@ -190,13 +189,13 @@ public class CadastroProfessor extends Activity implements OnClickListener{
 		professorVO.setLogin(login.getText().toString().trim());
 		professorVO.setSenha(senha.getText().toString().trim());
 
-		// Abre a conex�o com o banco de dados
+		// Abre a conexão com o banco de dados
 		mDbAdapter = new DbAdapter(CadastroProfessor.this).open();
 
 		// Indica se o registro foi salvo com sucesso
 		boolean registroOk = false;
 
-		// Verifica se o Registro est� sendo criado ou atualizado
+		// Verifica se o Registro está sendo criado ou atualizado
 		if (idProfessor == -1) {
 			if (mDbAdapter.inserirProfessor(professorVO) > -1) {
 				registroOk = true;

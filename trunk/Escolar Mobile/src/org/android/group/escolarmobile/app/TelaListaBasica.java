@@ -37,8 +37,12 @@ public abstract class TelaListaBasica extends ListActivity implements OnClickLis
         setContentView(R.layout.base_list_window);
         btAdd = (Button) findViewById(R.id.add);
 		registerForContextMenu(getListView());
+		
 		Cursor c = getItensCursor();
-		startManagingCursor(c);
+		if(c != null) {
+			startManagingCursor(c);
+		}
+		
 		if(isMultiItensSelectable()){
 			// TODO [Otavio] Esta parte ainda não foi testada, pois nenhuma activity usou esta funcionalidade!
 
