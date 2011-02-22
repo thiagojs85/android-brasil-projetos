@@ -111,8 +111,8 @@ public class CadastroMateria extends Activity{
 
 		cadastrarAlunos.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				// TODO: Chamar a tela de cadastro de matérias
-				Toast.makeText(CadastroMateria.this, "Botão cadastro de matérias Pressionado!", Toast.LENGTH_SHORT)
+				// TODO: Chamar a tela de alunos
+				Toast.makeText(CadastroMateria.this, "Botão cadastro de alunos foi Pressionado!", Toast.LENGTH_SHORT)
 						.show();
 			}
 		});

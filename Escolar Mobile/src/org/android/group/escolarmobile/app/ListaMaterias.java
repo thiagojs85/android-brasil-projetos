@@ -61,8 +61,6 @@ public class ListaMaterias extends TelaListaBasica{
 		
 		super.onCreateContextMenu(menu, v, menuInfo);
 	
-		menu.add(Menu.NONE, EDIT_ID, 0, R.string.base_menu_edit);
-		menu.add(Menu.NONE, DELETE_ID, 0, R.string.base_menu_delete);
 		menu.add(Menu.NONE, LARCAR_NOTAS_ID, 0, R.string.lancar_notas);
 		menu.add(Menu.NONE, FAZER_CHAMADA_ID, 0, R.string.fazer_chamada);
 
@@ -71,15 +69,10 @@ public class ListaMaterias extends TelaListaBasica{
     @Override
 	public boolean onContextItemSelected(MenuItem item) {
         switch(item.getItemId()) {
-        case EDIT_ID:
-            setActionOnEditItem(item);            
-            return true;
-        case DELETE_ID:
-        	setActionOnDeleteItem(item);
-            return true;       
+              
 		case LARCAR_NOTAS_ID:
 			setActionOnEditItem(item);            
-			return true;
+		return true;
 		case FAZER_CHAMADA_ID:
 			setActionOnDeleteItem(item);
         return true;
@@ -92,6 +85,7 @@ public class ListaMaterias extends TelaListaBasica{
 	public void onClick(View v) {
 		
     	Intent i = new Intent(this, CadastroMateria.class);
+    	
     	startActivityForResult(i, ADD_ID);
 	}
 
