@@ -417,6 +417,8 @@ public class DbAdapter {
 			materia.setNome(c.getString(2));
 			materia.setHoras(c.getInt(3));
 			materia.setDescricao(c.getString(4));
+			
+			c.close();
 		}
 		
 		return materia;
@@ -444,6 +446,8 @@ public class DbAdapter {
 				materia.setHoras(c.getInt(3));
 				materia.setDescricao(c.getString(4));
 			}
+			
+			c.close();
 		}
 		
 		return materia;
@@ -692,6 +696,8 @@ public class DbAdapter {
 				
 				listaMatriculas.add(matricula);
 			}
+			
+			c.close();
 		}
 		
 		return listaMatriculas;
@@ -1157,6 +1163,8 @@ public class DbAdapter {
 			turma.setDescricao(c.getString(2));
 			
 			turma.setIdMaterias(consultarMateriasPorTurma(turma.getId()));
+			
+			c.close();
 		}
 		
 		return turma;
@@ -1182,6 +1190,8 @@ public class DbAdapter {
 				turma.setDescricao(c.getString(2));
 				
 				turma.setIdMaterias(consultarMateriasPorTurma(turma.getId()));
+				
+				c.close();
 			}
 		}
 		
