@@ -95,7 +95,13 @@ public abstract class TelaListaBasica extends ListActivity implements OnClickLis
 
 	}
 
-
+    @Override
+    protected void onDestroy() {
+    	super.onDestroy();
+    	if(mDbAdapter != null) {
+    		mDbAdapter.close();
+    	}
+    }
 
     public abstract void onClick(View v);
 	public Button getBtAdd() {

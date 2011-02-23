@@ -126,6 +126,10 @@ public class EscolarMobile extends Activity {
 				materias.setVisibility(View.INVISIBLE);				
 			}
 		});
+		
+		if(c != null) {
+			c.close();
+		}
     }
     
     @Override
@@ -163,5 +167,13 @@ public class EscolarMobile extends Activity {
         default:
             return super.onOptionsItemSelected(item);
         }
+    }
+    
+    @Override
+    protected void onDestroy() {
+    	super.onDestroy();
+    	if(mDbAdapter != null) {
+    		mDbAdapter.close();
+    	}
     }
 }
