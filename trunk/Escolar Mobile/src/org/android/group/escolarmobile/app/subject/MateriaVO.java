@@ -23,7 +23,7 @@ public class MateriaVO {
 	public long[] getIdTurmas() {
 		return idTurmas;
 	}
-	public void setIdTurma(long[] idTurmas) {
+	public void setIdTurmas(long[] idTurmas) {
 		this.idTurmas = idTurmas;
 	}
 	public String getNome() {
