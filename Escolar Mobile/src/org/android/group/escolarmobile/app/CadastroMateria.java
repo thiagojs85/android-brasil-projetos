@@ -10,19 +10,22 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
 public class CadastroMateria extends Activity{
 	
 	private static final int DIALOG_CANCELAR = 0;
+	private static final String CADASTRO_MATERIA	 = "cadastromateria";//usado usado pra imprimir logs no logcat
 	private Button ok, cancelar, cadastrarAlunos;
 	//private EditText turma, materia, horasAula, descricao;
-	private EditText materia, descricao;
+	private EditText materia, descricao, horasAula;
 	private long editId = -1;
 	private DbAdapter mDbAdapter = null;
 	private long[] idTurmas;
@@ -44,11 +47,11 @@ public class CadastroMateria extends Activity{
 		cancelar = (Button) findViewById(R.id.bt_cancelar);
 		cadastrarAlunos = (Button) findViewById(R.id.bt_cadastrar);
 		//turma = (EditText) findViewById(R.id.et_turma);
-		materia = (EditText) findViewById(R.id.et_turma);
-		//horasAula = (EditText) findViewById(R.id.et_horas_aula);
+		materia = (EditText) findViewById(R.id.et_nome_materia);
+		horasAula = (EditText) findViewById(R.id.et_horas_aula);
 		descricao = (EditText) findViewById(R.id.et_descricao);
 		
-		cadastrarAlunos.setVisibility(4);//ocultando o bot�o cadastrar
+		cadastrarAlunos.setVisibility(4);//ocultando o botão cadastrar
 		
 		cadastrarAlunos.setText(R.string.cadastrar_alunos);//sobrescrevendo a string original do botão cadastrar
 
@@ -57,11 +60,13 @@ public class CadastroMateria extends Activity{
 
 		if (bundle != null) {
 			editId = bundle.getLong(DbAdapter.COLUMN_ID);
+			Log.w(CADASTRO_MATERIA, "Valor do Id vindo do bundle: " + editId);
 			if(editId != 0) {			
 				MateriaVO materiaVO = mDbAdapter.consultarMateria(editId);
 				if (materiaVO != null) {
 					idTurmas = materiaVO.getIdTurmas();
 					materia.setText(materiaVO.getNome());
+					horasAula.setText(materiaVO.getNome());
 					descricao.setText(materiaVO.getDescricao());
 				} else {
 					Toast.makeText(this, "Informações sobre a matéria não encontradas!", Toast.LENGTH_LONG).show();
@@ -80,6 +85,10 @@ public class CadastroMateria extends Activity{
 				if (materia.getText().toString().trim().length() < 1) {
 					Toast.makeText(CadastroMateria.this, R.string.error_name_invalid, Toast.LENGTH_LONG).show();
 					return;
+				}else if (horasAula.getText().toString().trim().length() < 1) {
+						Toast.makeText(CadastroMateria.this, R.string.error_hour_invalid, Toast.LENGTH_LONG).show();
+					return;
+				
 				} else if (descricao.getText().toString().trim().length() < 1) {
 					Toast.makeText(CadastroMateria.this, R.string.error_description_invalid, Toast.LENGTH_LONG).show();
 					return;
@@ -87,6 +96,7 @@ public class CadastroMateria extends Activity{
 
 				materiaVo.setIdTurmas(idTurmas);
 				materiaVo.setNome(materia.getText().toString().trim());
+				materiaVo.setHoras(Integer.parseInt(horasAula.getText().toString().trim()));
 				materiaVo.setDescricao(descricao.getText().toString().trim());
 
 				mDbAdapter = new DbAdapter(CadastroMateria.this).open();
