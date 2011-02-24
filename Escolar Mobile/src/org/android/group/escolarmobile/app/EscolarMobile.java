@@ -137,6 +137,7 @@ public class EscolarMobile extends Activity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.turmas, menu);
         inflater.inflate(R.menu.professores, menu);//adiciona o menu dos professores
+        inflater.inflate(R.menu.sobre, menu);
         //[Otavio] As opções de cadastrar/visualizar materias e alunos estarão disponíveis dentro de turma.
         //inflater.inflate(R.menu.materias, menu);
         //inflater.inflate(R.menu.alunos, menu);
@@ -162,6 +163,10 @@ public class EscolarMobile extends Activity {
             return true;
         case R.id.menu_alunos:
         	i = new Intent(this, ListaAlunos.class);
+    	    startActivityForResult(i, 0);
+            return true;
+        case R.id.menu_sobre:
+        	i = new Intent(this, Sobre.class);
     	    startActivityForResult(i, 0);
             return true;
         default:
