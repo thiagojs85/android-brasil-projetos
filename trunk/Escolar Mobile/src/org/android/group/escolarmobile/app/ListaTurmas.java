@@ -9,14 +9,19 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.view.ContextMenu;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class ListaTurmas extends TelaListaBasica {
+	
+	protected static final int VISUALIZAR_ALUNO_ID = DELETE_ID + 1;
 	
 	private long idDelete;
 
@@ -40,6 +45,31 @@ public class ListaTurmas extends TelaListaBasica {
 	protected boolean isMultiItensSelectable() {
 		// Caso queira que os itens da lista sejam selecionaveis, fazer retornar true
 		return false;
+	}
+    
+    @Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+			ContextMenuInfo menuInfo) {
+		
+		super.onCreateContextMenu(menu, v, menuInfo);
+		menu.add(Menu.NONE, VISUALIZAR_ALUNO_ID, 0, R.string.visualizar_aluno);
+
+	}
+
+    @Override
+	public boolean onContextItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+        case EDIT_ID:
+            setActionOnEditItem(item);            
+            return true;
+        case DELETE_ID:
+        	setActionOnDeleteItem(item);
+            return true;
+        case VISUALIZAR_ALUNO_ID:
+        	setActionOnViewItem(item);
+        }
+        return super.onContextItemSelected(item);
+
 	}
     
 	@Override
@@ -78,6 +108,13 @@ public class ListaTurmas extends TelaListaBasica {
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 		idDelete = (new Long(info.id).longValue());
 		showDialog(DELETE_ID);
+	}
+	
+	public void setActionOnViewItem(MenuItem item){
+		Intent i = new Intent(this, ListaAlunos.class);
+		
+		startActivityForResult(i, VISUALIZAR_ALUNO_ID);
+		
 	}
 	
 	/**
