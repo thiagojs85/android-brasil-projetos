@@ -96,11 +96,15 @@ public class EscolarMobile extends Activity {
         
     	Cursor c = mDbAdapter.consultarTodos(DbAdapter.TABLE_TURMA, 
 				new String[]{DbAdapter.COLUMN_ID, DbAdapter.COLUMN_NOME});
+    	
+    	if(c != null) {
+    		startManagingCursor(c);
+    	}
 		
 		// TODO [Otavio] Segundo a documentação, a classe SimpleCursorAdapter está deprecated.
 		// Aconselha-se atualizar segundo a documentação.
 		turmas.setAdapter(new SimpleCursorAdapter(this, 
-				android.R.layout.simple_spinner_item,
+				android.R.layout.simple_spinner_dropdown_item,
 				c, 
 				new String[]{DbAdapter.COLUMN_NOME},
 				new int[]{android.R.id.text1}));
@@ -126,10 +130,6 @@ public class EscolarMobile extends Activity {
 				materias.setVisibility(View.INVISIBLE);				
 			}
 		});
-		
-		if(c != null) {
-			c.close();
-		}
     }
     
     @Override
@@ -167,13 +167,5 @@ public class EscolarMobile extends Activity {
         default:
             return super.onOptionsItemSelected(item);
         }
-    }
-    
-    @Override
-    protected void onDestroy() {
-    	super.onDestroy();
-    	if(mDbAdapter != null) {
-    		mDbAdapter.close();
-    	}
     }
 }
