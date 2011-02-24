@@ -21,9 +21,11 @@ public class CadastroMateria extends Activity{
 	
 	private static final int DIALOG_CANCELAR = 0;
 	private Button ok, cancelar, cadastrarAlunos;
-	private EditText materia, horasAula, descricao;
+	//private EditText turma, materia, horasAula, descricao;
+	private EditText materia, descricao;
 	private long editId = -1;
 	private DbAdapter mDbAdapter = null;
+	private long[] idTurmas;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -41,8 +43,9 @@ public class CadastroMateria extends Activity{
 		ok = (Button) findViewById(R.id.bt_ok);
 		cancelar = (Button) findViewById(R.id.bt_cancelar);
 		cadastrarAlunos = (Button) findViewById(R.id.bt_cadastrar);
+		//turma = (EditText) findViewById(R.id.et_turma);
 		materia = (EditText) findViewById(R.id.et_turma);
-		horasAula = (EditText) findViewById(R.id.et_horas_aula);
+		//horasAula = (EditText) findViewById(R.id.et_horas_aula);
 		descricao = (EditText) findViewById(R.id.et_descricao);
 		
 		cadastrarAlunos.setVisibility(4);//ocultando o bot�o cadastrar
@@ -54,11 +57,18 @@ public class CadastroMateria extends Activity{
 
 		if (bundle != null) {
 			editId = bundle.getLong(DbAdapter.COLUMN_ID);
-			MateriaVO materiaVO = mDbAdapter.consultarMateria(editId);
-
-			if (materiaVO != null) {
-				materia.setText(materiaVO.getNome());
-				descricao.setText(materiaVO.getDescricao());
+			if(editId != 0) {			
+				MateriaVO materiaVO = mDbAdapter.consultarMateria(editId);
+				if (materiaVO != null) {
+					idTurmas = materiaVO.getIdTurmas();
+					materia.setText(materiaVO.getNome());
+					descricao.setText(materiaVO.getDescricao());
+				} else {
+					Toast.makeText(this, "Informações sobre a matéria não encontradas!", Toast.LENGTH_LONG).show();
+					this.finish();
+				}
+			} else {
+				idTurmas = new long[]{bundle.getLong(DbAdapter.COLUMN_ID_TURMA)};
 			}
 		}
 
@@ -75,6 +85,7 @@ public class CadastroMateria extends Activity{
 					return;
 				}
 
+				materiaVo.setIdTurmas(idTurmas);
 				materiaVo.setNome(materia.getText().toString().trim());
 				materiaVo.setDescricao(descricao.getText().toString().trim());
 
@@ -152,5 +163,4 @@ public class CadastroMateria extends Activity{
 			mDbAdapter.close();
 		}
 	}
-
 }
