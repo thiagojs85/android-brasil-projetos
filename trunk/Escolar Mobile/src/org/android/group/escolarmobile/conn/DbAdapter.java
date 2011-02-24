@@ -7,6 +7,7 @@ import java.util.List;
 import org.android.group.escolarmobile.app.student.AlunoVO;
 import org.android.group.escolarmobile.app.student.MatriculaVO;
 import org.android.group.escolarmobile.app.student.PresencaVO;
+import org.android.group.escolarmobile.app.student.RelatorioVO;
 import org.android.group.escolarmobile.app.subject.MateriaVO;
 import org.android.group.escolarmobile.app.subject.NotaVO;
 import org.android.group.escolarmobile.app.teacher.ProfessorVO;
@@ -362,6 +363,8 @@ public class DbAdapter {
 				removerAluno(cursor.getLong(0));
 				cursor.moveToNext();
 			}
+			
+			cursor.close();
 		}
 		
 		return true;
@@ -377,10 +380,10 @@ public class DbAdapter {
 		boolean success = false;
 		ContentValues updatedValues = new ContentValues();
 		updatedValues.put(COLUMN_ID, materiaVO.getId());
-		updatedValues.put(COLUMN_REGISTRO, materiaVO.getIdProfessor());
+		updatedValues.put(COLUMN_ID_PROFESSOR, materiaVO.getIdProfessor());
 		updatedValues.put(COLUMN_NOME, materiaVO.getNome());
-		//updatedValues.put(COLUMN_ID_TURMA, materiaVO.getIdTurma());
-		updatedValues.put(COLUMN_DATA_NASCIMENTO, materiaVO.getDescricao());
+		updatedValues.put(COLUMN_HORAS, materiaVO.getHoras());
+		updatedValues.put(COLUMN_DESCRICAO, materiaVO.getDescricao());
 		
 		mDb.beginTransaction();
 		try {
@@ -537,6 +540,37 @@ public class DbAdapter {
 	}
 	
 	/**
+	 * Retorna uma lista com as matérias(notas e faltas) do aluno.
+	 *  
+	 * @param idAluno Código de identificação do aluno.
+	 * @return Lista com os dados.
+	 */
+	public List<RelatorioVO> consultarMediasFaltas(long idAluno) {
+		List<RelatorioVO> relatorio = new ArrayList<RelatorioVO>();
+		
+		String sql = "SELECT m.nome, sum(n.nota), sum(f.horaAula) FROM Materia m, Nota n, Falta f WHERE idAluno = ?";
+		Cursor c = mDb.rawQuery(sql, new String[]{String.valueOf(idAluno)});
+		
+		if(c != null) {
+			c.moveToFirst();
+			
+			while(!c.isAfterLast()) {
+				RelatorioVO r = new RelatorioVO();
+				r.setMateria(c.getString(0));
+				r.setMediaNotas(c.getFloat(1));
+				r.setFaltas(c.getInt(2));
+				relatorio.add(r);
+				
+				c.moveToNext();
+			}
+			
+			c.close();
+			return relatorio;
+		}
+		return null;
+	}
+	
+	/**
 	 * Cria um novo registro de matéria na tabela. Se o registro for incluído com
 	 * sucesso, o RowID será retornado. Em caso de erro, retorna -1.
 	 * 
@@ -544,11 +578,10 @@ public class DbAdapter {
 	 * @return rowID ou -1 se falhou.
 	 */
 	public long inserirMateria(MateriaVO materiaVO) {
-		long newId = -1;
 		boolean success = false;
 		
 		// Apesar de ID ser a verdadeira chave do registro, os nomes das matérias devem ser únicos.
-		if(consultarAluno(materiaVO.getNome()) == null) {
+		if(consultarMateria(materiaVO.getNome()) == null) {
 			ContentValues initialValues = new ContentValues();
 			//initialValues.put(COLUMN_ID, alunoVO.getId());
 			initialValues.put(COLUMN_ID_PROFESSOR, materiaVO.getIdProfessor());
@@ -559,8 +592,8 @@ public class DbAdapter {
 			
 			mDb.beginTransaction();
 			try {
-				newId = mDb.insert(TABLE_MATERIA, null, initialValues);
-				success = newId > 0;
+				materiaVO.setId(mDb.insert(TABLE_MATERIA, null, initialValues));
+				success = materiaVO.getId() > 0;
 				success &= inserirMateriaTurma(materiaVO);
 				
 				if(success) {
@@ -570,7 +603,7 @@ public class DbAdapter {
 			     mDb.endTransaction();
 			   }
 
-			return newId;
+			return materiaVO.getId();
 		} else {
 			return -1;
 		}
@@ -1246,9 +1279,74 @@ public class DbAdapter {
 		mDb.beginTransaction();
 		
 		try {
-			removerMateria(COLUMN_ID_TURMA, id);
+			removerTurmaMateria(id);
 			removerAluno(COLUMN_ID_TURMA, id);
 			remover(TABLE_TURMA, id);
+			mDb.setTransactionSuccessful();
+			resultado = true;
+		} finally {
+			mDb.endTransaction();
+		}
+		return resultado;
+	}
+	
+	/**
+	 * Remove a turma com o id especificado das matérias existentes. 
+	 * Se a matéria era ministrada somente para aquela turma, ela também será excluída.
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public boolean removerTurmaMateria(long id) {
+		String selection = COLUMN_ID_TURMA + " = ?";
+		String sqlContador = "SELECT count(1) FROM MateriaTurma WHERE id_materia = ?";
+		boolean resultado = false;
+		mDb.beginTransaction();
+		
+		try {
+			Cursor c = mDb.query(TABLE_MATERIA_TURMA, new String[]{COLUMN_ID_MATERIA}, 
+					selection, new String[]{String.valueOf(id)}, null, null, null);
+			
+			if(c != null) {
+				c.moveToFirst();
+				
+				while(!c.isAfterLast()) {
+					long idMateria = c.getLong(0);
+					
+					// Deletar registro da matéria para aquela turma.
+					mDb.delete(TABLE_MATERIA_TURMA, 
+							selection + " AND " + COLUMN_ID_MATERIA + " = ?",
+							new String[]{String.valueOf(id), String.valueOf(idMateria)});
+					
+					// Deleta matrículas para aquela matéria.
+					mDb.delete(TABLE_MATRICULA, 
+							selection + " AND " + COLUMN_ID_MATERIA + " = ?", 
+							new String[]{String.valueOf(id), String.valueOf(idMateria)});
+					
+					// Contar turmas que possuam a matéria.
+					Cursor cMateria = mDb.rawQuery(sqlContador, 
+							new String[]{String.valueOf(idMateria)});
+					if(cMateria != null) {
+						cMateria.moveToFirst();
+						
+						if(!cMateria.isAfterLast()) {
+							int turmasDaMateria = cMateria.getInt(0);
+							
+							// Se não houver mais relações entre a matéria e qualquer outra turma.
+							if(turmasDaMateria < 1) {
+								mDb.delete(TABLE_MATERIA, 
+										COLUMN_ID + " = ?",
+										new String[]{String.valueOf(idMateria)});
+							}
+						}
+						
+						cMateria.close();
+					}
+					
+					c.moveToNext();
+				}
+				c.close();
+			}
 			mDb.setTransactionSuccessful();
 			resultado = true;
 		} finally {

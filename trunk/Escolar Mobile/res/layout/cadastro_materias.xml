@@ -16,6 +16,14 @@
 		android:layout_height="wrap_content">
   </EditText>
   <TextView
+		android:text="@string/professor" 
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content" />
+  <Spinner 
+		android:id="@+id/et_professor" 
+		android:layout_width="fill_parent" 
+		android:layout_height="wrap_content"/>
+  <TextView
 		android:text="@string/horas_aula" 
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content" />

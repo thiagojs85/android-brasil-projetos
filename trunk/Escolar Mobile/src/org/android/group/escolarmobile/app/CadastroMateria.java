@@ -9,14 +9,16 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
+import android.widget.SimpleCursorAdapter;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 public class CadastroMateria extends Activity{
@@ -26,6 +28,7 @@ public class CadastroMateria extends Activity{
 	private Button ok, cancelar, cadastrarAlunos;
 	//private EditText turma, materia, horasAula, descricao;
 	private EditText materia, descricao, horasAula;
+	private Spinner professor;
 	private long editId = -1;
 	private DbAdapter mDbAdapter = null;
 	private long[] idTurmas;
@@ -50,12 +53,22 @@ public class CadastroMateria extends Activity{
 		materia = (EditText) findViewById(R.id.et_nome_materia);
 		horasAula = (EditText) findViewById(R.id.et_horas_aula);
 		descricao = (EditText) findViewById(R.id.et_descricao);
+		professor = (Spinner) findViewById(R.id.et_professor);
 		
 		cadastrarAlunos.setVisibility(4);//ocultando o botão cadastrar
 		
 		cadastrarAlunos.setText(R.string.cadastrar_alunos);//sobrescrevendo a string original do botão cadastrar
 
 		mDbAdapter = new DbAdapter(this).open();
+		Cursor c = mDbAdapter.consultarTodos(DbAdapter.TABLE_PROFESSOR, 
+				new String[]{DbAdapter.COLUMN_ID, DbAdapter.COLUMN_NOME});
+		
+		professor.setAdapter(new SimpleCursorAdapter(this, 
+				android.R.layout.simple_spinner_dropdown_item,
+				c,
+				new String[]{DbAdapter.COLUMN_NOME},
+				new int[]{android.R.id.text1}));
+		
 		Bundle bundle = getIntent().getExtras();
 
 		if (bundle != null) {
@@ -68,6 +81,12 @@ public class CadastroMateria extends Activity{
 					materia.setText(materiaVO.getNome());
 					horasAula.setText(materiaVO.getNome());
 					descricao.setText(materiaVO.getDescricao());
+					
+					for(int i = 0; i < professor.getCount(); i++) {
+						if(materiaVO.getIdProfessor() == professor.getItemIdAtPosition(i)) {
+							professor.setSelection(i);
+						}
+					}
 				} else {
 					Toast.makeText(this, "Informações sobre a matéria não encontradas!", Toast.LENGTH_LONG).show();
 					this.finish();
@@ -98,6 +117,7 @@ public class CadastroMateria extends Activity{
 				materiaVo.setNome(materia.getText().toString().trim());
 				materiaVo.setHoras(Integer.parseInt(horasAula.getText().toString().trim()));
 				materiaVo.setDescricao(descricao.getText().toString().trim());
+				materiaVo.setIdProfessor(professor.getSelectedItemId());
 
 				mDbAdapter = new DbAdapter(CadastroMateria.this).open();
 
@@ -105,7 +125,7 @@ public class CadastroMateria extends Activity{
 
 				// Se não houver id, é uma nova entrada; caso contrário, é
 				// atualização de um registro existente.
-				if (editId == -1) {
+				if (editId < 1) {
 					if (mDbAdapter.inserirMateria(materiaVo) > -1) {
 						registroOk = true;
 					}
@@ -140,10 +160,10 @@ public class CadastroMateria extends Activity{
 	}
 
 	/**
-	 * Fun��o que cria os di�logos utilizados nesta activity.
+	 * Função que cria os diálogos utilizados nesta activity.
 	 * 
 	 * @param id
-	 *            identifica��o do di�logo que deve ser criado.
+	 *            identificação do diálogo que deve ser criado.
 	 */
 	protected Dialog onCreateDialog(int id) {
 		switch (id) {
