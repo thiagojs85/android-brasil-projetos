@@ -484,7 +484,10 @@ public class DbAdapter {
 			
 			while(!c.isAfterLast()) {
 				resultados.add(String.valueOf(c.getLong(0)));
+				c.moveToNext();
 			}
+			
+			c.close();
 			
 			if(!resultados.isEmpty()) {
 				long[] ids = new long[resultados.size()];
