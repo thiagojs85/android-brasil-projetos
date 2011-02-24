@@ -7,7 +7,6 @@ import java.util.List;
 import org.android.group.escolarmobile.app.student.AlunoVO;
 import org.android.group.escolarmobile.app.student.MatriculaVO;
 import org.android.group.escolarmobile.app.student.PresencaVO;
-import org.android.group.escolarmobile.app.student.RelatorioVO;
 import org.android.group.escolarmobile.app.subject.MateriaVO;
 import org.android.group.escolarmobile.app.subject.NotaVO;
 import org.android.group.escolarmobile.app.teacher.ProfessorVO;
@@ -545,30 +544,30 @@ public class DbAdapter {
 	 * @param idAluno Código de identificação do aluno.
 	 * @return Lista com os dados.
 	 */
-	public List<RelatorioVO> consultarMediasFaltas(long idAluno) {
-		List<RelatorioVO> relatorio = new ArrayList<RelatorioVO>();
-		
-		String sql = "SELECT m.nome, sum(n.nota), sum(f.horaAula) FROM Materia m, Nota n, Falta f WHERE idAluno = ?";
-		Cursor c = mDb.rawQuery(sql, new String[]{String.valueOf(idAluno)});
-		
-		if(c != null) {
-			c.moveToFirst();
-			
-			while(!c.isAfterLast()) {
-				RelatorioVO r = new RelatorioVO();
-				r.setMateria(c.getString(0));
-				r.setMediaNotas(c.getFloat(1));
-				r.setFaltas(c.getInt(2));
-				relatorio.add(r);
-				
-				c.moveToNext();
-			}
-			
-			c.close();
-			return relatorio;
-		}
-		return null;
-	}
+//	public List<RelatorioVO> consultarMediasFaltas(long idAluno) {
+//		List<RelatorioVO> relatorio = new ArrayList<RelatorioVO>();
+//		
+//		String sql = "SELECT m.nome, sum(n.nota), sum(f.horaAula) FROM Materia m, Nota n, Falta f WHERE idAluno = ?";
+//		Cursor c = mDb.rawQuery(sql, new String[]{String.valueOf(idAluno)});
+//		
+//		if(c != null) {
+//			c.moveToFirst();
+//			
+//			while(!c.isAfterLast()) {
+//				RelatorioVO r = new RelatorioVO();
+//				r.setMateria(c.getString(0));
+//				r.setMediaNotas(c.getFloat(1));
+//				r.setFaltas(c.getInt(2));
+//				relatorio.add(r);
+//				
+//				c.moveToNext();
+//			}
+//			
+//			c.close();
+//			return relatorio;
+//		}
+//		return null;
+//	}
 	
 	/**
 	 * Cria um novo registro de matéria na tabela. Se o registro for incluído com
