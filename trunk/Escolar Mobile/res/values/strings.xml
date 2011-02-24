@@ -67,4 +67,5 @@ Breno Brito <i>&lt;breno.caldeira@gmail.com&gt;</i>\n
 Felipe Toledo <i>&lt;felipetgoliveira@gmail.com&gt;</i>\n
 Thiago Cruz <i>&lt;thiago.motoca@gmail.com&gt;</i>\n
 	</string>
+<string name="error_hour_invalid">Erro! horas/aula errado</string>
 </resources>
