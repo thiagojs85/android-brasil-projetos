@@ -7,6 +7,7 @@ public class MateriaVO {
 	private String nome;
 	private int horas;
 	private String descricao;
+	private String padrao;
 	
 	public long getId() {
 		return id;
@@ -43,5 +44,11 @@ public class MateriaVO {
 	}
 	public void setDescricao(String descricao) {
 		this.descricao = descricao;
+	}
+	public String getPadrao() {
+		return padrao;
+	}
+	public void setPadrao(String padrao) {
+		this.padrao = padrao;
 	}
 }

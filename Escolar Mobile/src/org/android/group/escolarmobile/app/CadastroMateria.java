@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.SimpleCursorAdapter;
@@ -29,6 +30,7 @@ public class CadastroMateria extends Activity{
 	//private EditText turma, materia, horasAula, descricao;
 	private EditText materia, descricao, horasAula;
 	private Spinner professor;
+	private CheckBox padrao;
 	private long editId = -1;
 	private DbAdapter mDbAdapter = null;
 	private long[] idTurmas;
@@ -54,6 +56,7 @@ public class CadastroMateria extends Activity{
 		horasAula = (EditText) findViewById(R.id.et_horas_aula);
 		descricao = (EditText) findViewById(R.id.et_descricao);
 		professor = (Spinner) findViewById(R.id.et_professor);
+		padrao = (CheckBox) findViewById(R.id.materia_padrao);
 		
 		cadastrarAlunos.setVisibility(4);//ocultando o botão cadastrar
 		
@@ -81,6 +84,7 @@ public class CadastroMateria extends Activity{
 					materia.setText(materiaVO.getNome());
 					horasAula.setText(materiaVO.getNome());
 					descricao.setText(materiaVO.getDescricao());
+					padrao.setChecked(materiaVO.getPadrao().compareToIgnoreCase("S") == 0);
 					
 					for(int i = 0; i < professor.getCount(); i++) {
 						if(materiaVO.getIdProfessor() == professor.getItemIdAtPosition(i)) {
@@ -118,6 +122,7 @@ public class CadastroMateria extends Activity{
 				materiaVo.setHoras(Integer.parseInt(horasAula.getText().toString().trim()));
 				materiaVo.setDescricao(descricao.getText().toString().trim());
 				materiaVo.setIdProfessor(professor.getSelectedItemId());
+				materiaVo.setPadrao(padrao.isChecked() ? "S" : "N");
 
 				mDbAdapter = new DbAdapter(CadastroMateria.this).open();
 

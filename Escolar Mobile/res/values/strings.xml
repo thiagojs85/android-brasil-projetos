@@ -28,6 +28,11 @@
 	<string name="dialog_cancel">Tem certeza de que deseja cancelar? (As informações não salvas serão perdidas)</string>
 	<string name="dialog_delete">Tem certeza de que deseja deletar o valor selecionado?</string>
 	
+	<string name="salvar_turma">Os dados da turma cadastrada serão salvos! Deseja continuar?</string>
+	<string name="salvar_turma_sem_materia">Você salvou uma turma sem matérias vinculadas. Deseja usar as matérias padrão do sistema ou cadastrar suas próprias matérias?</string>
+	<string name="usar_materias_padrao">Usar padrão</string>
+	<string name="materia_padrao_label">Esta é uma matéria padrão</string>
+	
 	<string name="error_name_invalid">Erro! Nome inválido!</string>
 	<string name="error_description_invalid">Erro! Descrição inválida!</string>
 	<string name="data_inserted_success">Registro inserido com sucesso!</string>
