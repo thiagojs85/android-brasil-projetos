@@ -9,6 +9,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,6 +23,7 @@ public class CadastroTurmas extends Activity {
 
 	private static final int DIALOG_CANCELAR = 0;
 	private static final String CADASTRO_TURMAS	 = "cadastroturmas";//usado usado pra imprimir logs no logcat
+	private TurmaVO turmaVO = null;
 	private Button ok, cancelar, cadastrarMaterias;
 	private EditText turma, descricao;
 	private long editId = -1;
@@ -52,17 +54,23 @@ public class CadastroTurmas extends Activity {
 		Bundle bundle = getIntent().getExtras();
 
 		if (bundle != null) {
-			editId = bundle.getLong(DbAdapter.COLUMN_ID_TURMA);
-			TurmaVO turmaVO = mDbAdapter.consultarTurma(editId);
+			//editId = bundle.getLong(DbAdapter.COLUMN_ID_TURMA);
+			editId = bundle.getLong(DbAdapter.COLUMN_ID);
+			
+			//TurmaVO turmaVO = mDbAdapter.consultarTurma(editId);
+			turmaVO = mDbAdapter.consultarTurma(editId);
 
 			if (turmaVO != null) {
 				turma.setText(turmaVO.getNome());
 				descricao.setText(turmaVO.getDescricao());
 			}
+		} else {
+			turmaVO = new TurmaVO();
 		}
 
 		ok.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
+				/* @deprecated
 				TurmaVO turmaVO = new TurmaVO();
 
 				// Valida as informações antes de salvar no banco.
@@ -84,7 +92,7 @@ public class CadastroTurmas extends Activity {
 				// Se não houver id, é uma nova entrada; caso contrário, é
 				// atualização de um registro existente.
 				if (editId == -1) {
-					if (mDbAdapter.inserirTurma(turmaVO) > -1) {
+					if(mDbAdapter.inserirTurma(turmaVO) > -1) {
 						registroOk = true;
 					}
 				} else {
@@ -97,6 +105,41 @@ public class CadastroTurmas extends Activity {
 					CadastroTurmas.this.finish();
 				} else {
 					Toast.makeText(CadastroTurmas.this, R.string.data_inserted_error, Toast.LENGTH_LONG).show();
+				}*/
+				if(!salvarTurma()) {
+					Toast.makeText(CadastroTurmas.this, R.string.data_inserted_error, Toast.LENGTH_LONG).show();
+					CadastroTurmas.this.finish();
+				}
+				
+				Cursor c = mDbAdapter.acessarMateriasPorTurma(turmaVO.getId());
+				
+				if(c == null || (c != null && c.getCount() < 1)) {
+					AlertDialog.Builder builder = new AlertDialog.Builder(CadastroTurmas.this);
+					
+					builder.setMessage(R.string.salvar_turma_sem_materia).setCancelable(false);
+					builder.setPositiveButton(R.string.usar_materias_padrao,
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog, int id) {
+									// Inserir Matérias padrão.
+									mDbAdapter.cadastrarMateriasPadrao(turmaVO.getId());
+									CadastroTurmas.this.finish();
+								}
+							});
+					builder.setNegativeButton(R.string.cadastrar_materias,
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog, int id) {
+									// Abrir tela de cadastro de matérias.
+									Intent i = new Intent(CadastroTurmas.this, CadastroMateria.class).putExtra(DbAdapter.COLUMN_ID_TURMA, turmaVO.getId());
+									
+									startActivity(i);
+								}
+							});
+					AlertDialog alert = builder.create();
+					alert.show();
+
+					if(c != null) {
+						c.close();
+					}
 				}
 			}
 		});
@@ -113,14 +156,13 @@ public class CadastroTurmas extends Activity {
 				
 				AlertDialog.Builder builder = new AlertDialog.Builder(CadastroTurmas.this);
 				
-				builder.setMessage(
-				"A turma atual será salva")//TODO: cria a string xml desse texto
+				builder.setMessage(R.string.salvar_turma)
 				.setCancelable(false)
-				.setPositiveButton("concordo",//TODO: cria a string xml desse texto
+				.setPositiveButton(R.string.yes,
 						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog,
-									int id) {
+							public void onClick(DialogInterface dialog, int id) {
 								
+								/* @deprecated
 								TurmaVO turmaVO = new TurmaVO();
 
 								// Valida as informações antes de salvar no banco.
@@ -159,15 +201,22 @@ public class CadastroTurmas extends Activity {
 								} else {
 									Toast.makeText(CadastroTurmas.this, R.string.data_inserted_error, Toast.LENGTH_LONG).show();
 								}
+								*/
 								
-								Intent i = new Intent(CadastroTurmas.this, CadastroMateria.class).putExtra(DbAdapter.COLUMN_ID_TURMA, idDaTurma);
+								if(salvarTurma()) {
+									Toast.makeText(CadastroTurmas.this, R.string.data_inserted_success, Toast.LENGTH_LONG).show();
+									CadastroTurmas.this.finish();
+								} else {
+									Toast.makeText(CadastroTurmas.this, R.string.data_inserted_error, Toast.LENGTH_LONG).show();
+								}
+								
+								//Intent i = new Intent(CadastroTurmas.this, CadastroMateria.class).putExtra(DbAdapter.COLUMN_ID_TURMA, idDaTurma);
+								Intent i = new Intent(CadastroTurmas.this, CadastroMateria.class).putExtra(DbAdapter.COLUMN_ID_TURMA, turmaVO.getId());
 								
 								startActivity(i);
-								
-
 							}
 						})
-				.setNegativeButton("discordo",//TODO: cria a string xml desse texto
+				.setNegativeButton(R.string.no,
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog,
 									int id) {
@@ -178,6 +227,53 @@ public class CadastroTurmas extends Activity {
 		alert.show();
 			}
 		});
+	}
+	
+	private boolean salvarTurma() {
+		//TurmaVO turmaVO = new TurmaVO();
+
+		// Valida as informações antes de salvar no banco.
+		if (turma.getText().toString().trim().length() < 1) {
+			Toast.makeText(CadastroTurmas.this, R.string.error_name_invalid, Toast.LENGTH_LONG).show();
+			return false;
+		} else if (descricao.getText().toString().trim().length() < 1) {
+			Toast.makeText(CadastroTurmas.this, R.string.error_description_invalid, Toast.LENGTH_LONG).show();
+			return false;
+		}
+
+		turmaVO.setNome(turma.getText().toString().trim());
+		turmaVO.setDescricao(descricao.getText().toString().trim());
+
+		//mDbAdapter = new DbAdapter(CadastroTurmas.this).open();
+
+		boolean registroOk = false;
+
+		Log.v(CADASTRO_TURMAS, "Valor do ID da turma antes do IF: " + turmaVO.getId());
+		
+		// Se não houver id, é uma nova entrada; caso contrário, é
+		// atualização de um registro existente.
+		//if (editId == -1) {
+		if(turmaVO.getId() == 0) {
+			turmaVO.setId(mDbAdapter.inserirTurma(turmaVO));
+			Log.v(CADASTRO_TURMAS, "Valor do ID da turma antes dentro do IF: " + turmaVO.getId());
+			if(turmaVO.getId() > -1) {
+				registroOk = true;
+			}
+		} else {
+			//turmaVO.setId(editId);
+			Log.v(CADASTRO_TURMAS, "Valor do ID da turma no ELSE: " + turmaVO.getId());
+			registroOk = mDbAdapter.atualizarTurma(turmaVO);
+		}
+
+		/*
+		if (registroOk) {
+			Toast.makeText(CadastroTurmas.this, R.string.data_inserted_success, Toast.LENGTH_LONG).show();
+			CadastroTurmas.this.finish();
+		} else {
+			Toast.makeText(CadastroTurmas.this, R.string.data_inserted_error, Toast.LENGTH_LONG).show();
+		}
+		*/
+		return registroOk;
 	}
 	
 

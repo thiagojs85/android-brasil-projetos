@@ -114,6 +114,7 @@ public class EscolarMobile extends Activity {
 				mDbAdapter = new DbAdapter(EscolarMobile.this).open();
 
 				Cursor c = mDbAdapter.acessarMateriasPorTurma(id);
+				startManagingCursor(c);
 				
 				materias.setVisibility(View.VISIBLE);
 				
