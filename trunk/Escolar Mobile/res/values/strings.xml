@@ -56,22 +56,30 @@
 	<string name="sobre_texto">\ 
 <b>Boletim Escolar (1.0 beta)</b>\n
 \n
-<b>Criadores</b>\n
-Otavio Rofatto <i>&lt;rofatto@gmail.com&gt;</i>\n
+Este é um projeto de Open Source que visa disponibilizar
+ uma aplicação na qual professores possam gerenciar
+ as faltas e notas de seus alunos.\n
+O projeto Boletim Escolar Mobile teve seu berço no grupo Android Brasil
+e através da ideia deste projeto surgiu o grupo
+Android Brasil - Projetos.\n
 \n
-<b>Coordenadores</b>\n
-Júlio Cotta <i>&lt;juliocbcotta@gmail.com&gt;</i>\n
+<b>Idealizadores</b>\n
+Thiago Bocchile <i> tykoth@gmail.com</i>\n
+Neto (Desilio) <i> desilio@gmail.com</i>\n
+Otavio Rofatto <i> rofatto@gmail.com</i>\n
+Júlio Cotta <i> juliocbcotta@gmail.com</i>\n
 \n
 <b>Desenvolvedores</b>\n
-Neto (Desilio) <i>&lt;desilio@gmail.com&gt;</i>\n
-Diêgo <i>&lt;diegonunes.sistema@gmail.com&gt;</i>\n
-Davi Farias <i>&lt;davifm@gmail.com&gt;</i>\n
-Sandro (Bit) <i>&lt;sandrobit@gmail.com&gt;</i>\n
-Breno Brito <i>&lt;breno.caldeira@gmail.com&gt;</i>\n
+(Pelo menos um commit no SVN)\n
+Otavio Rofatto <i> rofatto@gmail.com</i>\n
+Júlio Cotta <i> juliocbcotta@gmail.com</i>\n
+Neto (Desilio) <i> desilio@gmail.com</i>\n
+Diêgo <i> diegonunes.sistema@gmail.com</i>\n
+Breno Brito <i> breno.caldeira@gmail.com</i>\n
+Felipe Toledo <i> felipetgoliveira@gmail.com</i>\n
 \n
-<b>Contribuições</b>\n
-Felipe Toledo <i>&lt;felipetgoliveira@gmail.com&gt;</i>\n
-Thiago Cruz <i>&lt;thiago.motoca@gmail.com&gt;</i>\n
+<b>Repositório</b>\n
+http://code.google.com/p/android-brasil-projetos
 	</string>
 <string name="error_hour_invalid">Erro! horas/aula errado</string>
 </resources>
