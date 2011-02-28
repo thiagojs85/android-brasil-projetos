@@ -71,10 +71,10 @@ public class ListaMaterias extends TelaListaBasica{
         switch(item.getItemId()) {
               
 		case LARCAR_NOTAS_ID:
-			setActionOnEditItem(item);            
+			setActionOnNotaItem(item);            
 		return true;
 		case FAZER_CHAMADA_ID:
-			setActionOnDeleteItem(item);
+			setActionOnChamadaItem(item);
         return true;
     }
         return super.onContextItemSelected(item);
@@ -123,6 +123,14 @@ public class ListaMaterias extends TelaListaBasica{
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 		idDelete = (new Long(info.id).longValue());
 		showDialog(DIALOG_DELETAR);
+	}
+	
+	public void setActionOnNotaItem(MenuItem item){
+		//TODO: acao do longpress lancar nota
+	}
+	
+	public void setActionOnChamadaItem(MenuItem item){
+		//TODO: acao do longpress fazer chamada
 	}
 	
 	/**
