@@ -85,7 +85,8 @@ public class ListaMaterias extends TelaListaBasica{
 	public void onClick(View v) {
 		
     	Intent i = new Intent(this, CadastroMateria.class);
-    	
+    	i.putExtra(DbAdapter.COLUMN_ID_TURMA, 
+    			this.getIntent().getLongExtra(DbAdapter.COLUMN_ID, 0));
     	startActivityForResult(i, ADD_ID);
 	}
 
@@ -145,7 +146,7 @@ public class ListaMaterias extends TelaListaBasica{
 				builder.setMessage(R.string.dialog_delete).setCancelable(false);
 				builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
-						mDbAdapter.removerProfessor(idDelete);
+						mDbAdapter.removerMateria(idDelete);
 					}
 				});
 				builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
