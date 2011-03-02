@@ -634,13 +634,12 @@ public class DbAdapter {
 				
 				while(!cursor.isAfterLast()) {
 					removerMatricula(COLUMN_ID_MATERIA, cursor.getLong(0));
+					removerMateria(cursor.getLong(0));
 					cursor.moveToNext();
 				}
 				
 				cursor.close();
 			}
-			
-			removerMateria(cursor.getLong(0));
 			
 			mDb.setTransactionSuccessful();
 			resultado = true;
