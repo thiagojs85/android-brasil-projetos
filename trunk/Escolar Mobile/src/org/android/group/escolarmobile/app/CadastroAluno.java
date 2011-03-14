@@ -1,5 +1,6 @@
 package org.android.group.escolarmobile.app;
 
+import org.android.group.escolarmobile.app.student.AlunoVO;
 import org.android.group.escolarmobile.conn.DbAdapter;
 import org.group.dev.R;
 
@@ -14,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 public class CadastroAluno extends Activity{
 	
@@ -21,6 +23,7 @@ public class CadastroAluno extends Activity{
 	private Button ok, cancelar, cadastrar;
 	private EditText nomeAluno, idade, registroMatricula;
 	private long editId = -1;
+	private long idTurma;
 	private DbAdapter mDbAdapter = null;
 
 	@Override
@@ -32,9 +35,11 @@ public class CadastroAluno extends Activity{
 		LinearLayout rl = (LinearLayout) findViewById(R.id.container);
 		LayoutInflater layoutInflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		// Essa parte pode ser controlada por um metodo que retorne qual o
-		// layout a ser inserido
-		// no layout padrão para cadastro
+		// layout a ser inserido no layout padrão para cadastro
 		rl.addView(layoutInflater.inflate(R.layout.cadastro_alunos, null, false));
+		
+		idTurma = this.getIntent().getLongExtra(DbAdapter.COLUMN_ID_TURMA, 0);
+		editId = this.getIntent().getLongExtra(DbAdapter.COLUMN_ID, -1);
 
 		ok = (Button) findViewById(R.id.bt_ok);
 		cancelar = (Button) findViewById(R.id.bt_cancelar);
@@ -43,59 +48,59 @@ public class CadastroAluno extends Activity{
 		idade = (EditText) findViewById(R.id.et_idade_aluno);
 		registroMatricula = (EditText) findViewById(R.id.et_registro_matricula);
 		
-		cadastrar.setVisibility(4); //deixa o bot�o cadastrar invis�vel
-		
-
-		/*mDbAdapter = new DbAdapter(this).open();
-		Bundle bundle = getIntent().getExtras();
-
-		if (bundle != null) {
-			editId = bundle.getLong(DbAdapter.COLUMN_ID);
-			TurmaVO turmaVO = mDbAdapter.consultarTurma(editId);
-
-			if (turmaVO != null) {
-				turma.setText(turmaVO.getNome());
-				descricao.setText(turmaVO.getDescricao());
+		if(editId > -1) {
+			mDbAdapter = new DbAdapter(this).open();
+			AlunoVO aluno = mDbAdapter.consultarAluno(editId);
+			
+			if(aluno != null) {
+				nomeAluno.setText(aluno.getNome());
+				idade.setText(aluno.getDataNascimento());
+				registroMatricula.setText(aluno.getRegistro());
+				idTurma = aluno.getIdTurma();
 			}
-		}*/
+			mDbAdapter.close();
+		}
+		
+		cadastrar.setVisibility(4); //deixa o botão cadastrar invisível
 
 		ok.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				/*TurmaVO turmaVO = new TurmaVO();
-
+				AlunoVO aluno = new AlunoVO();
+				
 				// Valida as informações antes de salvar no banco.
-				if (turma.getText().toString().trim().length() < 1) {
-					Toast.makeText(CadastroTurmas.this, R.string.error_name_invalid, Toast.LENGTH_LONG).show();
+				if(nomeAluno.getText().toString().trim().length() < 1) {
+					Toast.makeText(CadastroAluno.this, R.string.error_name_invalid, Toast.LENGTH_LONG).show();
 					return;
-				} else if (descricao.getText().toString().trim().length() < 1) {
-					Toast.makeText(CadastroTurmas.this, R.string.error_description_invalid, Toast.LENGTH_LONG).show();
+				} else if(registroMatricula.getText().toString().trim().length() < 1) {
+					Toast.makeText(CadastroAluno.this, R.string.error_rm_invalid, Toast.LENGTH_LONG).show();
+					return;
+				} else if(idTurma == 0) {
+					Toast.makeText(CadastroAluno.this, R.string.error_turma_not_found, Toast.LENGTH_LONG).show();
 					return;
 				}
-
-				turmaVO.setNome(turma.getText().toString().trim());
-				turmaVO.setDescricao(descricao.getText().toString().trim());
-
-				mDbAdapter = new DbAdapter(CadastroTurmas.this).open();
-
+				
+				aluno.setNome(nomeAluno.getText().toString().trim());
+				aluno.setRegistro(registroMatricula.getText().toString().trim());
+				aluno.setIdTurma(idTurma);
+				aluno.setDataNascimento(idade.getText().toString().trim());
+				
+				mDbAdapter = new DbAdapter(CadastroAluno.this).open();
+				
 				boolean registroOk = false;
-
-				// Se não houver id, é uma nova entrada; caso contrário, é
-				// atualização de um registro existente.
-				if (editId == -1) {
-					if (mDbAdapter.inserirTurma(turmaVO) > -1) {
-						registroOk = true;
-					}
+				
+				if(editId == -1) {
+					registroOk = mDbAdapter.inserirAluno(aluno) > -1;
 				} else {
-					turmaVO.setId(editId);
-					registroOk = mDbAdapter.atualizarTurma(turmaVO);
+					aluno.setId(editId);
+					registroOk = mDbAdapter.atualizarAluno(aluno);
 				}
-
-				if (registroOk) {
-					Toast.makeText(CadastroTurmas.this, R.string.data_inserted_success, Toast.LENGTH_LONG).show();
-					CadastroTurmas.this.finish();
+				
+				if(registroOk) {
+					Toast.makeText(CadastroAluno.this, R.string.data_inserted_success, Toast.LENGTH_LONG).show();
+					CadastroAluno.this.finish();
 				} else {
-					Toast.makeText(CadastroTurmas.this, R.string.data_inserted_error, Toast.LENGTH_LONG).show();
-				}*/
+					Toast.makeText(CadastroAluno.this, R.string.data_inserted_error, Toast.LENGTH_LONG).show();
+				}
 			}
 		});
 
@@ -110,10 +115,10 @@ public class CadastroAluno extends Activity{
 	}
 
 	/**
-	 * Fun��o que cria os di�logos utilizados nesta activity.
+	 * Função que cria os diálogos utilizados nesta activity.
 	 * 
 	 * @param id
-	 *            identifica��o do di�logo que deve ser criado.
+	 *            identificação do diálogo que deve ser criado.
 	 */
 	protected Dialog onCreateDialog(int id) {
 		switch (id) {

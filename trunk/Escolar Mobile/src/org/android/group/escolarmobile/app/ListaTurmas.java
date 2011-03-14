@@ -113,7 +113,7 @@ public class ListaTurmas extends TelaListaBasica {
 	
 	public void setActionOnViewItem(MenuItem item){
 		Intent i = new Intent(this, ListaAlunos.class);
-		
+		i.putExtra(DbAdapter.COLUMN_ID_TURMA, Long.parseLong(String.valueOf(item.getItemId())));
 		startActivityForResult(i, VISUALIZAR_ALUNO_ID);
 		
 	}

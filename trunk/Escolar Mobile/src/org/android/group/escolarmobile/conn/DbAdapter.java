@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.android.group.escolarmobile.app.student.AlunoVO;
-import org.android.group.escolarmobile.app.student.MatriculaVO;
 import org.android.group.escolarmobile.app.student.PresencaVO;
 import org.android.group.escolarmobile.app.subject.MateriaVO;
 import org.android.group.escolarmobile.app.subject.NotaVO;
@@ -33,7 +32,8 @@ public class DbAdapter {
 	public static final String TABLE_ALUNO = "Aluno";
 	public static final String TABLE_PRESENCA = "Presenca";
 	public static final String TABLE_MATERIA = "Materia";
-	public static final String TABLE_MATERIA_TURMA = "MateriaTurma";
+//	public static final String TABLE_MATERIA_TURMA = "MateriaTurma";
+//	public static final String TABLE_MATRICULA = "Matricula";
 	public static final String TABLE_MATRICULA = "Matricula";
 	public static final String TABLE_NOTA = "Nota";
 	public static final String TABLE_PROFESSOR = "Professor";
@@ -63,7 +63,7 @@ public class DbAdapter {
 	
 	private static final String CREATE_ALUNO = 
 		"CREATE TABLE " + TABLE_ALUNO + "(" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-		COLUMN_REGISTRO + "TEXT NOT NULL, " + COLUMN_NOME + " TEXT NOT NULL, " + COLUMN_ID_TURMA +
+		COLUMN_REGISTRO + " TEXT NOT NULL, " + COLUMN_NOME + " TEXT NOT NULL, " + COLUMN_ID_TURMA +
 		" INTEGER NOT NULL, " + COLUMN_DATA_NASCIMENTO + " DATE);";
 	private static final String CREATE_PRESENCA = 
 		"CREATE TABLE Presenca (_id INTEGER PRIMARY KEY AUTOINCREMENT, data DATE NOT NULL, id_matricula INTEGER NOT NULL, presenca TEXT NOT NULL);";
@@ -73,14 +73,17 @@ public class DbAdapter {
 		"CREATE TABLE " + TABLE_MATERIA + " (" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
 		COLUMN_ID_PROFESSOR + " INTEGER NOT NULL, " + COLUMN_NOME + " TEXT NOT NULL, " + COLUMN_HORAS +
 		" INTEGER, " + COLUMN_DESCRICAO + " TEXT, " + COLUMN_PADRAO + " TEXT);";
-	private static final String CREATE_MATRICULA = 
-		"CREATE TABLE Matricula (_id INTEGER PRIMARY KEY AUTOINCREMENT, id_aluno INTEGER NOT NULL, id_turma INTEGER NOT NULL, id_materia INTEGER NOT NULL);";
+//	private static final String CREATE_MATRICULA = 
+//		"CREATE TABLE Matricula (_id INTEGER PRIMARY KEY AUTOINCREMENT, id_aluno INTEGER NOT NULL, id_turma INTEGER NOT NULL, id_materia INTEGER NOT NULL);";
 	private static final String CREATE_NOTA = 
 		"CREATE TABLE Nota (_id INTEGER PRIMARY KEY AUTOINCREMENT, id_matricula INTEGER NOT NULL, periodo INTEGER NOT NULL, nota FLOAT NOT NULL);";
 	private static final String CREATE_TURMA = 
 		"CREATE TABLE Turma (_id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT NOT NULL, descricao TEXT);";
-	private static final String CREATE_MATERIA_TURMA = 
-		"CREATE TABLE MateriaTurma (_id INTEGER PRIMARY KEY AUTOINCREMENT, id_materia INTEGER NOT NULL, id_turma INTEGER NOT NULL);";
+//	private static final String CREATE_MATERIA_TURMA = 
+//		"CREATE TABLE MateriaTurma (_id INTEGER PRIMARY KEY AUTOINCREMENT, id_materia INTEGER NOT NULL, id_turma INTEGER NOT NULL);";
+	private static final String CREATE_MATRICULA= 
+		"CREATE TABLE " + TABLE_MATRICULA + "(" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+		COLUMN_ID_MATERIA + " INTEGER NOT NULL, " + COLUMN_ID_TURMA + " INTEGER NOT NULL);";
 	
 	private final Context mCtx;
 	private DatabaseHelper mDbHelper;
@@ -105,7 +108,7 @@ public class DbAdapter {
 			db.execSQL(CREATE_MATRICULA);
 			db.execSQL(CREATE_PRESENCA);
 			db.execSQL(CREATE_NOTA);
-			db.execSQL(CREATE_MATERIA_TURMA);
+//			db.execSQL(CREATE_MATERIA_TURMA);
 			
 			insertDummyData(db);
 		}
@@ -118,19 +121,22 @@ public class DbAdapter {
 		 */
 		private void insertDummyData(SQLiteDatabase db) {
 			Log.v(TAG, "Creating dummy data in tables...");
-			String sql = "INSERT INTO Professor(login, nome, senha) VALUES(?,?,?)";
+			String sql = "INSERT INTO " + TABLE_PROFESSOR + "(" + COLUMN_LOGIN + ", " +
+					COLUMN_NOME + ", " + COLUMN_SENHA + ") VALUES(?,?,?)";
 			db.execSQL(sql, new String[]{"otavio", "Otavio K Rofatto", "123"});
 			db.execSQL(sql, new String[]{"julio", "Julio Cotta", "123"});
 			db.execSQL(sql, new String[]{"neto", "Neto", "123"});
 			
-			sql = "INSERT INTO Turma(nome, descricao) VALUES(?,?)";
+			sql = "INSERT INTO " + TABLE_TURMA + "(" + COLUMN_NOME + ", " +
+					COLUMN_DESCRICAO + ") VALUES(?,?)";
 			db.execSQL(sql, new String[]{"1a. A", "Primeiro Ano - Classe A"});
 			db.execSQL(sql, new String[]{"1a. B", "Primeiro Ano - Classe B"});
 			db.execSQL(sql, new String[]{"2a. A", "Segundo Ano - Classe A"});
 			db.execSQL(sql, new String[]{"3a. A", "Terceiro Ano - Classe A"});
 			
-			sql = "INSERT INTO Materia(id_professor, nome, horas, descricao, padrao) VALUES(" +
-						"(SELECT _id FROM Professor WHERE login = ?),?,?,?,?)";
+			sql = "INSERT INTO " + TABLE_MATERIA + "(" + COLUMN_ID_PROFESSOR + ", " +
+					COLUMN_NOME + ", " + COLUMN_HORAS + ", " + COLUMN_DESCRICAO + ", " +
+					COLUMN_PADRAO + ") VALUES((SELECT _id FROM Professor WHERE login = ?),?,?,?,?)";
 			db.execSQL(sql, new String[]{"otavio", "Português (Matéria Teste)", "40", "Este é um teste", "N"});
 			db.execSQL(sql, new String[]{"otavio", "Matemática (Matéria Teste)", "44", "Este é um teste", "N"});
 			db.execSQL(sql, new String[]{"julio", "História (Matéria Teste)", "100", "Este é um teste", "N"});
@@ -139,8 +145,10 @@ public class DbAdapter {
 			db.execSQL(sql, new String[]{"neto", "Biologia (Matéria Teste)", "5", "Este é um teste", "N"});
 			db.execSQL(sql, new String[]{"otavio", "Matéria TESTE (Matéria Teste)", "20", "Este é um padrão", "S"});
 			
-			sql = "INSERT INTO MateriaTurma(id_materia, id_turma) VALUES(" +
-						"(SELECT _id FROM Materia WHERE horas = ?),(SELECT _id FROM Turma WHERE nome = ?))";
+			//sql = "INSERT INTO MateriaTurma(id_materia, id_turma) VALUES(" +
+			sql = "INSERT INTO " + TABLE_MATRICULA + "(" + COLUMN_ID_MATERIA + ", " + 
+					COLUMN_ID_TURMA + ") VALUES((SELECT _id FROM Materia WHERE horas = ?), " +
+					"(SELECT _id FROM Turma WHERE nome = ?))";
 			db.execSQL(sql, new String[]{"40", "1a. A"});
 			db.execSQL(sql, new String[]{"44", "1a. A"});
 			db.execSQL(sql, new String[]{"100", "1a. A"});
@@ -156,12 +164,11 @@ public class DbAdapter {
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 			Log.w(TAG, "Upgrading database from version " + oldVersion + " to " +
 					newVersion + ", which will destroy all old data");
-			db.execSQL("DROP TABLE IF EXISTS " + TABLE_MATERIA_TURMA);
 			db.execSQL("DROP TABLE IF EXISTS " + TABLE_PRESENCA);
 			db.execSQL("DROP TABLE IF EXISTS " + TABLE_NOTA);
 			db.execSQL("DROP TABLE IF EXISTS " + TABLE_MATRICULA);
-			db.execSQL("DROP TABLE IF EXISTS " + TABLE_MATERIA);
 			db.execSQL("DROP TABLE IF EXISTS " + TABLE_ALUNO);
+			db.execSQL("DROP TABLE IF EXISTS " + TABLE_MATERIA);
 			db.execSQL("DROP TABLE IF EXISTS " + TABLE_TURMA);
 			db.execSQL("DROP TABLE IF EXISTS " + TABLE_PROFESSOR);
 			onCreate(db);			
@@ -201,6 +208,22 @@ public class DbAdapter {
 	 * @return Cursor apontando para o primeiro elemento encontrado. NULL se não houver nenhuma entrada.
 	 */
 	public Cursor acessarAlunosPorMaterias(long id) {
+		String sql = "SELECT a.* FROM " + TABLE_ALUNO + " a, " + TABLE_MATRICULA + " m WHERE " +
+				"m." + COLUMN_ID_MATERIA + " = ? AND a." + COLUMN_ID_TURMA + " = m." + COLUMN_ID_TURMA;  
+		Cursor c = mDb.rawQuery(sql, new String[]{String.valueOf(id)});
+		
+		if(c != null) {
+			c.moveToFirst();
+			
+			if(c.isAfterLast()) {
+				return null;
+			} else {
+				return c;
+			}
+		} else {
+			return null;
+		}
+		/*
 		Cursor c = consultar(TABLE_MATRICULA, new String[]{COLUMN_ID, COLUMN_ID_ALUNO}, 
 			    COLUMN_ID_MATERIA, String.valueOf(id));
 		if(c!= null) {
@@ -225,6 +248,7 @@ public class DbAdapter {
 		} else {
 			return null;
 		}
+		*/
 	}
 
 	/**
@@ -340,7 +364,7 @@ public class DbAdapter {
 		mDb.beginTransaction();
 		
 		try {
-			removerMatricula(COLUMN_ID_ALUNO, id);
+			//removerMatricula(COLUMN_ID_ALUNO, id);
 			remover(TABLE_ALUNO, id);
 			mDb.setTransactionSuccessful();
 			resultado = true;
@@ -394,8 +418,8 @@ public class DbAdapter {
 		mDb.beginTransaction();
 		try {
 			success = mDb.update(TABLE_MATERIA, updatedValues, COLUMN_ID + " = " + materiaVO.getId(), null) > 0;
-			success &= limparMateriaTurma(materiaVO.getId());
-			success &= inserirMateriaTurma(materiaVO);
+			success &= limparMatricula(materiaVO.getId());
+			success &= inserirMatricula(materiaVO);
 			
 			if(success) {
 				mDb.setTransactionSuccessful();
@@ -487,7 +511,7 @@ public class DbAdapter {
 	private long[] consultarMateriasPorTurma(long idTurma) {
 		ArrayList<String> resultados = new ArrayList<String>();
 		
-		Cursor c = consultar(TABLE_MATERIA_TURMA, new String[]{COLUMN_ID_MATERIA}, 
+		Cursor c = consultar(TABLE_MATRICULA, new String[]{COLUMN_ID_MATERIA}, 
 				COLUMN_ID_TURMA, String.valueOf(idTurma));
 		
 		if(c != null) {
@@ -521,7 +545,24 @@ public class DbAdapter {
 	 */
 	public Cursor acessarMateriasPorTurma(long idTurma) {
 
-		Cursor c = consultar(TABLE_MATERIA_TURMA, new String[]{COLUMN_ID, COLUMN_ID_MATERIA}, 
+		String sql = "SELECT mt.* FROM " + TABLE_MATERIA + " mt, " + TABLE_MATRICULA + " mc WHERE " +
+				"mc." + COLUMN_ID_TURMA + " = ? AND mt." + COLUMN_ID + " = mc." + COLUMN_ID_MATERIA;  
+		Cursor c = mDb.rawQuery(sql, new String[]{String.valueOf(idTurma)});
+		
+		if(c != null) {
+			c.moveToFirst();
+			
+			if(c.isAfterLast()) {
+				return null;
+			} else {
+				return c;
+			}
+		} else {
+			return null;
+		}
+		
+		/*
+		Cursor c = consultar(TABLE_MATRICULA, new String[]{COLUMN_ID, COLUMN_ID_MATERIA}, 
 			    COLUMN_ID_TURMA, String.valueOf(idTurma));
 		if(c!= null) {
 			c.moveToFirst();
@@ -545,7 +586,7 @@ public class DbAdapter {
 			}
 		} else {
 			return null;
-		}
+		}*/
 	}
 	
 	/**
@@ -572,7 +613,7 @@ public class DbAdapter {
 			try {
 				materiaVO.setId(mDb.insert(TABLE_MATERIA, null, initialValues));
 				success = materiaVO.getId() > 0;
-				success &= inserirMateriaTurma(materiaVO);
+				success &= inserirMatricula(materiaVO);
 				
 				if(success) {
 					mDb.setTransactionSuccessful();
@@ -658,7 +699,7 @@ public class DbAdapter {
 	 * @param materiaVO Informações sobre a matéria (id da matéria e id(s) da(s) turma(s)).
 	 * @return TRUE se bem sucedido; FALSE caso contrário.
 	 */
-	private boolean inserirMateriaTurma(MateriaVO materiaVO) {
+	private boolean inserirMatricula(MateriaVO materiaVO) {
 		boolean success = true;
 		
 		for(int i = 0; i < materiaVO.getIdTurmas().length; i++) {
@@ -667,7 +708,7 @@ public class DbAdapter {
 			initialValues.put(COLUMN_ID_MATERIA, materiaVO.getId());
 			initialValues.put(COLUMN_ID_TURMA, idTurma);
 			
-			success &= mDb.insert(TABLE_MATERIA_TURMA, null, initialValues) > 0;
+			success &= mDb.insert(TABLE_MATRICULA, null, initialValues) > 0;
 		}
 		
 		return success;
@@ -679,8 +720,8 @@ public class DbAdapter {
 	 * @param id Id da matéria.
 	 * @return TRUE.
 	 */
-	private boolean limparMateriaTurma(long id) {
-		mDb.execSQL("DELETE FROM " + TABLE_MATERIA_TURMA + " WHERE " + COLUMN_ID_MATERIA + " = ?", 
+	private boolean limparMatricula(long id) {
+		mDb.execSQL("DELETE FROM " + TABLE_MATRICULA + " WHERE " + COLUMN_ID_MATERIA + " = ?", 
 				new String[]{String.valueOf(id)});
 		return true;
 	}
@@ -690,7 +731,7 @@ public class DbAdapter {
 	 * 
 	 * @param id
 	 * @return uma lista vazia se o aluno não estiver matriculado em nehuma matéria.
-	 */
+	 *
 	public List<MatriculaVO> consultarMatricula(long id) {
 		ArrayList<MatriculaVO> listaMatriculas = new ArrayList<MatriculaVO>();
 		MatriculaVO matricula = null;
@@ -717,7 +758,7 @@ public class DbAdapter {
 		
 		return listaMatriculas;
 		
-	}
+	}*/
 	
 	/**
 	 * Método privado para realizar consultas de matrículas.
@@ -725,13 +766,13 @@ public class DbAdapter {
 	 * @param key Nome da coluna usada como parâmetro na consulta.
 	 * @param value Valor a ser procurado na coluna especificada.
 	 * @return
-	 */
+	 *
 	private Cursor consultarMatricula(String key, String value) {
 		
 		return consultar(TABLE_MATERIA,
 				new String[] {COLUMN_ID, COLUMN_ID_ALUNO, COLUMN_ID_TURMA, COLUMN_ID_MATERIA},
 				key, value);
-	}
+	}*/
 	
 	/**
 	 * Cria um novo registro de matrícula na tabela. Se o registro for incluído com
@@ -739,7 +780,7 @@ public class DbAdapter {
 	 * 
 	 * @param matriculaVO DAO com os dados da matrícula.
 	 * @return rowID ou -1 se falhou.
-	 */
+	 *
 	public long inserirMatricula(MatriculaVO matriculaVO) {
 		// Apesar de ID ser a verdadeira chave do registro, os nomes das matérias devem ser únicos.
 		if(consultarMateria(matriculaVO.getIdMateria()) == null) {
@@ -753,7 +794,7 @@ public class DbAdapter {
 		} else {
 			return -1;
 		}
-	}
+	}*/
 	
 	/**
 	 * Remove a matrícula com o id especificado.
@@ -773,7 +814,7 @@ public class DbAdapter {
 	 * @return <b>TRUE</b>.
 	 */
 	public boolean removerMatricula(String column, long id) {
-		mDb.execSQL("DELETE FROM Matricula WHERE " + column + " = ?", new String[]{String.valueOf(id)});
+		mDb.execSQL("DELETE FROM " + TABLE_MATRICULA + " WHERE " + column + " = ?", new String[]{String.valueOf(id)});
 		return true;
 	}
 	
@@ -1261,7 +1302,8 @@ public class DbAdapter {
 		mDb.beginTransaction();
 		
 		try {
-			removerTurmaMateria(id);
+			//removerTurmaMateria(id);
+			removerMatricula(id);
 			removerAluno(COLUMN_ID_TURMA, id);
 			remover(TABLE_TURMA, id);
 			mDb.setTransactionSuccessful();
@@ -1278,7 +1320,7 @@ public class DbAdapter {
 	 * 
 	 * @param id
 	 * @return
-	 */
+	 *
 	public boolean removerTurmaMateria(long id) {
 		String selection = COLUMN_ID_TURMA + " = ?";
 		String sqlContador = "SELECT count(1) FROM MateriaTurma WHERE id_materia = ?";
@@ -1287,7 +1329,7 @@ public class DbAdapter {
 		
 		Cursor c = null;
 		try {
-			c = mDb.query(TABLE_MATERIA_TURMA, new String[]{COLUMN_ID_MATERIA}, 
+			c = mDb.query(TABLE_MATRICULA, new String[]{COLUMN_ID_MATERIA}, 
 					selection, new String[]{String.valueOf(id)}, null, null, null);
 			
 			if(c != null) {
@@ -1297,7 +1339,7 @@ public class DbAdapter {
 					long idMateria = c.getLong(0);
 					
 					// Deletar registro da matéria para aquela turma.
-					mDb.delete(TABLE_MATERIA_TURMA, 
+					mDb.delete(TABLE_MATRICULA, 
 							selection + " AND " + COLUMN_ID_MATERIA + " = ?",
 							new String[]{String.valueOf(id), String.valueOf(idMateria)});
 					
@@ -1339,7 +1381,7 @@ public class DbAdapter {
 			}
 		}
 		return resultado;
-	}
+	}*/
 	
 	/**
 	 * Método genérico para efetuar consultas às tabelas, utilizando a chave fornecida.
@@ -1452,10 +1494,9 @@ public class DbAdapter {
 				values.put(COLUMN_ID_MATERIA, c.getLong(0));
 				values.put(COLUMN_ID_TURMA, id);
 				
-				mDb.insert(TABLE_MATERIA_TURMA, null, values);
+				mDb.insert(TABLE_MATRICULA, null, values);
 				c.moveToNext();
 			}
-		}
-		
+		}	
 	}
 }

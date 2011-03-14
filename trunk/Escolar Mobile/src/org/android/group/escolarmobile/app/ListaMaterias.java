@@ -41,7 +41,7 @@ public class ListaMaterias extends TelaListaBasica{
         // Quando o usuário clica em uma das matérias da lista, exibe a lista de alunos para chamada.
         this.getListView().setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> context, View view, int position, long id) {
-				Intent i = new Intent(ListaMaterias.this, ListaAlunos.class).putExtra("id", id);
+				Intent i = new Intent(ListaMaterias.this, ListaAlunos.class).putExtra(DbAdapter.COLUMN_ID_TURMA, id);
 		
 				startActivity(i);				
 			}
