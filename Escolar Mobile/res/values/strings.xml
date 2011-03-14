@@ -34,7 +34,9 @@
 	<string name="materia_padrao_label">Esta é uma matéria padrão</string>
 	
 	<string name="error_name_invalid">Erro! Nome inválido!</string>
+	<string name="error_rm_invalid">Erro! Registro de Matrícula inválido!</string>
 	<string name="error_description_invalid">Erro! Descrição inválida!</string>
+	<string name="error_turma_not_found">Erro! Turma não encontrada!</string>
 	<string name="data_inserted_success">Registro inserido com sucesso!</string>
 	<string name="data_inserted_error">Erro ao inserir registro!</string>
 	<string name="adicionar_turma">Adicionar Turma</string>
