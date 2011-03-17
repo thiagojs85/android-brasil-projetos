@@ -19,10 +19,13 @@ public class ListaAlunos extends TelaListaBasica {
 	private static final int DIALOG_DELETAR = 0;
 	private long idDelete;
 	private long idTurma;
-	
+	//private boolean isMultiItensSelectable;
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    	//isMultiItensSelectable tem que ser setado antes de chamar o super.onCreate(savedInstanceState); 
+    	//isMultiItensSelectable = this.getIntent().getBooleanExtra("isMultiItensSelectable", false);
+    	
+    	super.onCreate(savedInstanceState);
         Button ibt = (Button)findViewById(R.id.add);
         ibt.setText(R.string.adicionar_aluno);//sobrescreve a string original do xml
         
@@ -33,7 +36,8 @@ public class ListaAlunos extends TelaListaBasica {
     @Override
 	protected boolean isMultiItensSelectable() {
 		// Caso queira que os itens da lista sejam selecionaveis, fazer retornar true
-		return false;
+		//return isMultiItensSelectable;
+    	return false;
 	}
     
     

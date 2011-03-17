@@ -163,9 +163,11 @@ public class EscolarMobile extends Activity {
     	    startActivityForResult(i, 0);
             return true;
         case R.id.menu_alunos:
-        	i = new Intent(this, ListaAlunos.class);
-    	    startActivityForResult(i, 0);
+          	i = new Intent(this, ListaAlunos.class);
+        	//i.putExtra("isMultiItensSelectable",true);
+        	startActivityForResult(i, 0);
             return true;
+
         case R.id.menu_sobre:
         	i = new Intent(this, Sobre.class);
     	    startActivityForResult(i, 0);
