@@ -26,6 +26,7 @@ public abstract class TelaListaBasica extends ListActivity implements OnClickLis
 	protected String[] itens;
 	
 	protected DbAdapter mDbAdapter;
+	protected Cursor c;
 	
 
     @Override
@@ -38,31 +39,7 @@ public abstract class TelaListaBasica extends ListActivity implements OnClickLis
         btAdd = (Button) findViewById(R.id.add);
 		registerForContextMenu(getListView());
 		
-		Cursor c = getItensCursor();
-		if(c != null) {
-			startManagingCursor(c);
-		}
-		
-		if(isMultiItensSelectable()){
-			// TODO [Otavio] Esta parte ainda não foi testada, pois nenhuma activity usou esta funcionalidade!
-
-			setListAdapter(new SimpleCursorAdapter(this, 
-					android.R.layout.simple_list_item_multiple_choice, 
-					c, 
-					new String[]{DbAdapter.COLUMN_NOME}, //tem que adicionar a coluna DbAdapter.COLUMN_REGISTRO aqui
-					new int[]{android.R.id.text1}));
-			
-			getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-		}else{
-			// A criação deste ListAdapter é praticamente a mesma utilizada no tutorial do Notepad.
-			// Mais informações no Step 12 em http://developer.android.com/resources/tutorials/notepad/notepad-ex1.html
-
-			setListAdapter(new SimpleCursorAdapter(this, 
-					R.layout.base_list_item, 
-					c, 
-					new String[]{DbAdapter.COLUMN_NOME}, //tem que adicionar a coluna DbAdapter.COLUMN_REGISTRO aqui
-					new int[]{R.id.n_prontuario}));
-		}
+		updateItens();
         btAdd.setOnClickListener(this);
     }
 
@@ -101,6 +78,39 @@ public abstract class TelaListaBasica extends ListActivity implements OnClickLis
     	if(mDbAdapter != null) {
     		mDbAdapter.close();
     	}
+    }
+    
+    /**
+     * Este método procura os ítens que farão parte da lista exibida pela atividade.
+     * Ele é chamado automaticamente na criação da tela, mas para se atualizar a lista
+     * de ítens posteriormente, deve-se chamar este método.
+     */
+    public void updateItens() {
+    	c = getItensCursor();
+		if(c != null) {
+			startManagingCursor(c);
+		}
+		
+		if(isMultiItensSelectable()){
+			// TODO [Otavio] Esta parte ainda não foi testada, pois nenhuma activity usou esta funcionalidade!
+
+			setListAdapter(new SimpleCursorAdapter(this, 
+					android.R.layout.simple_list_item_multiple_choice, 
+					c, 
+					new String[]{DbAdapter.COLUMN_NOME}, //tem que adicionar a coluna DbAdapter.COLUMN_REGISTRO aqui
+					new int[]{android.R.id.text1}));
+			
+			getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+		}else{
+			// A criação deste ListAdapter é praticamente a mesma utilizada no tutorial do Notepad.
+			// Mais informações no Step 12 em http://developer.android.com/resources/tutorials/notepad/notepad-ex1.html
+
+			setListAdapter(new SimpleCursorAdapter(this, 
+					R.layout.base_list_item, 
+					c, 
+					new String[]{DbAdapter.COLUMN_NOME}, //tem que adicionar a coluna DbAdapter.COLUMN_REGISTRO aqui
+					new int[]{R.id.n_prontuario}));
+		}
     }
 
     public abstract void onClick(View v);
