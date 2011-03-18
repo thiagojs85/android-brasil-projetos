@@ -674,15 +674,15 @@ public class DbAdapter {
 				cursor.moveToFirst();
 				
 				while(!cursor.isAfterLast()) {
-					removerMatricula(COLUMN_ID_MATERIA, cursor.getLong(0));
 					removerMateria(cursor.getLong(0));
 					cursor.moveToNext();
 				}
 				
 				cursor.close();
 			}
-			
-			mDb.setTransactionSuccessful();
+			if(!transacaoExterna) {
+				mDb.setTransactionSuccessful();
+			}
 			resultado = true;
 		} finally {
 			if(!transacaoExterna) {

@@ -147,6 +147,7 @@ public class ListaMaterias extends TelaListaBasica{
 				builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
 						mDbAdapter.removerMateria(idDelete);
+						ListaMaterias.super.updateItens();
 					}
 				});
 				builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
