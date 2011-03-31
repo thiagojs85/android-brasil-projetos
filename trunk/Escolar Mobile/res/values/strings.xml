@@ -84,4 +84,5 @@ Felipe Toledo <i> felipetgoliveira@gmail.com</i>\n
 http://code.google.com/p/android-brasil-projetos
 	</string>
 <string name="error_hour_invalid">Erro! horas/aula errado</string>
+<string name="visualizar_alunos">Visualizar alunos</string>
 </resources>
