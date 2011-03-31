@@ -21,7 +21,7 @@ import android.widget.AdapterView.OnItemClickListener;
 
 public class ListaTurmas extends TelaListaBasica {
 	
-	protected static final int VISUALIZAR_ALUNO_ID = DELETE_ID + 1;
+	protected static final int VISUALIZAR_ALUNOS_ID = DELETE_ID + 1;
 	
 	private long idDelete;
 
@@ -53,7 +53,7 @@ public class ListaTurmas extends TelaListaBasica {
 			ContextMenuInfo menuInfo) {
 		
 		super.onCreateContextMenu(menu, v, menuInfo);
-		menu.add(Menu.NONE, VISUALIZAR_ALUNO_ID, 0, R.string.visualizar_aluno);
+		menu.add(Menu.NONE, VISUALIZAR_ALUNOS_ID, 0, R.string.visualizar_alunos);
 
 	}
 
@@ -66,7 +66,7 @@ public class ListaTurmas extends TelaListaBasica {
         case DELETE_ID:
         	setActionOnDeleteItem(item);
             return true;
-        case VISUALIZAR_ALUNO_ID:
+        case VISUALIZAR_ALUNOS_ID:
         	setActionOnViewItem(item);
         }
         return super.onContextItemSelected(item);
@@ -114,7 +114,7 @@ public class ListaTurmas extends TelaListaBasica {
 	public void setActionOnViewItem(MenuItem item){
 		Intent i = new Intent(this, ListaAlunos.class);
 		i.putExtra(DbAdapter.COLUMN_ID_TURMA, Long.parseLong(String.valueOf(item.getItemId())));
-		startActivityForResult(i, VISUALIZAR_ALUNO_ID);
+		startActivityForResult(i, VISUALIZAR_ALUNOS_ID);
 		
 	}
 	
@@ -131,6 +131,7 @@ public class ListaTurmas extends TelaListaBasica {
 				builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
 						mDbAdapter.removerTurma(idDelete);
+						ListaTurmas.super.updateItens();
 					}
 				});
 				builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {

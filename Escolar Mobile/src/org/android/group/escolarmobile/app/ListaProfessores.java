@@ -88,6 +88,7 @@ public class ListaProfessores extends TelaListaBasica {
 				builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
 						mDbAdapter.removerProfessor(idDelete);
+						ListaProfessores.super.updateItens();
 					}
 				});
 				builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
