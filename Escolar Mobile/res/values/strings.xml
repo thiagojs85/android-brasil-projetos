@@ -85,4 +85,6 @@ http://code.google.com/p/android-brasil-projetos
 	</string>
 <string name="error_hour_invalid">Erro! horas/aula errado</string>
 <string name="visualizar_alunos">Visualizar alunos</string>
+<string name="numero_faltas">Número  de faltas</string>
+<string name="lancar_faltas">Lançar Faltas</string>
 </resources>

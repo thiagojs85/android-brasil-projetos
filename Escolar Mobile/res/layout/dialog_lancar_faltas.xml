@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+    <DatePicker android:id="@+id/datePicker"
+    	android:layout_height="wrap_content" 
+    	android:layout_width="wrap_content"  
+    	android:layout_alignParentTop="true"
+    	android:layout_centerInParent="true">
+    </DatePicker>
+    <TextView android:id="@+id/tNumeroFaltas"
+    	android:layout_height="wrap_content" 
+    	android:layout_width="wrap_content"
+    	android:text="@string/numero_faltas"
+    	android:layout_below="@+id/datePicker">
+    </TextView>
+    <EditText  android:id="@+id/eNumeroFaltas"
+    	android:layout_height="wrap_content" 
+    	android:layout_width="40sp" 	 
+    	android:layout_below="@+id/tNumeroFaltas">
+    </EditText>
+    <Button android:id="@+id/blancarFaltas"
+    	android:layout_height="wrap_content" 
+    	android:layout_width="wrap_content"  
+   		android:text="@string/lancar_notas"  
+    	android:layout_below="@+id/eNumeroFaltas">
+    </Button>
+    <Button  android:id="@+id/bCancelar"
+    	android:layout_height="wrap_content" 
+    	android:layout_width="wrap_content" 
+    	android:layout_toRightOf="@+id/blancarFaltas"
+    	android:layout_below="@+id/eNumeroFaltas" 
+    	android:text="@string/cancel">
+    </Button>
+</RelativeLayout>

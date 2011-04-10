@@ -131,7 +131,8 @@ public class ListaMaterias extends TelaListaBasica{
 	}
 	
 	public void setActionOnChamadaItem(MenuItem item){
-		//TODO: acao do longpress fazer chamada
+		Intent i = new Intent(ListaMaterias.this, ListaAlunos.class).putExtra("chamada", true);
+		startActivity(i);
 	}
 	
 	/**
