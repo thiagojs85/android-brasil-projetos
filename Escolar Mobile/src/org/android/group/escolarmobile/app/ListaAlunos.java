@@ -1,7 +1,8 @@
 package org.android.group.escolarmobile.app;
 
+import java.sql.Date;
 
-
+import org.android.group.escolarmobile.app.student.PresencaVO;
 import org.android.group.escolarmobile.conn.DbAdapter;
 import org.group.dev.R;
 
@@ -14,10 +15,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.Toast;
 
 public class ListaAlunos extends TelaListaBasica {
 
@@ -25,6 +27,7 @@ public class ListaAlunos extends TelaListaBasica {
 	private static final String LISTA_ALUNOS = "lista_alunos";
 	private long idDelete;
 	private long idTurma;
+	private DatePicker datapicker;
 	private boolean isMultiItensSelectable;
 	
 	
@@ -130,34 +133,42 @@ public class ListaAlunos extends TelaListaBasica {
 		}
 	}
 	
-private void dialogFaltas(){   	 
+	private void dialogFaltas(){   	 
     	
     	final Dialog dialog = new Dialog(this);
     	
     	dialog.setContentView(R.layout.dialog_lancar_faltas);
     	dialog.setTitle(R.string.lancar_faltas);
     	
-    	DatePicker datapicker = (DatePicker) dialog.findViewById(R.id.datePicker);
+    	datapicker = (DatePicker) dialog.findViewById(R.id.datePicker);
     		
     	final EditText numeroFaltas = (EditText) dialog.findViewById(R.id.eNumeroFaltas);
     	
-    	final Button lacarFaltas = (Button) dialog.findViewById(R.id.blancarFaltas);
+    	final Button lancarFaltas = (Button) dialog.findViewById(R.id.blancarFaltas);
     	final Button cancelar = (Button) dialog.findViewById(R.id.bCancelar);
     	
     	
     	
-    	lacarFaltas.setOnClickListener(new View.OnClickListener() {
+    	lancarFaltas.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
+				Date date = new Date(datapicker.getYear() - 1900, datapicker.getMonth(), datapicker.getDayOfMonth());
+				long[] ids = ListaAlunos.this.getListView().getCheckItemIds();
+				PresencaVO presencaVO = new PresencaVO();
+				presencaVO.setFalta(Integer.parseInt(numeroFaltas.getText().toString()));
+				presencaVO.setData(date);
+				for(long id : ids) {
+					presencaVO.setIdAluno(id);
+					mDbAdapter.inserirPresenca(presencaVO);
+				}
 				
-				//TODO: SALVAR AS FALTAS NO BANCO DE DADOS
+				dialog.dismiss();
+				Toast.makeText(ListaAlunos.this, R.string.lcto_faltas_sucesso, Toast.LENGTH_LONG).show();
 			}
 		});
     	
     	cancelar.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				
 				dialog.dismiss();
-				
 			}
 		});
 	
