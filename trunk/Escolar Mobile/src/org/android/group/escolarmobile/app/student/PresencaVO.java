@@ -5,8 +5,8 @@ import java.sql.Date;
 public class PresencaVO {
 	private long id;
 	private Date data;
-	private long idMatricula;
-	private boolean presente;
+	private long idAluno;
+	private int falta;
 	
 	public Long getId() {
 		return id;
@@ -22,16 +22,16 @@ public class PresencaVO {
 	public void setData(Date data) {
 		this.data = data;
 	}
-	public long getIdMatricula() {
-		return idMatricula;
+	public long getIdAluno() {
+		return idAluno;
 	}
-	public void setIdMatricula(long idMatricula) {
-		this.idMatricula = idMatricula;
+	public void setIdAluno(long idMatricula) {
+		this.idAluno = idMatricula;
 	}
-	public boolean isPresente() {
-		return presente;
+	public int getFalta() {
+		return falta;
 	}
-	public void setPresente(boolean presente) {
-		this.presente = presente;
+	public void setFalta(int falta) {
+		this.falta = falta;
 	}
 }
