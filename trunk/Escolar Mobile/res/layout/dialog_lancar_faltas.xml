@@ -23,7 +23,7 @@
     <Button android:id="@+id/blancarFaltas"
     	android:layout_height="wrap_content" 
     	android:layout_width="wrap_content"  
-   		android:text="@string/lancar_notas"  
+   		android:text="@string/finalizar_chamada"  
     	android:layout_below="@+id/eNumeroFaltas">
     </Button>
     <Button  android:id="@+id/bCancelar"

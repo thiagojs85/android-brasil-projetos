@@ -20,8 +20,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 /**
- * Classe para comunicaÁ„o com o banco de dados. Realiza todas as operaÁıes de criaÁ„o, inserÁ„o, remoÁ„o, 
- * atualizaÁ„o e consulta.
+ * Classe para comunica√ß√£o com o banco de dados. Realiza todas as opera√ß√µes de cria√ß√£o, inser√ß√£o, remo√ß√£o, 
+ * atualiza√ß√£o e consulta.
  * 
  * @author Otavio
  *
@@ -87,7 +87,7 @@ public class DbAdapter {
 	private SQLiteDatabase mDb;
 
 	/**
-	 * Esta inner class È respons·vel pelos controles de criaÁ„o, atualizaÁ„o e instanciaÁ„o do gerenciador do banco de dados.
+	 * Esta inner class √© respons√°vel pelos controles de cria√ß√£o, atualiza√ß√£o e instancia√ß√£o do gerenciador do banco de dados.
 	 * @author Otavio
 	 *
 	 */
@@ -110,8 +110,8 @@ public class DbAdapter {
 		}
 		
 		/**
-		 * Este mÈtodo deve apenas inserir alguns dados para fins de testes.
-		 * N„o est· claro se dever· ficar na vers„o final como valores default.
+		 * Este m√©todo deve apenas inserir alguns dados para fins de testes.
+		 * N√£o esta claro se dever√° ficar na vers√£o final como valores default.
 		 * 
 		 * @param db
 		 */
@@ -133,13 +133,13 @@ public class DbAdapter {
 			sql = "INSERT INTO " + TABLE_MATERIA + "(" + COLUMN_ID_PROFESSOR + ", " +
 					COLUMN_NOME + ", " + COLUMN_HORAS + ", " + COLUMN_DESCRICAO + ", " +
 					COLUMN_PADRAO + ") VALUES((SELECT _id FROM Professor WHERE login = ?),?,?,?,?)";
-			db.execSQL(sql, new String[]{"otavio", "Portugu√™s (MatÈria Teste)", "40", "Este È um teste", "N"});
-			db.execSQL(sql, new String[]{"otavio", "Matem·tica (MatÈria Teste)", "44", "Este È um teste", "N"});
-			db.execSQL(sql, new String[]{"julio", "HistÛria (MatÈria Teste)", "100", "Este È um teste", "N"});
-			db.execSQL(sql, new String[]{"neto", "F√≠sica (MatÈria Teste)", "85", "Este È um teste", "N"});
-			db.execSQL(sql, new String[]{"neto", "Qu√≠mica (MatÈria Teste)", "10", "Este È um teste", "N"});
-			db.execSQL(sql, new String[]{"neto", "Biologia (MatÈria Teste)", "5", "Este È um teste", "N"});
-			db.execSQL(sql, new String[]{"otavio", "MatÈria TESTE (MatÈria Teste)", "20", "Este È um padr„o", "S"});
+			db.execSQL(sql, new String[]{"otavio", "Portugu√™s (Mat√©ria Teste)", "40", "Este √© um teste", "N"});
+			db.execSQL(sql, new String[]{"otavio", "Matem√©tica (Mat√©ria Teste)", "44", "Este √© um teste", "N"});
+			db.execSQL(sql, new String[]{"julio", "Hist√©ria (Mat√©ria Teste)", "100", "Este √© um teste", "N"});
+			db.execSQL(sql, new String[]{"neto", "F√≠sica (Mat√©ria Teste)", "85", "Este √© um teste", "N"});
+			db.execSQL(sql, new String[]{"neto", "Qu√≠mica (Mat√©ria Teste)", "10", "Este √© um teste", "N"});
+			db.execSQL(sql, new String[]{"neto", "Biologia (Mat√©ria Teste)", "5", "Este √© um teste", "N"});
+			db.execSQL(sql, new String[]{"otavio", "Mat√©ria TESTE (Mat√©ria Teste)", "20", "Este √© um padr√£o", "S"});
 			
 			sql = "INSERT INTO " + TABLE_MATRICULA + "(" + COLUMN_ID_MATERIA + ", " + 
 					COLUMN_ID_TURMA + ") VALUES((SELECT _id FROM Materia WHERE horas = ?), " +
@@ -180,11 +180,11 @@ public class DbAdapter {
 	}
 	
 	/**
-     * Abre o banco de dados. Se n„o puder ser aberto, tenta criar uma nova inst√¢ncia do banco.
-     * Se n„o puder ser criada, lanÁaa uma exceÁ„o para sinalizar a falha.
+     * Abre o banco de dados. Se n√£oo puder ser aberto, tenta criar uma nova inst√¢ncia do banco.
+     * Se n√£o puder ser criada, lan√ßa uma exce√ß√£o para sinalizar a falha.
      * 
-     * @return this (auto-referÔøΩncia, permitindo encadear mÈtodos na inicializaÁ„o).
-     * @throws SQLException se o banco n„o puder ser criado ou instanciado.
+     * @return this (auto-refer√™ncia, permitindo encadear m√©todos na inicializa√ß√£o).
+     * @throws SQLException se o banco n√£o puder ser criado ou instanciado.
      */
 	public DbAdapter open() throws SQLException {
 		mDbHelper = new DatabaseHelper(mCtx);
@@ -197,10 +197,10 @@ public class DbAdapter {
 	}
 	
 	/**
-	 * Recupera os nomes de todos os alunos matriculados na matÈria definida.
+	 * Recupera os nomes de todos os alunos matriculados na mat√©ria definida.
 	 * 
-	 * @param id CÛdigo de identificaÁ„o da matÈria na tabela.
-	 * @return Cursor apontando para o primeiro elemento encontrado. NULL se n„o houver nenhuma entrada.
+	 * @param id C√≥digo de identifica√ß√£o da mat√©ria na tabela.
+	 * @return Cursor apontando para o primeiro elemento encontrado. NULL se n√£o houver nenhuma entrada.
 	 */
 	public Cursor acessarAlunosPorMaterias(long id) {
 		String sql = "SELECT a.* FROM " + TABLE_ALUNO + " a, " + TABLE_MATRICULA + " m WHERE " +
@@ -267,7 +267,7 @@ public class DbAdapter {
 	 * Retorna o registro do aluno com o ID fornecido, se existir.
 	 * 
 	 * @param id
-	 * @return null se n„o encontrar o aluno especificado.
+	 * @return null se n√£o encontrar o aluno especificado.
 	 */
 	public AlunoVO consultarAluno(long id) {
 		AlunoVO aluno = null;
@@ -290,7 +290,7 @@ public class DbAdapter {
 	 * Retorna os dados do aluno indicado.
 	 * 
 	 * @param key Nome para ser procurado.
-	 * @return null se n„o encontrar o aluno especificado.
+	 * @return null se n√£o encontrar o aluno especificado.
 	 */
 	public AlunoVO consultarAluno(String key) {
 		AlunoVO aluno = null;
@@ -313,7 +313,7 @@ public class DbAdapter {
 	}
 	
 	/**
-	 * MÈtodo privado para realizar consultas de alunos.
+	 * M√©todo privado para realizar consultas de alunos.
 	 * 
 	 * @param key Nome da coluna usada como par√¢metro na consulta.
 	 * @param value Valor a ser procurado na coluna especificada.
@@ -327,13 +327,13 @@ public class DbAdapter {
 	
 	/**
 	 * Cria um novo registro de aluno na tabela. Se o registro for inclu√≠do com
-	 * sucesso, o RowID ser· retornado. Em caso de erro, retorna -1.
+	 * sucesso, o RowID ser√° retornado. Em caso de erro, retorna -1.
 	 * 
 	 * @param alunoVO DAO com os dados do aluno.
 	 * @return rowID ou -1 se falhou.
 	 */
 	public long inserirAluno(AlunoVO alunoVO) {
-		// Apesar de ID ser a verdadeira chave do registro, os nomes dos alunos devem ser ˙nicos.
+		// Apesar de ID ser a verdadeira chave do registro, os nomes dos alunos devem ser √∫nicos.
 		if(consultarAluno(alunoVO.getNome()) == null) {
 			ContentValues initialValues = new ContentValues();
 			//initialValues.put(COLUMN_ID, alunoVO.getId());
@@ -349,7 +349,7 @@ public class DbAdapter {
 	}
 	
 	/**
-	 * Remove o aluno com o id especificado. Remove as entradas dependentes tambÈm (entradas na tabela de Matricula).
+	 * Remove o aluno com o id especificado. Remove as entradas dependentes tamb√©m (entradas na tabela de Matricula).
 	 * 
 	 * @param id
 	 * @return
@@ -395,7 +395,7 @@ public class DbAdapter {
 	}
 	
 	/**
-	 * Atualiza o registro de matÈria com os dados fornecidos.
+	 * Atualiza o registro de mat√©ria com os dados fornecidos.
 	 * 
 	 * @param materiaVO
 	 * @return
@@ -427,10 +427,10 @@ public class DbAdapter {
 	}
 	
 	/**
-	 * Retorna o registro da matÈria com o ID fornecido, se existir.
+	 * Retorna o registro da mat√©ria com o ID fornecido, se existir.
 	 * 
 	 * @param id
-	 * @return null se n„o encontrar o aluno especificado.
+	 * @return null se n√£o encontrar o aluno especificado.
 	 */
 	public MateriaVO consultarMateria(long id) {
 		MateriaVO materia = null;
@@ -454,10 +454,10 @@ public class DbAdapter {
 	}	
 	
 	/**
-	 * Retorna os dados da matÈria indicada.
+	 * Retorna os dados da mat√©ria indicada.
 	 * 
 	 * @param key Nome para ser procurado.
-	 * @return null se n„o encontrar o aluno especificado.
+	 * @return null se n√£o encontrar o aluno especificado.
 	 */
 	public MateriaVO consultarMateria(String key) {
 		MateriaVO materia = null;
@@ -484,7 +484,7 @@ public class DbAdapter {
 	}
 	
 	/**
-	 * MÈtodo privado para realizar consultas de alunos.
+	 * M√©todo privado para realizar consultas de alunos.
 	 * 
 	 * @param key Nome da coluna usada como par√¢metro na consulta.
 	 * @param value Valor a ser procurado na coluna especificada.
@@ -498,10 +498,10 @@ public class DbAdapter {
 	}
 	
 	/**
-	 * Consulta todas as matÈrias da turma dada.
+	 * Consulta todas as mat√©rias da turma dada.
 	 * 
-	 * @param idTurma CÛdigo de ID da turma.
-	 * @return vetor de ids das matÈrias encontradas.
+	 * @param idTurma C√≥digo de ID da turma.
+	 * @return vetor de ids das mat√©rias encontradas.
 	 */
 	private long[] consultarMateriasPorTurma(long idTurma) {
 		ArrayList<String> resultados = new ArrayList<String>();
@@ -528,15 +528,15 @@ public class DbAdapter {
 			}
 		}
 		
-		// Se o programa chegar a este ponto, È porque n„o foi encontrada nenhuma matÈria.
+		// Se o programa chegar a este ponto, √© porque n√£o foi encontrada nenhuma mat√©ria.
 		return null;
 	}
 	
 	/**
-	 * Devolve um Cursor com todas as  matÈrias de uma determinada turma.
+	 * Devolve um Cursor com todas as  mat√©rias de uma determinada turma.
 	 * 
-	 * @param idTurma CÛdigo de identificaÁ„o da turma.
-	 * @return Cursor apontando para o primeiro elemento. Se n„o houver nenhuma matÈria, retorna NULL.
+	 * @param idTurma C√≥digo de identifica√ß√£o da turma.
+	 * @return Cursor apontando para o primeiro elemento. Se n√£o houver nenhuma mat√©ria, retorna NULL.
 	 */
 	public Cursor acessarMateriasPorTurma(long idTurma) {
 
@@ -585,16 +585,16 @@ public class DbAdapter {
 	}
 	
 	/**
-	 * Cria um novo registro de matÈria na tabela. Se o registro for inclu√≠do com
-	 * sucesso, o RowID ser· retornado. Em caso de erro, retorna -1.
+	 * Cria um novo registro de mat√©ria na tabela. Se o registro for inclu√≠do com
+	 * sucesso, o RowID ser√° retornado. Em caso de erro, retorna -1.
 	 * 
-	 * @param materiaVO DAO com os dados da matÈria.
+	 * @param materiaVO DAO com os dados da mat√©ria.
 	 * @return rowID ou -1 se falhou.
 	 */
 	public long inserirMateria(MateriaVO materiaVO) {
 		boolean success = false;
 		
-		// Apesar de ID ser a verdadeira chave do registro, os nomes das matÈrias devem ser ˙nicos.
+		// Apesar de ID ser a verdadeira chave do registro, os nomes das mat√©rias devem ser unicos.
 		if(consultarMateria(materiaVO.getNome()) == null) {
 			ContentValues initialValues = new ContentValues();
 			//initialValues.put(COLUMN_ID, alunoVO.getId());
@@ -624,7 +624,7 @@ public class DbAdapter {
 	}
 	
 	/**
-	 * Remove a matÈria com o id especificado.
+	 * Remove a mat√©ria com o id especificado.
 	 * 
 	 * @param id
 	 * @return
@@ -649,8 +649,8 @@ public class DbAdapter {
 	/**
 	 * Remove as materias da tabela que possuam o valor <b>value</b> na coluna <b>column</b>.
 	 * 
-	 * @param column Coluna considerada para deleÁ„o.
-	 * @param value Valor considerado para deleÁ„o.
+	 * @param column Coluna considerada para dele√ß√£o.
+	 * @param value Valor considerado para dele√ß√£o.
 	 * @return
 	 */
 	public boolean removerMateria(String column, long value) {
@@ -689,10 +689,10 @@ public class DbAdapter {
 	}
 	
 	/**
-	 * Cria relaÁ√µes entre as matÈrias e as turmas ‡s quais ela pertence.
+	 * Cria rela√ß√µes entre as mat√©rias e as turmas √†s quais ela pertence.
 	 * 
-	 * @param materiaVO InformaÁ√µes sobre a matÈria (id da matÈria e id(s) da(s) turma(s)).
-	 * @return TRUE se bem sucedido; FALSE caso contr·rio.
+	 * @param materiaVO Informa√ß√µes sobre a mat√©ria (id da mat√©ria e id(s) da(s) turma(s)).
+	 * @return TRUE se bem sucedido; FALSE caso contr√°rio.
 	 */
 	private boolean inserirMatricula(MateriaVO materiaVO) {
 		boolean success = true;
@@ -710,9 +710,9 @@ public class DbAdapter {
 	}
 	
 	/**
-	 * Remove todas as incid√™ncias de uma determinada matÈria na tabela de relaÁ√µes MatÈrias X Turmas.
+	 * Remove todas as incid√™ncias de uma determinada mat√©ria na tabela de rela√ß√µes mat√©rias X Turmas.
 	 * 
-	 * @param id Id da matÈria.
+	 * @param id Id da mat√©ria.
 	 * @return TRUE.
 	 */
 	private boolean limparMatricula(long id) {
@@ -725,7 +725,7 @@ public class DbAdapter {
 	 * Retorna o registro das matr√≠culas com o ID de aluno fornecido, se existir.
 	 * 
 	 * @param id
-	 * @return uma lista vazia se o aluno n„o estiver matriculado em nehuma matÈria.
+	 * @return uma lista vazia se o aluno n√£o estiver matriculado em nehuma mat√©ria.
 	 *
 	public List<MatriculaVO> consultarMatricula(long id) {
 		ArrayList<MatriculaVO> listaMatriculas = new ArrayList<MatriculaVO>();
@@ -756,7 +756,7 @@ public class DbAdapter {
 	}*/
 	
 	/**
-	 * MÈtodo privado para realizar consultas de matr√≠culas.
+	 * M√©todo privado para realizar consultas de matr√≠culas.
 	 * 
 	 * @param key Nome da coluna usada como par√¢metro na consulta.
 	 * @param value Valor a ser procurado na coluna especificada.
@@ -771,13 +771,13 @@ public class DbAdapter {
 	
 	/**
 	 * Cria um novo registro de matr√≠cula na tabela. Se o registro for inclu√≠do com
-	 * sucesso, o RowID ser· retornado. Em caso de erro, retorna -1.
+	 * sucesso, o RowID ser√° retornado. Em caso de erro, retorna -1.
 	 * 
 	 * @param matriculaVO DAO com os dados da matr√≠cula.
 	 * @return rowID ou -1 se falhou.
 	 *
 	public long inserirMatricula(MatriculaVO matriculaVO) {
-		// Apesar de ID ser a verdadeira chave do registro, os nomes das matÈrias devem ser ˙nicos.
+		// Apesar de ID ser a verdadeira chave do registro, os nomes das mat√©rias devem ser √∫nicos.
 		if(consultarMateria(matriculaVO.getIdMateria()) == null) {
 			ContentValues initialValues = new ContentValues();
 			//initialValues.put(COLUMN_ID, matriculaVO.getId());
@@ -804,8 +804,8 @@ public class DbAdapter {
 	/**
 	 * Deleta as matriculas que possuam o valor <b>id</b> na coluna <b>column</b>.
 	 * 
-	 * @param column Coluna a ser considerada para definir as entradas que ser„o deletadas.
-	 * @param id Valor a ser considerado nas entradas que ser„o deletadas.
+	 * @param column Coluna a ser considerada para definir as entradas que ser√£o deletadas.
+	 * @param id Valor a ser considerado nas entradas que ser√£o deletadas.
 	 * @return <b>TRUE</b>.
 	 */
 	public boolean removerMatricula(String column, long id) {
@@ -854,12 +854,13 @@ public class DbAdapter {
 				notas.add(nota);
 				c.moveToNext();
 			}
+			c.close();
 		}
 		return notas;
 	}
 	
 	/**
-	 * MÈtodo privado para realizar consultas de notas.
+	 * M√©todo privado para realizar consultas de notas.
 	 * 
 	 * @param key Nome da coluna usada como par√¢metro na consulta.
 	 * @param value Valor a ser procurado na coluna especificada.
@@ -873,7 +874,7 @@ public class DbAdapter {
 //	}
 	
 	/**
-	 * MÈtodo privado para realizar consultas de notas.
+	 * M√©todo privado para realizar consultas de notas.
 	 * 
 	 * @param key Nome da coluna usada como par√¢metro na consulta.
 	 * @param value Valor a ser procurado na coluna especificada.
@@ -887,13 +888,13 @@ public class DbAdapter {
 
 	/**
 	 * Cria um novo registro de nota na tabela. Se o registro for inclu√≠do com
-	 * sucesso, o RowID ser· retornado. Em caso de erro, retorna -1.
+	 * sucesso, o RowID ser√° retornado. Em caso de erro, retorna -1.
 	 * 
 	 * @param notaVO DAO com os dados da nota.
 	 * @return rowID ou -1 se falhou.
 	 */
 	public long inserirNota(NotaVO notaVO) {
-		// Apesar de ID ser a verdadeira chave do registro, os nomes dos alunos devem ser ˙nicos.
+		// Apesar de ID ser a verdadeira chave do registro, os nomes dos alunos devem ser √∫nicos.
 		if(consultarNota(notaVO.getIdMatricula(), notaVO.getPeriodo()).isEmpty()) {
 			ContentValues initialValues = new ContentValues();
 			initialValues.put(COLUMN_ID_MATRICULA, notaVO.getIdMatricula());
@@ -933,13 +934,14 @@ public class DbAdapter {
 				removerNota(cursor.getLong(0));
 				cursor.moveToNext();
 			}
+			cursor.close();
 		}
 		
 		return true;
 	}
 	
 	/**
-	 * Consulta todas as presenÁas de uma matricula.
+	 * Consulta todas as presen√ßas de uma matricula.
 	 * 
 	 * @param matricula
 	 * @return
@@ -962,12 +964,14 @@ public class DbAdapter {
 				notas.add(presenca);
 				c.moveToNext();
 			}
+			c.close();
 		}
+		
 		return notas;
 	}
 	
 	/**
-	 * Consulta as presenÁas de uma matricula para uma determinada data.
+	 * Consulta as presen√ßas de uma matricula para uma determinada data.
 	 * 
 	 * @param idAluno
 	 * @param data
@@ -991,12 +995,14 @@ public class DbAdapter {
 				presencas.add(presenca);
 				c.moveToNext();
 			}
+			c.close();
 		}
+		
 		return presencas;
 	}
 	
 	/**
-	 * MÈtodo privado para realizar consultas de presenÁas.
+	 * M√©todo privado para realizar consultas de presen√ßas.
 	 * 
 	 * @param key Nome da coluna usada como par√¢metro na consulta.
 	 * @param value Valor a ser procurado na coluna especificada.
@@ -1009,14 +1015,14 @@ public class DbAdapter {
 	}
 	
 	/**
-	 * Cria um novo registro de presenÁa na tabela. Se o registro for inclu√≠do com
-	 * sucesso, o RowID ser· retornado. Em caso de erro, retorna -1.
+	 * Cria um novo registro de presen√ßa na tabela. Se o registro for inclu√≠do com
+	 * sucesso, o RowID ser√° retornado. Em caso de erro, retorna -1.
 	 * 
-	 * @param presencaoVO DAO com os dados da presenÁa.
+	 * @param presencaoVO DAO com os dados da presen√ßa.
 	 * @return rowID ou -1 se falhou.
 	 */
 	public long inserirPresenca(PresencaVO presencaoVO) {
-		// Apesar de ID ser a verdadeira chave do registro, as datas da presenÁa nas matÈrias devem ser ˙nicas.
+		// Apesar de ID ser a verdadeira chave do registro, as datas da presen√ßa nas mat√©rias devem ser √∫nicas.
 		if(consultarPresenca(presencaoVO.getIdAluno(),presencaoVO.getData()).isEmpty()) {
 			ContentValues initialValues = new ContentValues();
 			initialValues.put(COLUMN_ID_ALUNO, presencaoVO.getIdAluno());
@@ -1040,7 +1046,7 @@ public class DbAdapter {
 	}
 	
 	/**
-	 * Remove as presenÁas que possuam o valor <b>value</b> na coluna <b>column</b>.
+	 * Remove as presen√ßas que possuam o valor <b>value</b> na coluna <b>column</b>.
 	 * 
 	 * @param column
 	 * @param id
@@ -1056,6 +1062,7 @@ public class DbAdapter {
 				removerNota(cursor.getLong(0));
 				cursor.moveToNext();
 			}
+			cursor.close();
 		}
 		
 		return true;
@@ -1081,7 +1088,7 @@ public class DbAdapter {
 	 * Retorna o registro da professor com o ID fornecido, se existir.
 	 * 
 	 * @param id
-	 * @return null se n„o encontrar o professor especificado.
+	 * @return null se n√£o encontrar o professor especificado.
 	 */
 	public ProfessorVO consultarProfessor(long id) {
 		ProfessorVO professor = null;
@@ -1103,8 +1110,8 @@ public class DbAdapter {
 	 * Retorna os dados do professor indicado.
 	 * 
 	 * @param key Nome ou login para ser procurado.
-	 * @param isLogin <b>True</b> indica que o valor passado como chave È um login. <b>False</b> indica que È um nome.
-	 * @return null se n„o encontrar o professor especificado.
+	 * @param isLogin <b>True</b> indica que o valor passado como chave √© um login. <b>False</b> indica que √© um nome.
+	 * @return null se n√£o encontrar o professor especificado.
 	 */
 	public ProfessorVO consultarProfessor(String key, boolean isLogin) {
 		ProfessorVO professor = null;
@@ -1126,7 +1133,7 @@ public class DbAdapter {
 	}
 	
 	/**
-	 * MÈtodo privado para realizar consultas de professores.
+	 * M√©todo privado para realizar consultas de professores.
 	 * 
 	 * @param key Nome da coluna usada como par√¢metro na consulta.
 	 * @param value Valor a ser procurado na coluna especificada.
@@ -1140,13 +1147,13 @@ public class DbAdapter {
 	
 	/**
 	 * Cria um novo registro de professor na tabela. Se o registro for inclu√≠do com
-	 * sucesso, o RowID ser· retornado. Em caso de erro, retorna -1.
+	 * sucesso, o RowID ser√° retornado. Em caso de erro, retorna -1.
 	 * 
 	 * @param professorVO DAO com os dados do professor.
 	 * @return rowID ou -1 se falhou.
 	 */
 	public long inserirProfessor(ProfessorVO professorVO) {
-		// Apesar de ID ser a verdadeira chave do registro, os nomes e logins dos professores devem ser ˙nicos.
+		// Apesar de ID ser a verdadeira chave do registro, os nomes e logins dos professores devem ser √∫nicos.
 		if(consultarProfessor(professorVO.getNome(), false) == null &&
 				consultarProfessor(professorVO.getLogin(), true) == null) {
 			ContentValues initialValues = new ContentValues();
@@ -1199,7 +1206,7 @@ public class DbAdapter {
 	 * Retorna o registro da turma com o ID fornecido, se existir.
 	 * 
 	 * @param id
-	 * @return null se n„o encontrar a turma especificada.
+	 * @return null se n√£o encontrar a turma especificada.
 	 */
 	public TurmaVO consultarTurma(long id) {
 		TurmaVO turma = null;
@@ -1227,7 +1234,7 @@ public class DbAdapter {
 	 * Retorna os dados da turma indicada.
 	 * 
 	 * @param nome
-	 * @return null se n„o encontrar a turma especificada.
+	 * @return null se n√£o encontrar a turma especificada.
 	 */
 	public TurmaVO consultarTurma(String nome) {
 		TurmaVO turma = null;
@@ -1252,7 +1259,7 @@ public class DbAdapter {
 	}
 	
 	/**
-	 * MÈtodo privado para realizar consultas de turmas.
+	 * M√©todo privado para realizar consultas de turmas.
 	 * 
 	 * @param key Nome da coluna usada como par√¢metro na consulta.
 	 * @param value Valor a ser procurado na coluna especificada.
@@ -1266,13 +1273,13 @@ public class DbAdapter {
 		
 	/**
 	 * Cria um novo registro de turma na tabela. Se o registro for inclu√≠do com
-	 * sucesso, o RowID ser· retornado. Em caso de erro, retorna -1.
+	 * sucesso, o RowID ser√° retornado. Em caso de erro, retorna -1.
 	 * 
 	 * @param turmaVO DAO com os dados da turma.
 	 * @return rowID ou -1 se falhou.
 	 */
 	public long inserirTurma(TurmaVO turmaVO) {
-		// Apesar de ID ser a verdadeira chave do registro, os nomes das turmas devem ser ˙nicos.
+		// Apesar de ID ser a verdadeira chave do registro, os nomes das turmas devem ser unicos.
 		if(consultarTurma(turmaVO.getNome()) == null) {
 			ContentValues initialValues = new ContentValues();
 			initialValues.put(COLUMN_NOME, turmaVO.getNome());
@@ -1308,13 +1315,13 @@ public class DbAdapter {
 	}
 	
 	/**
-	 * MÈtodo genÈrico para efetuar consultas ‡s tabelas, utilizando a chave fornecida.
+	 * M√©todo gen√©rico para efetuar consultas √†s tabelas, utilizando a chave fornecida.
 	 * 
-	 * @param table Tabela onde ser· executada a busca.
+	 * @param table Tabela onde ser√° executada a busca.
 	 * @param colunas Colunas que devem ser consideradas no retorno da busca.
-	 * @param key Coluna que dever· conter a palavra-chave definida como <b>value</b>.
+	 * @param key Coluna que dever√° conter a palavra-chave definida como <b>value</b>.
 	 * @param value Palavra-chave da busca.
-	 * @return Cursor na primeira posiÁ„o, caso algum dado tenha sido encontrado. Se nenhum dado foi encontrado, retorna <b>null</b>.
+	 * @return Cursor na primeira posi√ß√£o, caso algum dado tenha sido encontrado. Se nenhum dado foi encontrado, retorna <b>null</b>.
 	 */
 	private Cursor consultar(String table, String[] colunas, String key, String value) {
 		return consultar(table, colunas, new String[]{key}, new String[]{value});
@@ -1322,13 +1329,13 @@ public class DbAdapter {
 	}
 	
 	/**
-	 * MÈtodo genÈrico para efetuar consultas ‡s tabelas, utilizando a chave fornecida.
+	 * M√©todo gen√©rico para efetuar consultas √†s tabelas, utilizando a chave fornecida.
 	 * 
-	 * @param table Tabela onde ser· executada a busca.
+	 * @param table Tabela onde ser√° executada a busca.
 	 * @param colunas Colunas que devem ser consideradas no retorno da busca.
-	 * @param key Coluna que dever· conter a palavra-chave definida como <b>value</b>.
+	 * @param key Coluna que dever√° conter a palavra-chave definida como <b>value</b>.
 	 * @param value Palavra-chave da busca.
-	 * @return Cursor na primeira posiÁ„o, caso algum dado tenha sido encontrado. Se nenhum dado foi encontrado, retorna <b>null</b>.
+	 * @return Cursor na primeira posi√ß√£o, caso algum dado tenha sido encontrado. Se nenhum dado foi encontrado, retorna <b>null</b>.
 	 */
 	private Cursor consultar(String table, String[] colunas, String[] key, String[] value) {
 		String condicao = new String();
@@ -1338,7 +1345,7 @@ public class DbAdapter {
 			condicao += key[i] + " = '" + value[i] + "' AND ";
 		}
 		
-		// O loop-for acima deixar· um " AND " sobrando, ent„o deve-se remove-lo.
+		// O loop-for acima deixar√° um " AND " sobrando, ent√£o deve-se remove-lo.
 		condicao = condicao.substring(0, condicao.length() - 5);
 		
 		Cursor mCursor = 
@@ -1355,7 +1362,7 @@ public class DbAdapter {
 	/**
 	 * Retorna um Cursor para todos os registros encontrados para a tabela definida.
 	 * 
-	 * @param tabela Tabela de onde ser„o consultados os registros.
+	 * @param tabela Tabela de onde ser√£o consultados os registros.
 	 * @param colunas Colunas a serem exibidas.
 	 * @return Cursor posicionado no primeiro elemento encontrado.
 	 */
@@ -1373,9 +1380,9 @@ public class DbAdapter {
 	/**
 	 * Retorna uma lista com todos os valores encontrados para a coluna da tabela definida.
 	 * 
-	 * @param tabela Tabela de onde ser„o consultados os registros.
+	 * @param tabela Tabela de onde ser√£o consultados os registros.
 	 * @param coluna Coluna a ser exibida.
-	 * @return Lista com os valores encontrados. Retorna uma lista vazia se n„o encontrar nenhum valor v·lido.
+	 * @return Lista com os valores encontrados. Retorna uma lista vazia se n√£o encontrar nenhum valor v√°lido.
 	 */
 	public List<String> consultarTodos(String tabela, String coluna) {
 		List<String> resultado = new ArrayList<String>();
@@ -1392,20 +1399,20 @@ public class DbAdapter {
 	}
 	
 	/**
-	 * MÈtodo genÈrico para remover entradas nas tabelas baseadas no id fornecido.
+	 * M√©todo gen√©rico para remover entradas nas tabelas baseadas no id fornecido.
 	 * 
-	 * @param table Tabela onde ser· executada a deleÁ„o.
+	 * @param table Tabela onde ser√° executada a dele√ß√£o.
 	 * @param id Chave da linha a ser deletada
-	 * @return <b>True</b> se a operaÁ„o foi bem-sucedida; <b>false</b> em caso de erro.
+	 * @return <b>True</b> se a opera√ß√£o foi bem-sucedida; <b>false</b> em caso de erro.
 	 */
 	private boolean remover(String table, long id) {
 		return mDb.delete(table, COLUMN_ID + " = " + id, null) > 0;
 	}
 
 	/**
-	 * Cadastra as matÈrias padr„o para a turma definida.
+	 * Cadastra as mat√©rias padr√£o para a turma definida.
 	 * 
-	 * @param id CÛdigo de identificaÁ„o da turma.
+	 * @param id C√≥digo de identifica√ß√£o da turma.
 	 */
 	public void cadastrarMateriasPadrao(long id) {
 		Cursor c = consultarMateria(COLUMN_PADRAO, "S");
@@ -1421,6 +1428,7 @@ public class DbAdapter {
 				mDb.insert(TABLE_MATRICULA, null, values);
 				c.moveToNext();
 			}
+			c.close();
 		}	
 	}
 }
