@@ -46,6 +46,7 @@
 	<string name="lancar_notas">Lançar Notas</string>
 	<string name="base_menu_lancar"></string>
 	<string name="fazer_chamada">Fazer Chamada</string>
+	<string name="finalizar_chamada">Finalizar</string>
 	<string name="nome_materia">Nome da Matéria</string>
 	<string name="horas_aula">Horas / aula</string>
 	<string name="cadastrar_alunos">Cadastrar Alunos</string>
