@@ -1,7 +1,6 @@
 package org.android.group.escolarmobile.app;
 
 import java.sql.Date;
-import java.util.Iterator;
 
 import org.android.group.escolarmobile.app.student.PresencaVO;
 import org.android.group.escolarmobile.conn.DbAdapter;
@@ -17,6 +16,8 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -47,10 +48,22 @@ public class ListaAlunos extends TelaListaBasica {
         	ibt.setText(R.string.fazer_chamada);
         	idTurma = this.getIntent().getLongExtra(DbAdapter.COLUMN_ID_TURMA, 0);
         	idMateria = this.getIntent().getLongExtra(DbAdapter.COLUMN_ID_MATERIA, 0);
+            // Quando o usuário clica em um aluno da lista, exibe as notas do aluno.
+            this.getListView().setOnItemClickListener(new OnItemClickListener() {
+    			public void onItemClick(AdapterView<?> context, View view, int position, long id) {
+    				/*// TODO implementar a classe NotaAluno 
+    				Intent i = new Intent(ListaAlunos.this, NotaAluno.class);
+    				i.putExtra(DbAdapter.COLUMN_ID_TURMA, idTurma);
+    				i.putExtra(DbAdapter.COLUMN_ID_MATERIA, idMateria);
+    				i.putExtra(DbAdapter.COLUMN_ID_ALUNO, id);
+    				startActivity(i);				*/
+    			}
+    		});
+
         }else{
         	ibt.setText(R.string.adicionar_aluno);//sobrescreve a string original do xml
+        	//Quando o usuário clicar em um aluno da lista, fazer o que?Nada?
         }
-        
 
     }
     
