@@ -100,6 +100,11 @@ public abstract class TelaListaBasica extends ListActivity implements OnClickLis
 					new int[]{android.R.id.text1}));
 			
 			getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+
+			    for(int i = 0; i< getListAdapter().getCount();++i){
+			                getListView().setItemChecked(i, true);
+			      }
+
 		}else{
 			// A criação deste ListAdapter é praticamente a mesma utilizada no tutorial do Notepad.
 			// Mais informações no Step 12 em http://developer.android.com/resources/tutorials/notepad/notepad-ex1.html

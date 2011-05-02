@@ -46,7 +46,6 @@ public class ListaAlunos extends TelaListaBasica {
 
         if(isMultiItensSelectable()){
         	ibt.setText(R.string.fazer_chamada);
-        	idTurma = this.getIntent().getLongExtra(DbAdapter.COLUMN_ID_TURMA, 0);
         	idMateria = this.getIntent().getLongExtra(DbAdapter.COLUMN_ID_MATERIA, 0);
             // Quando o usuário clica em um aluno da lista, exibe as notas do aluno.
             this.getListView().setOnItemClickListener(new OnItemClickListener() {
@@ -64,6 +63,7 @@ public class ListaAlunos extends TelaListaBasica {
         	ibt.setText(R.string.adicionar_aluno);//sobrescreve a string original do xml
         	//Quando o usuário clicar em um aluno da lista, fazer o que?Nada?
         }
+    	idTurma = this.getIntent().getLongExtra(DbAdapter.COLUMN_ID_TURMA, 0);
 
     }
     
