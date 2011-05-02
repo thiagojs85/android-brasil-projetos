@@ -12,6 +12,7 @@
 	<string name="visualizar_aluno">Visualizar Aluno</string>
 	<string name="escolha_turma">Selecione a Turma</string>
 	<string name="escolha_materia">Selecione a Matéria</string>
+		<string name="escolha_periodo">Selecione o período</string>
 	
 	<string name="ok">Ok</string>
 	<string name="cancel">Cancelar</string>
