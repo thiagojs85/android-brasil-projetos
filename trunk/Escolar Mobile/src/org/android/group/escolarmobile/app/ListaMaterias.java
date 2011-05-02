@@ -127,11 +127,18 @@ public class ListaMaterias extends TelaListaBasica{
 	}
 	
 	public void setActionOnNotaItem(MenuItem item){
-		//TODO: acao do longpress lancar nota
+		long id = 0;
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+		id = (new Long(info.id).longValue());
+		//Intent i = new Intent(ListaMaterias.this, NotaAluno.class).putExtra(DbAdapter.COLUMN_ID_ALUNO, id);
+		//startActivity(i);
 	}
 	
 	public void setActionOnChamadaItem(MenuItem item){
-		Intent i = new Intent(ListaMaterias.this, ListaAlunos.class).putExtra("chamada", true);
+		long id = 0;
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+		id = (new Long(info.id).longValue());
+		Intent i = new Intent(ListaMaterias.this, ListaAlunos.class).putExtra("chamada", true).putExtra(DbAdapter.COLUMN_ID_TURMA, id);
 		startActivity(i);
 	}
 	

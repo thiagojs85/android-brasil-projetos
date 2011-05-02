@@ -36,18 +36,19 @@ public class ListaAlunos extends TelaListaBasica {
     public void onCreate(Bundle savedInstanceState) {
     	
     	isMultiItensSelectable = this.getIntent().getBooleanExtra("chamada", false);
-    	Log.v(LISTA_ALUNOS, "Valor do isMultiItensSelectable: "+isMultiItensSelectable);
+    	Log.v(LISTA_ALUNOS, "Valor do isMultiItensSelectable: "+isMultiItensSelectable());
     	
     	super.onCreate(savedInstanceState);
         Button ibt = (Button)findViewById(R.id.add);
         
-        if(isMultiItensSelectable){
+        if(isMultiItensSelectable()){
         	ibt.setText(R.string.fazer_chamada);
+            idTurma = this.getIntent().getLongExtra(DbAdapter.COLUMN_ID_TURMA, 0);
         }else{
         	ibt.setText(R.string.adicionar_aluno);//sobrescreve a string original do xml
         }
         
-        idTurma = this.getIntent().getLongExtra(DbAdapter.COLUMN_ID_TURMA, 0);
+
     }
     
     
@@ -55,14 +56,14 @@ public class ListaAlunos extends TelaListaBasica {
 	protected boolean isMultiItensSelectable() {
 		// Caso queira que os itens da lista sejam selecionaveis, fazer retornar true
 		
-    	return true;
+    	return isMultiItensSelectable;
 	}
     
     
 	@Override
 	public void onClick(View v) {
 		
-		if(isMultiItensSelectable){
+		if(isMultiItensSelectable()){
         	dialogFaltas();
         }else{
         	Intent i = new Intent(this, CadastroAluno.class);
