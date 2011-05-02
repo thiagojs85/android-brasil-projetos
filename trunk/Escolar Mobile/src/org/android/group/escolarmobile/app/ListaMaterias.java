@@ -18,6 +18,7 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.Toast;
 
 /**
 * Classe responsavel por listar as materias cadastradas e adicionar mais se necessário
@@ -30,19 +31,23 @@ public class ListaMaterias extends TelaListaBasica{
 	protected static final int FAZER_CHAMADA_ID = LARCAR_NOTAS_ID + 1;
 	private static final int DIALOG_DELETAR = 0;
 	private long idDelete;
+	private long idTurma;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Button ibt = (Button)findViewById(R.id.add);
-        ibt.setText(R.string.cadastrar_materias);//sobrescreve a string original do xml
+      //sobrescreve a string original do xml
+        ibt.setText(R.string.cadastrar_materias);
         
-        // TODO FIXME ListaAlunos será a view para realizar chamadas?
+        idTurma = this.getIntent().getLongExtra(DbAdapter.COLUMN_ID_TURMA, 0);
+        
         // Quando o usuário clica em uma das matérias da lista, exibe a lista de alunos para chamada.
         this.getListView().setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> context, View view, int position, long id) {
-				Intent i = new Intent(ListaMaterias.this, ListaAlunos.class).putExtra(DbAdapter.COLUMN_ID_TURMA, id);
-		
+				Intent i = new Intent(ListaMaterias.this, ListaAlunos.class);
+				i.putExtra(DbAdapter.COLUMN_ID_TURMA, idTurma);
+				i.putExtra(DbAdapter.COLUMN_ID_MATERIA, id);
 				startActivity(i);				
 			}
 		});
@@ -59,11 +64,11 @@ public class ListaMaterias extends TelaListaBasica{
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {
 		
-		super.onCreateContextMenu(menu, v, menuInfo);
-	
 		menu.add(Menu.NONE, LARCAR_NOTAS_ID, 0, R.string.lancar_notas);
 		menu.add(Menu.NONE, FAZER_CHAMADA_ID, 0, R.string.fazer_chamada);
-
+		
+		super.onCreateContextMenu(menu, v, menuInfo);
+		
 	}
 
     @Override
@@ -71,30 +76,28 @@ public class ListaMaterias extends TelaListaBasica{
         switch(item.getItemId()) {
               
 		case LARCAR_NOTAS_ID:
-			setActionOnNotaItem(item);            
-		return true;
+			setActionOnLancarNotaItem(item);            
+			break;
 		case FAZER_CHAMADA_ID:
 			setActionOnChamadaItem(item);
-        return true;
+			break;
     }
         return super.onContextItemSelected(item);
 
 	}
     
-	@Override
+	//Ação a ser executada quando clicar no botão superior da lista!
+    @Override
 	public void onClick(View v) {
 		
     	Intent i = new Intent(this, CadastroMateria.class);
-    	i.putExtra(DbAdapter.COLUMN_ID_TURMA, 
-    			this.getIntent().getLongExtra(DbAdapter.COLUMN_ID, 0));
+    	i.putExtra(DbAdapter.COLUMN_ID_TURMA, idTurma);
     	startActivityForResult(i, ADD_ID);
 	}
 
 
 	@Override
 	public Cursor getItensCursor() {
-		
-		long idTurma = this.getIntent().getLongExtra("id", 0);
 		
 		// Se não houver id nos Extras, mostre todas as matérias existentes.
 		if(idTurma < 1) {
@@ -107,16 +110,12 @@ public class ListaMaterias extends TelaListaBasica{
 	
 	@Override
 	public void setActionOnEditItem(MenuItem item){
-		// TODO
-		//AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 		
-    	//Intent i = new Intent(this, CadastroMateria.class);
-
-    	// Repassa o id da linha selecionada.
-		/*Bundle b = new Bundle();
-		b.putLong(DbAdapter.COLUMN_ID, info.id);
-		i.putExtras(b);
-    	startActivityForResult(i, EDIT_ID);*/
+		// Repassa o id da linha selecionada para a tela de edição
+    	Intent i = new Intent(this, CadastroMateria.class);
+		i.putExtra(DbAdapter.COLUMN_ID, info.id);
+    	startActivityForResult(i, EDIT_ID);
 	}
 	
 	@Override
@@ -126,19 +125,26 @@ public class ListaMaterias extends TelaListaBasica{
 		showDialog(DIALOG_DELETAR);
 	}
 	
-	public void setActionOnNotaItem(MenuItem item){
-		long id = 0;
+	public void setActionOnLancarNotaItem(MenuItem item){
+		long idMateria = 0;
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-		id = (new Long(info.id).longValue());
-		//Intent i = new Intent(ListaMaterias.this, NotaAluno.class).putExtra(DbAdapter.COLUMN_ID_ALUNO, id);
+		idMateria = (new Long(info.id).longValue());
+		//TODO Depois que criar a classe NotaAluno tem que descomentar e testar aqui!
+		//Intent i = new Intent(ListaMaterias.this, NotaAluno.class).putExtra(DbAdapter.COLUMN_ID_ALUNO, idMateria);
 		//startActivity(i);
+		Toast.makeText(ListaMaterias.this,
+				"Lançar notas dos alunos ainda não implementado!",
+				Toast.LENGTH_LONG).show();
 	}
 	
 	public void setActionOnChamadaItem(MenuItem item){
-		long id = 0;
+		long idMateria = 0;
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-		id = (new Long(info.id).longValue());
-		Intent i = new Intent(ListaMaterias.this, ListaAlunos.class).putExtra("chamada", true).putExtra(DbAdapter.COLUMN_ID_TURMA, id);
+		idMateria = (new Long(info.id).longValue());
+		Intent i = new Intent(ListaMaterias.this, ListaAlunos.class);
+		i.putExtra("chamada", true);
+		i.putExtra(DbAdapter.COLUMN_ID_TURMA, idTurma);
+		i.putExtra(DbAdapter.COLUMN_ID_MATERIA, idMateria);
 		startActivity(i);
 	}
 	

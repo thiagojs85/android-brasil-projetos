@@ -60,11 +60,8 @@ public class ListaProfessores extends TelaListaBasica {
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 		
     	Intent i = new Intent(this, CadastroProfessor.class);
-
     	// Repassa o id da linha selecionada.
-		Bundle b = new Bundle();
-		b.putLong(DbAdapter.COLUMN_ID, info.id);
-		i.putExtras(b);
+		i.putExtra(DbAdapter.COLUMN_ID, info.id);
     	startActivityForResult(i, EDIT_ID);
 	}
 	

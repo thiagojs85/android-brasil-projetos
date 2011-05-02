@@ -1,6 +1,7 @@
 package org.android.group.escolarmobile.app;
 
 import java.sql.Date;
+import java.util.Iterator;
 
 import org.android.group.escolarmobile.app.student.PresencaVO;
 import org.android.group.escolarmobile.conn.DbAdapter;
@@ -27,6 +28,7 @@ public class ListaAlunos extends TelaListaBasica {
 	private static final String LISTA_ALUNOS = "lista_alunos";
 	private long idDelete;
 	private long idTurma;
+	private long idMateria;
 	private DatePicker datapicker;
 	private boolean isMultiItensSelectable;
 	
@@ -40,10 +42,11 @@ public class ListaAlunos extends TelaListaBasica {
     	
     	super.onCreate(savedInstanceState);
         Button ibt = (Button)findViewById(R.id.add);
-        
+
         if(isMultiItensSelectable()){
         	ibt.setText(R.string.fazer_chamada);
-            idTurma = this.getIntent().getLongExtra(DbAdapter.COLUMN_ID_TURMA, 0);
+        	idTurma = this.getIntent().getLongExtra(DbAdapter.COLUMN_ID_TURMA, 0);
+        	idMateria = this.getIntent().getLongExtra(DbAdapter.COLUMN_ID_MATERIA, 0);
         }else{
         	ibt.setText(R.string.adicionar_aluno);//sobrescreve a string original do xml
         }
@@ -55,7 +58,6 @@ public class ListaAlunos extends TelaListaBasica {
     @Override
 	protected boolean isMultiItensSelectable() {
 		// Caso queira que os itens da lista sejam selecionaveis, fazer retornar true
-		
     	return isMultiItensSelectable;
 	}
     
@@ -77,8 +79,6 @@ public class ListaAlunos extends TelaListaBasica {
 	@Override
 	public Cursor getItensCursor() {
 		
-		long idMateria = this.getIntent().getLongExtra("id", 0);
-		
 		// Se não houver id nos Extras, mostre todas as matérias existentes.
 		if(idMateria < 1) {
 			return mDbAdapter.consultarTodos(DbAdapter.TABLE_ALUNO, 
@@ -93,9 +93,8 @@ public class ListaAlunos extends TelaListaBasica {
 	public void setActionOnEditItem(MenuItem item){
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 		
+    	// Repassa o id do aluno selecionado para edição.		
     	Intent i = new Intent(this, CadastroAluno.class);
-
-    	// Repassa o id da linha selecionada.
 		i.putExtra(DbAdapter.COLUMN_ID, info.id);
     	startActivityForResult(i, EDIT_ID);
 	}

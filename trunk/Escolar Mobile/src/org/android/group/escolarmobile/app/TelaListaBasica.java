@@ -63,10 +63,10 @@ public abstract class TelaListaBasica extends ListActivity implements OnClickLis
         switch(item.getItemId()) {
         case EDIT_ID:
             setActionOnEditItem(item);            
-            return true;
+            break;
         case DELETE_ID:
         	setActionOnDeleteItem(item);
-            return true;
+            break;
         }
         return super.onContextItemSelected(item);
 
@@ -92,7 +92,6 @@ public abstract class TelaListaBasica extends ListActivity implements OnClickLis
 		}
 		
 		if(isMultiItensSelectable()){
-			// TODO [Otavio] Esta parte ainda não foi testada, pois nenhuma activity usou esta funcionalidade!
 
 			setListAdapter(new SimpleCursorAdapter(this, 
 					android.R.layout.simple_list_item_multiple_choice, 

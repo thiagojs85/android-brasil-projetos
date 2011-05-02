@@ -35,8 +35,7 @@ public class ListaTurmas extends TelaListaBasica {
         this.getListView().setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> context, View view, int position, long id) {
 				Intent i = new Intent(ListaTurmas.this, ListaMaterias.class);
-				i.putExtra(DbAdapter.COLUMN_ID, id);
-		
+				i.putExtra(DbAdapter.COLUMN_ID_TURMA, id);
 				startActivity(i);				
 			}
 		});
@@ -51,10 +50,9 @@ public class ListaTurmas extends TelaListaBasica {
     @Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {
-		
-		super.onCreateContextMenu(menu, v, menuInfo);
-		menu.add(Menu.NONE, VISUALIZAR_ALUNOS_ID, 0, R.string.visualizar_alunos);
 
+		menu.add(Menu.NONE, VISUALIZAR_ALUNOS_ID, 0, R.string.visualizar_alunos);
+		super.onCreateContextMenu(menu, v, menuInfo);
 	}
 
     @Override
@@ -62,12 +60,13 @@ public class ListaTurmas extends TelaListaBasica {
         switch(item.getItemId()) {
         case EDIT_ID:
             setActionOnEditItem(item);            
-            return true;
+            break;
         case DELETE_ID:
         	setActionOnDeleteItem(item);
-            return true;
+            break;
         case VISUALIZAR_ALUNOS_ID:
-        	setActionOnViewItem(item);
+        	setActionOnViewAlunos(item);
+        	break;
         }
         return super.onContextItemSelected(item);
 
@@ -94,13 +93,10 @@ public class ListaTurmas extends TelaListaBasica {
 	@Override
 	public void setActionOnEditItem(MenuItem item){
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-				
+		
+		// Repassa o id da linha selecionada para a tela de edição
     	Intent i = new Intent(this, CadastroTurmas.class);
-
-    	// Repassa o id da linha selecionada para a tela de edição
-		Bundle b = new Bundle();
-		b.putLong(DbAdapter.COLUMN_ID, (new Long(info.id).longValue()));
-		i.putExtras(b);
+		i.putExtra(DbAdapter.COLUMN_ID, info.id);
     	startActivityForResult(i, EDIT_ID);
 	}
 	
@@ -111,9 +107,13 @@ public class ListaTurmas extends TelaListaBasica {
 		showDialog(DELETE_ID);
 	}
 	
-	public void setActionOnViewItem(MenuItem item){
+	public void setActionOnViewAlunos(MenuItem item){
+
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+		
+		// Repassa o id da linha selecionada para a tela de edição
 		Intent i = new Intent(this, ListaAlunos.class);
-		i.putExtra(DbAdapter.COLUMN_ID_TURMA, Long.parseLong(String.valueOf(item.getItemId())));
+		i.putExtra(DbAdapter.COLUMN_ID_TURMA, info.id);
 		startActivityForResult(i, VISUALIZAR_ALUNOS_ID);
 		
 	}
