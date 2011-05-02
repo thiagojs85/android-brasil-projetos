@@ -31,6 +31,7 @@ public class ListaProfessores extends TelaListaBasica {
         super.onCreate(savedInstanceState);
         Button ibt = (Button)findViewById(R.id.add);
         ibt.setText(R.string.adicionar_professor);//sobrescreve a string original do xml
+        
     }
     
     
