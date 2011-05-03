@@ -1,0 +1,1 @@
+Classes utilitárias para tratamento de strings e stubs utilizados durante o desenvolvimento do projeto. 

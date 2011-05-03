@@ -1,0 +1,1 @@
+Nesta pasta ficam as classes que acessam a internet ou fazem alguma manipulação relacionada a rede.

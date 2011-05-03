@@ -1,0 +1,1 @@
+Neste pacote ficam as classes relacionadas a acesso a banco de dados e gravação e leitura de arquivos.

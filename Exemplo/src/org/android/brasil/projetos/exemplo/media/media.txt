@@ -1,0 +1,1 @@
+Nesta pasta ficam as classes responsáveis por reprodução de áudio, vídeo e imagens.
