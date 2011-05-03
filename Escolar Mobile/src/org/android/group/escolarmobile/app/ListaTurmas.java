@@ -36,7 +36,7 @@ public class ListaTurmas extends TelaListaBasica {
 			public void onItemClick(AdapterView<?> context, View view, int position, long id) {
 				Intent i = new Intent(ListaTurmas.this, ListaMaterias.class);
 				i.putExtra(DbAdapter.COLUMN_ID_TURMA, id);
-				startActivity(i);				
+				startActivity(i);
 			}
 		});
     }
@@ -75,7 +75,6 @@ public class ListaTurmas extends TelaListaBasica {
 	@Override
 	public void onClick(View v) {
 		/* Inicia a tela de cadastro de turma
-		 * 
 		 */
 		 
     	Intent i = new Intent(this, CadastroTurmas.class);

@@ -129,7 +129,8 @@ public class CadastroTurmas extends Activity {
 							new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface dialog, int id) {
 									// Abrir tela de cadastro de matérias.
-									Intent i = new Intent(CadastroTurmas.this, CadastroMateria.class).putExtra(DbAdapter.COLUMN_ID_TURMA, turmaVO.getId());
+									Intent i = new Intent(CadastroTurmas.this, CadastroMateria.class);
+									i.putExtra(DbAdapter.COLUMN_ID_TURMA, turmaVO.getId());
 									
 									startActivity(i);
 								}
@@ -211,7 +212,8 @@ public class CadastroTurmas extends Activity {
 								}
 								
 								//Intent i = new Intent(CadastroTurmas.this, CadastroMateria.class).putExtra(DbAdapter.COLUMN_ID_TURMA, idDaTurma);
-								Intent i = new Intent(CadastroTurmas.this, CadastroMateria.class).putExtra(DbAdapter.COLUMN_ID_TURMA, turmaVO.getId());
+								Intent i = new Intent(CadastroTurmas.this, CadastroMateria.class);
+								i.putExtra(DbAdapter.COLUMN_ID_TURMA, turmaVO.getId());
 								
 								startActivity(i);
 							}

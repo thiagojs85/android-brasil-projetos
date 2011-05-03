@@ -46,6 +46,8 @@ public class ListaAlunos extends TelaListaBasica {
 
         if(isMultiItensSelectable()){
         	ibt.setText(R.string.fazer_chamada);
+        	Toast.makeText(ListaAlunos.this,"Desmarque os alunos que faltaram.", Toast.LENGTH_LONG).show();
+        	
         	idMateria = this.getIntent().getLongExtra(DbAdapter.COLUMN_ID_MATERIA, 0);
             // Quando o usuário clica em um aluno da lista, exibe as notas do aluno.
             this.getListView().setOnItemClickListener(new OnItemClickListener() {

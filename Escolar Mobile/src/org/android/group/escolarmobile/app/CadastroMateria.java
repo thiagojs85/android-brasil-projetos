@@ -67,7 +67,7 @@ public class CadastroMateria extends Activity{
 				new String[]{DbAdapter.COLUMN_ID, DbAdapter.COLUMN_NOME});
 		
 		professor.setAdapter(new SimpleCursorAdapter(this, 
-				android.R.layout.simple_spinner_dropdown_item,
+				android.R.layout.simple_spinner_item,
 				c,
 				new String[]{DbAdapter.COLUMN_NOME},
 				new int[]{android.R.id.text1}));

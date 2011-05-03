@@ -127,7 +127,7 @@ public class CadastroProfessor extends Activity implements OnClickListener{
 		mDbAdapter = new DbAdapter(CadastroProfessor.this).open();
 		
 		// Recupera o Parametro ID
-		idProfessor = bundle.getLong(DbAdapter.COLUMN_ID);
+		idProfessor = bundle.getLong(DbAdapter.COLUMN_ID,0);
 		
 		// Recupera o professor de acordo com o ID informado
 		ProfessorVO professorVO = mDbAdapter.consultarProfessor(idProfessor);
@@ -181,7 +181,9 @@ public class CadastroProfessor extends Activity implements OnClickListener{
 	private void executaAcoesBotaoOK() {
 		
 		// Valida os campos de preenchimento obrigatório
-		validaCamposObrigatorios();
+		if(!validaCamposObrigatorios()){
+			return;
+		}
 
 		// Preenche o VO com os campos da tela
 		ProfessorVO professorVO = new ProfessorVO();
@@ -216,24 +218,21 @@ public class CadastroProfessor extends Activity implements OnClickListener{
 	}
 
 	/**
-	 * Valida os campos de preenchimento obrigat�rio
+	 * Valida os campos de preenchimento obrigatório
 	 *
 	 * @author Diego
 	 * @since Jan 27, 2011
 	 */
-	private void validaCamposObrigatorios() {
+	private boolean validaCamposObrigatorios() {
 		
 		if (nome.getText().toString().trim().equals("")) {
 			Toast.makeText(CadastroProfessor.this, R.string.error_name_invalid, Toast.LENGTH_LONG).show();
-			return;
+			return false;
 		} 
-		else if (login.getText().toString().equals("")) {
+		if (login.getText().toString().equals("")) {
 			Toast.makeText(CadastroProfessor.this, R.string.error_description_invalid, Toast.LENGTH_LONG).show();
-			return;
+			return false;
 		} 
-		else if (login.getText().toString().equals("")) {
-			Toast.makeText(CadastroProfessor.this, R.string.error_description_invalid, Toast.LENGTH_LONG).show();
-			return;
-		}
+		return true;
 	}
 }
