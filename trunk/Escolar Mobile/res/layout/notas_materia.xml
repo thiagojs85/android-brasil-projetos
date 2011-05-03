@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      	android:layout_width="fill_parent"
+    	android:layout_height="fill_parent"
+    	android:orientation="vertical">
+  		<TextView 
+  			android:id="@+id/label_nome_mateia"
+        	android:layout_width="fill_parent"
+   			android:layout_height="wrap_content"
+     		android:gravity="center_horizontal"
+        	android:text="portugues"/>
+		<TextView 
+        	android:layout_width="fill_parent"
+   			android:layout_height="wrap_content"
+     		android:gravity="left"
+        	android:text="Periodo:"/>
+		<Spinner 
+        	android:id="@+id/spinner_periodos"
+        	android:layout_width="fill_parent"
+        	android:layout_height="wrap_content"
+        	android:prompt="@string/escolha_periodo"/>
+
+            <RelativeLayout
+          		android:layout_width="fill_parent"
+        		android:layout_height="wrap_content"
+        		android:orientation="horizontal">
+				<TextView 
+        			android:layout_width="fill_parent"
+   					android:layout_height="wrap_content"
+     				android:layout_alignLeft="@+id/text_notas"
+        			android:text="Alunos"/>
+        		<TextView 
+        			android:id="@+id/text_notas"
+        			android:layout_width="fill_parent"
+   					android:layout_height="wrap_content"
+     				android:gravity="right"
+        			android:text="Notas"/>		
+		</RelativeLayout>
+        <ScrollView
+          	android:layout_width="fill_parent"
+        	android:layout_height="wrap_content"
+        	android:fillViewport="true"
+            android:background="#000000">
+            
+            <LinearLayout
+                android:orientation="vertical"
+          		android:layout_width="fill_parent"
+        		android:layout_height="fill_parent">
+
+    			<ListView 
+    				android:id="@id/android:list"
+          			android:layout_width="fill_parent"
+        			android:layout_height="fill_parent"
+        			android:padding="14sp" />
+        		
+  				<TextView 
+  					android:id="@id/android:empty"
+          			android:layout_width="fill_parent"
+        			android:layout_height="fill_parent"
+        			android:gravity="center_horizontal"
+        			android:text="@string/no_item"
+					android:layout_weight="1"/>        			
+            </LinearLayout>
+		</ScrollView>
+</LinearLayout>
