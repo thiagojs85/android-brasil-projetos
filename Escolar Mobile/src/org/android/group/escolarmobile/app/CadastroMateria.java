@@ -84,7 +84,7 @@ public class CadastroMateria extends Activity{
 					materia.setText(materiaVO.getNome());
 					horasAula.setText(String.valueOf(materiaVO.getHoras()));
 					descricao.setText(materiaVO.getDescricao());
-					padrao.setChecked(materiaVO.getPadrao().compareToIgnoreCase("S") == 0);
+					padrao.setChecked(materiaVO.isPadrao());
 					
 					for(int i = 0; i < professor.getCount(); i++) {
 						if(materiaVO.getIdProfessor() == professor.getItemIdAtPosition(i)) {
@@ -122,7 +122,7 @@ public class CadastroMateria extends Activity{
 				materiaVo.setHoras(Integer.parseInt(horasAula.getText().toString().trim()));
 				materiaVo.setDescricao(descricao.getText().toString().trim());
 				materiaVo.setIdProfessor(professor.getSelectedItemId());
-				materiaVo.setPadrao(padrao.isChecked() ? "S" : "N");
+				materiaVo.setPadrao(padrao.isChecked());
 
 				mDbAdapter = new DbAdapter(CadastroMateria.this).open();
 

@@ -408,7 +408,7 @@ public class DbAdapter {
 		updatedValues.put(COLUMN_NOME, materiaVO.getNome());
 		updatedValues.put(COLUMN_HORAS, materiaVO.getHoras());
 		updatedValues.put(COLUMN_DESCRICAO, materiaVO.getDescricao());
-		updatedValues.put(COLUMN_PADRAO, materiaVO.getPadrao());
+		updatedValues.put(COLUMN_PADRAO, materiaVO.isPadrao() ? "s" : "n");
 		
 		mDb.beginTransaction();
 		try {
@@ -445,7 +445,7 @@ public class DbAdapter {
 			materia.setNome(c.getString(2));
 			materia.setHoras(c.getInt(3));
 			materia.setDescricao(c.getString(4));
-			materia.setPadrao(c.getString(5));
+			materia.setPadrao(c.getString(5) == "s");
 			
 			c.close();
 		}
@@ -474,7 +474,7 @@ public class DbAdapter {
 				materia.setNome(c.getString(2));
 				materia.setHoras(c.getInt(3));
 				materia.setDescricao(c.getString(4));
-				materia.setPadrao(c.getString(5));
+				materia.setPadrao(c.getString(5) == "s");
 			}
 			
 			c.close();
