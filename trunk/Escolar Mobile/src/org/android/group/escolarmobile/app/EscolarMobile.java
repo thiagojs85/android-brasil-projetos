@@ -129,6 +129,7 @@ public class EscolarMobile extends Activity {
 			alunos.setEnabled(true);
 			btVisualizar.setEnabled(true);
 			btChamada.setEnabled(true);
+			materias.setVisibility(View.VISIBLE);
 		} else {
 			turmas.setEnabled(false);
 			materias.setEnabled(false);
@@ -158,6 +159,7 @@ public class EscolarMobile extends Activity {
 					alunos.setEnabled(true);
 					btVisualizar.setEnabled(true);
 					btChamada.setEnabled(true);
+					materias.setVisibility(View.VISIBLE);
 				} else {
 					materias.setEnabled(false);
 					alunos.setEnabled(false);

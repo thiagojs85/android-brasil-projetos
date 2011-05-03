@@ -40,7 +40,7 @@ public class ListaTurmas extends TelaListaBasica {
 			}
 		});
     }
-    
+ 
     @Override
 	protected boolean isMultiItensSelectable() {
 		// Caso queira que os itens da lista sejam selecionaveis, fazer retornar true
@@ -87,7 +87,13 @@ public class ListaTurmas extends TelaListaBasica {
 		/**
 		 * Preenche a lista de turmas com base nos dados do BD
 		 */
-		return mDbAdapter.consultarTodos(DbAdapter.TABLE_TURMA, new String[]{DbAdapter.COLUMN_ID, DbAdapter.COLUMN_NOME});
+		return mDbAdapter.consultarTodos(DbAdapter.TABLE_TURMA, new String[]{DbAdapter.COLUMN_ID, DbAdapter.COLUMN_NOME,DbAdapter.COLUMN_DESCRICAO});
+	}
+    
+	@Override
+    protected String[] getItensOfLine() {
+    	return new String[]{DbAdapter.COLUMN_NOME,DbAdapter.COLUMN_DESCRICAO};
+
 	}
 	
 	@Override

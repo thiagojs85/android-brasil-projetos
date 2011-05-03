@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView android:id="@+id/n_prontuario" xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content"
+	android:orientation="vertical">
+<TextView android:id="@+id/n_prontuario"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:gravity="center_horizontal"
     android:textSize="20sp"/>
+<TextView android:id="@+id/n_sub"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:textSize="10sp"/>
+</LinearLayout>
