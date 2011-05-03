@@ -1,0 +1,1 @@
+Neste pacote ficam os arquivos que representam os objetos básicos do projeto. 
