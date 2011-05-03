@@ -7,7 +7,7 @@ public class MateriaVO {
 	private String nome;
 	private int horas;
 	private String descricao;
-	private String padrao;
+	private boolean padrao;
 	
 	public long getId() {
 		return id;
@@ -45,10 +45,10 @@ public class MateriaVO {
 	public void setDescricao(String descricao) {
 		this.descricao = descricao;
 	}
-	public String getPadrao() {
+	public boolean isPadrao() {
 		return padrao;
 	}
-	public void setPadrao(String padrao) {
+	public void setPadrao(boolean padrao) {
 		this.padrao = padrao;
 	}
 }
