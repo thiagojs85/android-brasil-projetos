@@ -48,8 +48,6 @@ public class EscolarMobile extends Activity {
 		btVisualizar = (Button) findViewById(R.id.visualizar);
 		btChamada = (Button) findViewById(R.id.chamada);
 
-		mDbAdapter = new DbAdapter(this).open();
-
 		/*
 		 * A parte abaixo não é mais funcional. Ela simplesmente insere valores
 		 * hard-coded no Spinner. Na versão atual, os valores são recuperados do
@@ -94,7 +92,7 @@ public class EscolarMobile extends Activity {
 
 		btChamada.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				// TODO
+				
 				long idTurma = turmas.getSelectedItemId();
 				long idMateria = materias.getSelectedItemId();
 				Intent i = new Intent(EscolarMobile.this, ListaAlunos.class);
@@ -118,7 +116,7 @@ public class EscolarMobile extends Activity {
 	 * tabela de turmas ou materias, essa atualização será exibida.
 	 */
 	private void populateFields() {
-
+		mDbAdapter = new DbAdapter(EscolarMobile.this).open();
 		Cursor c = mDbAdapter.consultarTodos(DbAdapter.TABLE_TURMA,
 				new String[] { DbAdapter.COLUMN_ID, DbAdapter.COLUMN_NOME });
 
@@ -145,6 +143,8 @@ public class EscolarMobile extends Activity {
 				android.R.layout.simple_spinner_dropdown_item, c,
 				new String[] { DbAdapter.COLUMN_NOME },
 				new int[] { android.R.id.text1 }));
+		stopManagingCursor(c);
+		mDbAdapter.close();
 		turmas.setOnItemSelectedListener(new OnItemSelectedListener() {
 
 			public void onItemSelected(AdapterView<?> parent, View view,
@@ -173,7 +173,8 @@ public class EscolarMobile extends Activity {
 						android.R.layout.simple_spinner_item, c,
 						new String[] { DbAdapter.COLUMN_NOME },
 						new int[] { android.R.id.text1 }));
-
+				stopManagingCursor(c);
+				mDbAdapter.close();
 			}
 
 			public void onNothingSelected(AdapterView<?> arg0) {

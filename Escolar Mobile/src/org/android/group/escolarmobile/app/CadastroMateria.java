@@ -80,9 +80,9 @@ public class CadastroMateria extends Activity{
 			if(editId != 0) {			
 				MateriaVO materiaVO = mDbAdapter.consultarMateria(editId);
 				if (materiaVO != null) {
-					idTurmas = materiaVO.getIdTurmas();
+					idTurmas = new long[]{bundle.getLong(DbAdapter.COLUMN_ID_TURMA,0)};
 					materia.setText(materiaVO.getNome());
-					horasAula.setText(materiaVO.getNome());
+					horasAula.setText(String.valueOf(materiaVO.getHoras()));
 					descricao.setText(materiaVO.getDescricao());
 					padrao.setChecked(materiaVO.getPadrao().compareToIgnoreCase("S") == 0);
 					
@@ -96,7 +96,7 @@ public class CadastroMateria extends Activity{
 					this.finish();
 				}
 			} else {
-				idTurmas = new long[]{bundle.getLong(DbAdapter.COLUMN_ID_TURMA)};
+				idTurmas = new long[]{bundle.getLong(DbAdapter.COLUMN_ID_TURMA,0)};
 			}
 		}
 
