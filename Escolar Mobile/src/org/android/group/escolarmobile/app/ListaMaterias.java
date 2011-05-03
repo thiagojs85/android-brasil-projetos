@@ -102,12 +102,18 @@ public class ListaMaterias extends TelaListaBasica{
 		// Se não houver id nos Extras, mostre todas as matérias existentes.
 		if(idTurma < 1) {
 			return mDbAdapter.consultarTodos(DbAdapter.TABLE_MATERIA, 
-					new String[]{DbAdapter.COLUMN_ID, DbAdapter.COLUMN_NOME});
+					new String[]{DbAdapter.COLUMN_ID, DbAdapter.COLUMN_NOME,DbAdapter.COLUMN_DESCRICAO});
 		} else {
 			return mDbAdapter.acessarMateriasPorTurma(idTurma);
 		}
 	}
-	
+
+	@Override
+    protected String[] getItensOfLine() {
+    	return new String[]{DbAdapter.COLUMN_NOME,DbAdapter.COLUMN_DESCRICAO};
+
+	}
+    
 	@Override
 	public void setActionOnEditItem(MenuItem item){
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();

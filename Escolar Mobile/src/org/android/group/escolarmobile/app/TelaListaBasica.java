@@ -109,15 +109,28 @@ public abstract class TelaListaBasica extends ListActivity implements OnClickLis
 			// A criação deste ListAdapter é praticamente a mesma utilizada no tutorial do Notepad.
 			// Mais informações no Step 12 em http://developer.android.com/resources/tutorials/notepad/notepad-ex1.html
 
+			if(getItensOfLine().length <2){
 			setListAdapter(new SimpleCursorAdapter(this, 
 					R.layout.base_list_item, 
 					c, 
-					new String[]{DbAdapter.COLUMN_NOME}, //tem que adicionar a coluna DbAdapter.COLUMN_REGISTRO aqui
+					getItensOfLine(), 
 					new int[]{R.id.n_prontuario}));
+			}else{
+				setListAdapter(new SimpleCursorAdapter(this, 
+						R.layout.base_list_item, 
+						c, 
+						getItensOfLine(), 
+						new int[]{R.id.n_prontuario,R.id.n_sub}));				
+			}
 		}
     }
 
-    public abstract void onClick(View v);
+    protected String[] getItensOfLine() {
+    	return new String[]{DbAdapter.COLUMN_NOME};
+
+	}
+
+	public abstract void onClick(View v);
 	public Button getBtAdd() {
 		return btAdd;
 	}
