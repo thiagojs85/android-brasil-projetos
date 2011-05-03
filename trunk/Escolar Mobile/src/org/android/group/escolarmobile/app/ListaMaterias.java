@@ -120,7 +120,8 @@ public class ListaMaterias extends TelaListaBasica{
 		
 		// Repassa o id da linha selecionada para a tela de edição
     	Intent i = new Intent(this, CadastroMateria.class);
-		i.putExtra(DbAdapter.COLUMN_ID, info.id);
+    	i.putExtra(DbAdapter.COLUMN_ID_TURMA, idTurma);
+    	i.putExtra(DbAdapter.COLUMN_ID, info.id);
     	startActivityForResult(i, EDIT_ID);
 	}
 	
