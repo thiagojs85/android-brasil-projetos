@@ -1,27 +1,53 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
 	<string name="app_name">Boletim Mobile</string>
-	<string name="turma">Turma</string>
-	<string name="turmas">Turmas</string>
-	<string name="materia">Matéria</string>
-	<string name="materias">Matérias</string>
+	
+	<string name="titulo_cadastro_aluno">Boletim Mobile - Cadastro Aluno</string>
+	<string name="titulo_cadastro_materia">Boletim Mobile - Cadastro Matéria</string>
+	<string name="titulo_cadastro_professor">Boletim Mobile - Cadastro Professor</string>
+	<string name="titulo_cadastro_turma">Boletim Mobile - Cadastro Turma</string>
+	<string name="titulo_lista_alunos">	Boletim Mobile - Alunos</string>
+	<string name="titulo_lista_materias">Boletim Mobile - Matérias</string>
+	<string name="titulo_lista_professores">Boletim Mobile - Professores</string>
+	<string name="titulo_lista_turmas">Boletim Mobile - Turmas</string>
+	<string name="titulo_sobre">Boletim Mobile - Sobre</string>
+	<string name="titulo_chamada">Boletim Mobile - Chamada</string>
+	
+	<string name="aluno">Aluno</string>
 	<string name="alunos">Alunos</string>
 	<string name="professor">Professor</string>
+	<string name="professores">Professores</string>
 	
 	<string name="visualizar">Visualizar</string>
 	<string name="visualizar_aluno">Visualizar Aluno</string>
-	<string name="escolha_turma">Selecione a Turma</string>
-	<string name="escolha_materia">Selecione a Matéria</string>
-		<string name="escolha_periodo">Selecione o período</string>
 	
-	<string name="ok">Ok</string>
-	<string name="cancel">Cancelar</string>
-	<string name="yes">Sim</string>
-	<string name="no">Não</string>
-	<string name="no_item">Nenhuma entrada!</string>
+	<string name="turma">Turma</string>
+	<string name="turmas">Turmas</string>
+	<string name="selecione_turma">Selecione a Turma</string>
+	<string name="adicionar_turma">Adicionar Turma</string>
+	
+	<string name="adicionar_professor">Adicionar Professor</string>
+	
+	<string name="materia">Matéria</string>
+	<string name="materias">Matérias</string>
+	<string name="selecione_materia">Selecione a Matéria</string>
+	<string name="adicionar_materias">Adicionar Matérias</string>
+	<string name="nome_materia">Nome da Matéria</string>
+	<string name="horas_aula">Horas / aula</string>
+	<string name="selecione_periodo">Selecione o Período</string>
+		
+	<string name="ok">OK</string>
+	<string name="sim">Sim</string>
+	<string name="nao">Não</string>
+	
+	<string name="sem_item">Nenhuma Entrada!</string>
+	
 	<string name="add">Adicionar</string>
+	<string name="cancelar">Cancelar</string>
+	
 	<string name="base_menu_edit">Editar</string>
 	<string name="base_menu_delete">Remover</string>
+	
 	<string name="nome_turma">Nome da Turma</string>
 	<string name="descricao">Descrição</string>
 	<string name="cadastrar_turmas">Cadastrar Turmas</string>
@@ -32,31 +58,35 @@
 	<string name="salvar_turma">Os dados da turma cadastrada serão salvos! Deseja continuar?</string>
 	<string name="salvar_turma_sem_materia">Você salvou uma turma sem matérias vinculadas. Deseja usar as matérias padrão do sistema ou cadastrar suas próprias matérias?</string>
 	<string name="usar_materias_padrao">Usar padrão</string>
-	<string name="materia_padrao_label">Esta é uma matéria padrão</string>
+	<string name="materia_padrao">Esta é uma matéria padrão do sistema.</string>
 	
-	<string name="error_name_invalid">Erro! Nome inválido!</string>
-	<string name="error_rm_invalid">Erro! Registro de Matrícula inválido!</string>
-	<string name="error_description_invalid">Erro! Descrição inválida!</string>
-	<string name="error_turma_not_found">Erro! Turma não encontrada!</string>
-	<string name="data_inserted_success">Registro inserido com sucesso!</string>
-	<string name="data_inserted_error">Erro ao inserir registro!</string>
-	<string name="adicionar_turma">Adicionar Turma</string>
-	<string name="adicionar_professor">Adicionar Professor</string>
-	<string name="professores">Professores</string>
-	<string name="cadastrar_materias">Cadastrar Matérias</string>
-	<string name="lancar_notas">Lançar Notas</string>
+	<string name="erro_nome_invalido">Erro! Nome inválido!</string>
+	<string name="erro_rm_invalido">Erro! Registro de Matrícula inválido!</string>
+	<string name="erro_descricao_invalido">Erro! Descrição inválida!</string>
+	<string name="erro_turma_invalida">Erro! Turma não encontrada!</string>
+	<string name="erro_hora_invalida">Erro! horas/aula errado.</string>
+		
+	<string name="inserir_dados_successo">Registro inserido com sucesso!</string>
+	<string name="atualizar_dados_successo">Registro atualizado com sucesso!</string>
+	<string name="inserir_dados_erro">Erro ao inserir registro!</string>
+	
 	<string name="base_menu_lancar"></string>
+	
+	<string name="lancar_notas">Lançar Notas</string>
+	<string name="lancar_chamada">Lançar Chamada</string>
 	<string name="fazer_chamada">Fazer Chamada</string>
+	<string name="desmarcar_os_faltosos">Desmarque os alunos que faltaram!</string>
 	<string name="finalizar_chamada">Finalizar</string>
-	<string name="nome_materia">Nome da Matéria</string>
-	<string name="horas_aula">Horas / aula</string>
+	
+	
 	<string name="cadastrar_alunos">Cadastrar Alunos</string>
 	<string name="adicionar_aluno">Adicionar Aluno</string>
 	<string name="nome_aluno">Nome do Aluno</string>
 	<string name="rm">Registro de Matrícula</string>
 	<string name="idade_aluno">Idade</string>
-	<string name="sobre_titulo">Sobre</string>
 	
+	
+	<string name="sobre">Sobre</string>
 	<string name="sobre_texto">\ 
 <b>Boletim Escolar (1.0 beta)</b>\n
 \n
@@ -85,7 +115,6 @@ Felipe Toledo <i> felipetgoliveira@gmail.com</i>\n
 <b>Repositório</b>\n
 http://code.google.com/p/android-brasil-projetos
 	</string>
-	<string name="error_hour_invalid">Erro! horas/aula errado</string>
 	<string name="visualizar_alunos">Visualizar alunos</string>
 	<string name="numero_faltas">Número  de faltas</string>
 	<string name="lancar_faltas">Lançar Faltas</string>

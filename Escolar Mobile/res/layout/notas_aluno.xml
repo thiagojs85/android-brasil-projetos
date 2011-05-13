@@ -4,13 +4,13 @@
     	android:layout_height="fill_parent"
     	android:orientation="vertical">
   		<TextView 
-  			android:id="@+id/label_nome_aluno"
+  			android:id="@+id/tv_nome_aluno"
         	android:layout_width="fill_parent"
    			android:layout_height="wrap_content"
      		android:gravity="center_horizontal"
         	android:text="Fulano"/>
 		<TextView 
-  			android:id="@+id/label_matricula_turma"
+  			android:id="@+id/tv_matricula_turma"
         	android:layout_width="fill_parent"
    			android:layout_height="wrap_content"
      		android:gravity="center_horizontal"
@@ -21,10 +21,10 @@
      		android:gravity="left"
         	android:text="Periodo:"/>
 		<Spinner 
-        	android:id="@+id/spinner_periodos"
+        	android:id="@+id/sp_periodos"
         	android:layout_width="fill_parent"
         	android:layout_height="wrap_content"
-        	android:prompt="@string/escolha_periodo"/>
+        	android:prompt="@string/selecione_periodo"/>
 
             <RelativeLayout
           		android:layout_width="fill_parent"
@@ -33,16 +33,16 @@
 				<TextView 
         			android:layout_width="fill_parent"
    					android:layout_height="wrap_content"
-     				android:layout_alignLeft="@+id/text_notas"
+     				android:layout_alignLeft="@+id/tv_notas"
         			android:text="Matérias"/>
         		<TextView 
-        			android:id="@+id/text_notas"
+        			android:id="@+id/tv_notas"
         			android:layout_width="fill_parent"
    					android:layout_height="wrap_content"
      				android:gravity="center"
         			android:text="Notas"/>
 				<TextView 
-					android:id="@+id/text_faltas"
+					android:id="@+id/tv_faltas"
         			android:layout_width="fill_parent"
    					android:layout_height="wrap_content"
      				android:gravity="right"
@@ -70,7 +70,7 @@
           			android:layout_width="fill_parent"
         			android:layout_height="fill_parent"
         			android:gravity="center_horizontal"
-        			android:text="@string/no_item"
+        			android:text="@string/sem_item"
 					android:layout_weight="1"/>        			
             </LinearLayout>
 		</ScrollView>

@@ -32,7 +32,7 @@
           			android:layout_width="fill_parent"
         			android:layout_height="fill_parent"
         			android:gravity="center_horizontal"
-        			android:text="@string/no_item"
+        			android:text="@string/sem_item"
 					android:layout_weight="1"/>        			
             </LinearLayout>
 		</ScrollView>

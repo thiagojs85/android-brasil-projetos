@@ -12,7 +12,7 @@
         android:id="@+id/sp_turmas"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:prompt="@string/escolha_turma"/>
+        android:prompt="@string/selecione_turma"/>
 
 	<TextView android:text="@string/materias" 
 		android:id="@+id/TextView02" 
@@ -23,7 +23,7 @@
         android:id="@+id/sp_materias"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:prompt="@string/escolha_materia"/>
+        android:prompt="@string/selecione_materia"/>
 	<TextView android:text="@string/alunos" 
 		android:id="@+id/TextView03" 
 		android:layout_width="wrap_content" 
@@ -36,14 +36,16 @@
 	</AutoCompleteTextView>
 	<Button
 		android:id="@+id/visualizar"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content" 
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_gravity="center_horizontal" 
 		android:text="@string/visualizar_aluno">
 	</Button>
 	<Button
 		android:id="@+id/chamada"
-		android:layout_width="wrap_content"
+		android:layout_width="fill_parent"
 		android:layout_height="wrap_content" 
+		android:layout_gravity="center_horizontal"
 		android:text="@string/fazer_chamada">
 	</Button>
 </LinearLayout>

@@ -1,41 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-	package="org.group.dev"
+	package="org.android.brasil.projetos.escolarmobile"
 	android:versionCode="1"
 	android:versionName="1.0" android:installLocation="preferExternal">
     <application android:icon="@drawable/icon" android:label="@string/app_name" android:debuggable="true">
-		<activity android:label="@string/app_name" android:name="org.android.group.escolarmobile.app.EscolarMobile">
-			<activity android:name=".subjects.Subjects" android:label="Matérias"/>
+		<activity android:label="@string/app_name" android:name=".base.EscolarMobile">
 			<intent-filter>
                	<action android:name="android.intent.action.MAIN" />
                	<category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-	<activity android:name="org.android.group.escolarmobile.app.ListaTurmas"></activity>
-<activity android:name="org.android.group.escolarmobile.app.TelaListaBasica"></activity>
-<activity android:name="org.android.group.escolarmobile.app.CadastroTurmas"><intent-filter>
-<action android:name="android.intent.action.MAIN"></action>
-</intent-filter>
-</activity>
-<activity android:name="org.android.group.escolarmobile.app.ListaProfessores"><intent-filter><action android:name="android.intent.action.MAIN"></action>
-</intent-filter>
-</activity>
-<activity android:name="org.android.group.escolarmobile.app.CadastroProfessor"/>
-<activity android:name="org.android.group.escolarmobile.app.ListaMaterias"><intent-filter><action android:name="android.intent.action.MAIN"></action>
-</intent-filter>
-</activity>
-<activity android:name="org.android.group.escolarmobile.app.CadastroMateria"><intent-filter><action android:name="android.intent.action.MAIN"></action>
-</intent-filter>
-</activity>
-<activity android:name="org.android.group.escolarmobile.app.ListaAlunos"><intent-filter><action android:name="android.intent.action.MAIN"></action>
-</intent-filter>
-</activity>
-<activity android:name="org.android.group.escolarmobile.app.CadastroAluno"><intent-filter><action android:name="android.intent.action.MAIN"></action>
-</intent-filter>
-</activity>
-<activity android:name="org.android.group.escolarmobile.app.Sobre"><intent-filter><action android:name="android.intent.action.MAIN"></action>
-</intent-filter>
-</activity>
+	<activity android:name=".gui.turma.ListaTurmas"></activity>
+<activity android:name=".gui.turma.CadastroTurmas"></activity>
+<activity android:name=".gui.professor.ListaProfessores"></activity>
+<activity android:name=".gui.professor.CadastroProfessor"/>
+<activity android:name=".gui.materia.ListaMaterias"></activity>
+<activity android:name=".gui.materia.CadastroMateria"></activity>
+<activity android:name=".gui.aluno.ListaAlunos"></activity>
+<activity android:name=".gui.aluno.CadastroAluno"></activity>
+<activity android:name=".base.Sobre"></activity>
+<activity android:name=".gui.notas.NotasAluno"></activity>
+<activity android:name=".gui.notas.NotasMateria"></activity>
 </application>
-    <uses-sdk android:minSdkVersion="7"/>
+    <uses-sdk android:minSdkVersion="4"/>
 </manifest> 

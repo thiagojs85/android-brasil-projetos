@@ -13,7 +13,8 @@
   <EditText 
 		android:id="@+id/et_nome_aluno" 
 		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content">
+		android:layout_height="wrap_content"
+		android:maxLines="1">
   </EditText>
   <TextView 
 		android:text="@string/idade_aluno" 
@@ -22,7 +23,8 @@
   <EditText
 		android:id="@+id/et_idade_aluno" 
 		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content" android:inputType="number">
+		android:layout_height="wrap_content" 
+		android:inputType="numberDecimal">
   </EditText>
   <TextView 
 		android:text="@string/rm" 
@@ -31,7 +33,8 @@
   <EditText
 		android:id="@+id/et_registro_matricula" 
 		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content">
+		android:layout_height="wrap_content"
+		android:maxLines="1">
   </EditText>
 
 </LinearLayout>
