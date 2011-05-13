@@ -14,7 +14,8 @@
   <EditText
 		android:id="@+id/et_nome_professor" 
 		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content">
+		android:layout_height="wrap_content"
+		android:maxLines="1">
   </EditText>
   
   <TextView
@@ -24,7 +25,8 @@
   <EditText 
 		android:id="@+id/et_login_professor" 
 		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content">
+		android:layout_height="wrap_content"
+		android:maxLines="1">
   </EditText>
   
   <TextView 
@@ -35,7 +37,8 @@
 		android:id="@+id/et_senha_professor"
 		android:password="true" 
 		android:layout_width="fill_parent" 
-		android:layout_height="wrap_content">
+		android:layout_height="wrap_content"
+		android:maxLines="1">
   </EditText>
 
 </LinearLayout>

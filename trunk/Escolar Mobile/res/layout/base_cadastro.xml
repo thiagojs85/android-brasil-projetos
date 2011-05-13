@@ -36,7 +36,7 @@
 			android:id="@+id/bt_cancelar"
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
-			android:text="@string/cancel"
+			android:text="@string/cancelar"
 			android:layout_below="@+id/bt_ok">
 		</Button>
 	</RelativeLayout>

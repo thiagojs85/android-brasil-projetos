@@ -18,7 +18,7 @@
         	android:id="@+id/spinner_periodos"
         	android:layout_width="fill_parent"
         	android:layout_height="wrap_content"
-        	android:prompt="@string/escolha_periodo"/>
+        	android:prompt="@string/selecione_periodo"/>
 
             <RelativeLayout
           		android:layout_width="fill_parent"
@@ -58,7 +58,7 @@
           			android:layout_width="fill_parent"
         			android:layout_height="fill_parent"
         			android:gravity="center_horizontal"
-        			android:text="@string/no_item"
+        			android:text="@string/sem_item"
 					android:layout_weight="1"/>        			
             </LinearLayout>
 		</ScrollView>
