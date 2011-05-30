@@ -199,7 +199,9 @@ public class ListaAlunos extends TelaListaBasica {
 			public void onClick(View v) {
 				Date date = new Date(datapicker.getYear() - 1900, datapicker
 						.getMonth(), datapicker.getDayOfMonth());
+				
 				long[] ids = ListaAlunos.this.getListView().getCheckItemIds();
+				
 				presencaVO = new PresencaVO(ListaAlunos.this);
 				presencaVO.setFaltas(Integer.parseInt(numeroFaltas.getText()
 						.toString()));

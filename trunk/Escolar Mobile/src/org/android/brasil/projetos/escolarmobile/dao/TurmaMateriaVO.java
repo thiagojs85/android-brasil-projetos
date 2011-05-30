@@ -144,6 +144,25 @@ public class TurmaMateriaVO extends VOBasico {
 		return true;
 	}
 
+	
+	/**
+	 * Remove todas as incidências de uma determinada matéria na tabela de
+	 * relações matérias X Turmas.
+	 * 
+	 * @param id
+	 *            Id da matéria.
+	 * @return TRUE.
+	 */
+	public static boolean removerTodasMateriasDeTurma(long idTurma) {
+		mDb.execSQL(
+				"DELETE FROM " + TABLE_TURMA_MATERIA + " WHERE "
+						+ COLUMN_ID_TURMA
+						+ " = ?",
+				new String[] {String.valueOf(idTurma) });
+		return true;
+	}
+
+	
 	/**
 	 * Consulta todas as matérias da turma dada.
 	 * 
@@ -151,7 +170,7 @@ public class TurmaMateriaVO extends VOBasico {
 	 *            Código de ID da turma.
 	 * @return vetor de ids das matérias encontradas.
 	 */
-	public static long[] getIdsMateriaPorTurma(long idTurma) {
+	public static long[] consultarIdsDasMateriasDeTurma(long idTurma) {
 		ArrayList<String> resultados = new ArrayList<String>();
 
 		Cursor c = consultar(TABLE_TURMA_MATERIA,

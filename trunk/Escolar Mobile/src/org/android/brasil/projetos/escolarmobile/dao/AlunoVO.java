@@ -2,16 +2,14 @@ package org.android.brasil.projetos.escolarmobile.dao;
 
 import java.util.ArrayList;
 
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 /**
- * @author Equipe Boletim Escolar Mobile
- * Grupo Android Brasil - Projetos
- *
+ * @author Equipe Boletim Escolar Mobile Grupo Android Brasil - Projetos
+ * 
  */
 public class AlunoVO extends VOBasico {
 
@@ -113,18 +111,21 @@ public class AlunoVO extends VOBasico {
 	}
 
 	/**
-	 * @param nome do aluno
-	 * @param idTurma turma do aluno
-	 * @return id do aluno, ou -1 caso não exista um aluno com o nome passado na turma passada.
+	 * @param nome
+	 *            do aluno
+	 * @param idTurma
+	 *            turma do aluno
+	 * @return id do aluno, ou -1 caso não exista um aluno com o nome passado na
+	 *         turma passada.
 	 */
-	public static long getIdAlunoPorNomeETurma(String nome,
-			long idTurma) {
-		 AlunoVO alunoVO = consultarAluno(nome);
-		 if(alunoVO != null && alunoVO.getIdTurma() == idTurma){
-			 return alunoVO.getId();
-		 }
+	public static long getIdAlunoPorNomeETurma(String nome, long idTurma) {
+		AlunoVO alunoVO = consultarAluno(nome);
+		if (alunoVO != null && alunoVO.getIdTurma() == idTurma) {
+			return alunoVO.getId();
+		}
 		return -1;
 	}
+
 	public static Cursor consultarTodos(String[] colunas) {
 		return consultarTodos(TABLE_ALUNO, colunas);
 	}
@@ -134,7 +135,8 @@ public class AlunoVO extends VOBasico {
 	 * 
 	 * @param idTurma
 	 *            Código de identificação da matéria na tabela.
-	 * @return Uma lista com o nome de todos os alunos da turma, NULL se não houver alunos.
+	 * @return Uma lista com o nome de todos os alunos da turma, NULL se não
+	 *         houver alunos.
 	 */
 	public static ArrayList<String> getNomeDeAlunosPorTurma(long idTurma) {
 		Cursor c = AlunoVO.acessarAlunosPorTurma(idTurma);
@@ -152,12 +154,13 @@ public class AlunoVO extends VOBasico {
 		return resultado;
 	}
 
-	
 	/**
 	 * Atualiza o registro de aluno com os dados fornecidos.
 	 * 
-	 * @param alunoVO é uma instância de AlunoVO
-	 * @return Se conseguir atualizar o registro no banco retorna TRUE, caso contrário FALSE.
+	 * @param alunoVO
+	 *            é uma instância de AlunoVO
+	 * @return Se conseguir atualizar o registro no banco retorna TRUE, caso
+	 *         contrário FALSE.
 	 */
 	public static boolean atualizarAluno(AlunoVO alunoVO) {
 		ContentValues updatedValues = new ContentValues();
@@ -170,7 +173,6 @@ public class AlunoVO extends VOBasico {
 		return mDb.update(TABLE_ALUNO, updatedValues, COLUMN_ID + " = "
 				+ alunoVO.getId(), null) > 0;
 	}
-
 
 	/**
 	 * Retorna o registro do aluno com o ID fornecido, se existir.
@@ -268,7 +270,8 @@ public class AlunoVO extends VOBasico {
 	 * Remove o aluno com o id especificado.
 	 * 
 	 * @param id
-	 * @return Se conseguir remover o registro do banco retorna TRUE, caso contrário FALSE.
+	 * @return Se conseguir remover o registro do banco retorna TRUE, caso
+	 *         contrário FALSE.
 	 */
 	public static boolean removerAluno(long id) {
 		boolean resultado = false;
@@ -286,13 +289,63 @@ public class AlunoVO extends VOBasico {
 	}
 
 	/**
-	 * @param db é uma instância aberta de um SQLiteDatabase
-	 * Esté método é utilizado para popular o banco com Alunos "padrões" durante a instalação.
-	 * Dê uma olhada em DbAdapter.java
+	 * Remove o aluno com o id especificado.
+	 * 
+	 * @param id
+	 * @return Se conseguir remover o registro do banco retorna TRUE, caso
+	 *         contrário FALSE.
+	 */
+	public static boolean removerTodosAlunosDeTurma(long idTurma) {
+		boolean resultado = false;
+		mDb.beginTransaction();
+
+		try {
+			remover(TABLE_ALUNO, AlunoVO.COLUMN_ID_TURMA, idTurma);
+			mDb.setTransactionSuccessful();
+			resultado = true;
+		} finally {
+			mDb.endTransaction();
+		}
+
+		return resultado;
+	}
+
+	/**
+	 * @param db
+	 *            é uma instância aberta de um SQLiteDatabase Esté método é
+	 *            utilizado para popular o banco com Alunos "padrões" durante a
+	 *            instalação. Dê uma olhada em DbAdapter.java
 	 */
 	public static void createDummyData(SQLiteDatabase db) {
 		// TODO Auto-generated method stub
 
+	}
+
+	public static long[] consultarIdsAlunosDeTurma(long idTurma) {
+		ArrayList<String> resultados = new ArrayList<String>();
+
+		Cursor c = consultar(TABLE_ALUNO, new String[] { COLUMN_ID_TURMA },
+				COLUMN_ID_TURMA, String.valueOf(idTurma));
+
+		if (c != null) {
+			c.moveToFirst();
+
+			while (!c.isAfterLast()) {
+				resultados.add(String.valueOf(c.getLong(0)));
+				c.moveToNext();
+			}
+
+			c.close();
+
+			if (!resultados.isEmpty()) {
+				long[] ids = new long[resultados.size()];
+				for (int i = 0; i < ids.length; i++) {
+					ids[i] = Long.parseLong(resultados.get(i));
+				}
+				return ids;
+			}
+		}
+		return null;
 	}
 
 }
