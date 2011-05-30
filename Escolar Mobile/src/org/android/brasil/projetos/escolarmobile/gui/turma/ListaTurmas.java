@@ -2,6 +2,9 @@ package org.android.brasil.projetos.escolarmobile.gui.turma;
 
 import org.android.brasil.projetos.escolarmobile.R;
 import org.android.brasil.projetos.escolarmobile.base.TelaListaBasica;
+import org.android.brasil.projetos.escolarmobile.dao.AlunoVO;
+import org.android.brasil.projetos.escolarmobile.dao.MateriaVO;
+import org.android.brasil.projetos.escolarmobile.dao.TurmaMateriaVO;
 import org.android.brasil.projetos.escolarmobile.dao.TurmaVO;
 import org.android.brasil.projetos.escolarmobile.gui.aluno.ListaAlunos;
 import org.android.brasil.projetos.escolarmobile.gui.materia.ListaMaterias;
@@ -148,11 +151,32 @@ public class ListaTurmas extends TelaListaBasica {
 					new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int id) {
 
-							// TODO Remover as notas de todas as matérias de
-							// todos alunos
-							// TODO Remover alunos desta turma
-							// TODO Remover relacionamentos TurmaMateria e
-							// materias que não utilizadas em outras turmas
+							//Remove todos os alunos de uma Turma
+							AlunoVO.open(ListaTurmas.this);
+							long[] idsAlunos = AlunoVO.consultarIdsAlunosDeTurma(idTurma);
+							AlunoVO.removerTodosAlunosDeTurma(idTurma);
+							AlunoVO.close();
+							
+							TurmaMateriaVO.open(ListaTurmas.this);
+							//Pega os ids das matérias de uma Turma
+							long[] idsMaterias = TurmaMateriaVO.consultarIdsDasMateriasDeTurma(idTurma);
+							//Remove todos os relacionamentos de matérias desta turma
+							TurmaMateriaVO.removerTodasMateriasDeTurma(idTurma);
+							TurmaMateriaVO.close();
+							
+							//TODO Remover todas as notas de todos os idsAlunos em todas as idsMaterias
+							
+							// TODO Remover todas as faltas de todos idsAlunos em todas as idsMaterias
+							
+							//Se as matérias não estão em outros relacionamentos, remover!
+							for (int i = 0; i < idsMaterias.length; i++) {
+								if(!TurmaMateriaVO.estaEmMaisRelacionamentos(i)){
+									MateriaVO.open(ListaTurmas.this);
+									MateriaVO.removerMateria(i);
+									MateriaVO.close();
+								}
+							}
+							//Remove a turma
 							TurmaVO.open(ListaTurmas.this);
 							TurmaVO.removerTurma(idTurma);
 							TurmaVO.close();

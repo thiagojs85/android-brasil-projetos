@@ -84,7 +84,7 @@ public class CadastroTurmas extends Activity {
 					// Verificar se a turma possui materias, se não houver,
 					// mostrar o dialog abaixo.
 					TurmaMateriaVO.open(CadastroTurmas.this);
-					long[] ids = TurmaMateriaVO.getIdsMateriaPorTurma(idTurma);
+					long[] ids = TurmaMateriaVO.consultarIdsDasMateriasDeTurma(idTurma);
 					TurmaMateriaVO.close();
 					if (ids == null || (ids != null && ids.length == 0)) {
 						AlertDialog.Builder builder = new AlertDialog.Builder(

@@ -22,5 +22,7 @@
 <activity android:name=".gui.notas.NotasAluno"></activity>
 <activity android:name=".gui.notas.NotasMateria"></activity>
 </application>
-    <uses-sdk android:minSdkVersion="4"/>
+    <uses-sdk
+    android:minSdkVersion="4"
+    android:targetSdkVersion="8"/>
 </manifest> 
