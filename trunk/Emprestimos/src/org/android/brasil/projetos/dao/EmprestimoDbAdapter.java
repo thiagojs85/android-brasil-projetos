@@ -37,16 +37,13 @@ public class EmprestimoDbAdapter {
 
 	public static final String TABELA_EMPRESTIMOS = "emprestimos";
 
-	private static final int STAUTS_EMPRESTEI = 0;
-	private static final int STAUTS_PEGUEI_EMPRESTADO = 1;
+	public static final int STAUTS_EMPRESTAR = 0;
+	public static final int STAUTS_PEGAR_EMPRESTADO = 1;
 
 	private static final String TAG = "EmprestimosDbAdapter";
 	private DatabaseHelper mDbHelper;
 	private SQLiteDatabase mDb;
 
-	/**
-	 * Database creation sql statement
-	 */
 	private static final String CRIAR_TABELA_EMPRESTIMOS = "create table " + TABELA_EMPRESTIMOS
 			+ " ( " + KEY_ID + " integer primary key autoincrement, " + KEY_ITEM
 			+ " text not null, " + KEY_DESCRICAO + " text not null," + KEY_STATUS
@@ -79,27 +76,10 @@ public class EmprestimoDbAdapter {
 		}
 	}
 
-	/**
-	 * Constructor - takes the context to allow the database to be
-	 * opened/created
-	 * 
-	 * @param ctx
-	 *            the Context within which to work
-	 */
 	public EmprestimoDbAdapter(Context ctx) {
 		this.mCtx = ctx;
 	}
 
-	/**
-	 * Open the notes database. If it cannot be opened, try to create a new
-	 * instance of the database. If it cannot be created, throw an exception to
-	 * signal the failure
-	 * 
-	 * @return this (self reference, allowing this to be chained in an
-	 *         initialization call)
-	 * @throws SQLException
-	 *             if the database could be neither opened or created
-	 */
 	public EmprestimoDbAdapter open() throws SQLException {
 		mDbHelper = new DatabaseHelper(mCtx);
 		mDb = mDbHelper.getWritableDatabase();
