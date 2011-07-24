@@ -18,20 +18,18 @@ package org.android.brasil.projetos.gui;
 
 import org.android.brasil.projetos.dao.EmprestimoDbAdapter;
 
-import com.android.demo.notepad3.R;
-
 import android.app.ListActivity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ContextMenu.ContextMenuInfo;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
-import android.widget.AdapterView.AdapterContextMenuInfo;
 
 public class Emprestimo extends ListActivity {
     private static final int ACTIVITY_CREATE=0;
@@ -46,7 +44,7 @@ public class Emprestimo extends ListActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.notes_list);
+        setContentView(R.layout.lista_emprestimo);
         mDbHelper = new EmprestimoDbAdapter(this);
         mDbHelper.open();
         fillData();
@@ -65,14 +63,14 @@ public class Emprestimo extends ListActivity {
 
         // Now create a simple cursor adapter and set it to display
         SimpleCursorAdapter notes = 
-            new SimpleCursorAdapter(this, R.layout.notes_row, notesCursor, from, to);
+            new SimpleCursorAdapter(this, R.layout.linha_emprestimo, notesCursor, from, to);
         setListAdapter(notes);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-        menu.add(0, INSERT_ID, 0, R.string.menu_insert);
+        menu.add(0, INSERT_ID, 0, R.string.menu_inserir);
         return true;
     }
 
