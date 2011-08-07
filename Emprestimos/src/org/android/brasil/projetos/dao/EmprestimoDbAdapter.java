@@ -28,26 +28,31 @@ import android.util.Log;
 
 public class EmprestimoDbAdapter {
 
-	public static final String KEY_ID = "_id";
-	public static final String KEY_ITEM = "item";
-	public static final String KEY_DESCRICAO = "descricao";
-	public static final String KEY_STATUS = "status";
-	public static final String KEY_DATA_DEVOLUCAO = "devolucao";
-	public static final String KEY_ID_CONTATO = "id_contato";
+	public static final String COLUNA_ID = "_id";
+	public static final String COLUNA_ITEM = "item";
+	public static final String COLUNA_DESCRICAO = "descricao";
+	public static final String COLUNA_STATUS = "status";
+	public static final String COLUNA_ATIVAR_ALARME = "status_alarme";
+	public static final String COLUNA_DATA_DEVOLUCAO = "devolucao";
+	public static final String COLUNA_ID_CONTATO = "id_contato";
 
 	public static final String TABELA_EMPRESTIMOS = "emprestimos";
 
 	public static final int STAUTS_EMPRESTAR = 0;
 	public static final int STAUTS_PEGAR_EMPRESTADO = 1;
+	
+	public static final int ATIVAR_ALARME = 0;
+	public static final int DESATIVAR_ALARME = 1;
 
 	private static final String TAG = "EmprestimosDbAdapter";
 	private DatabaseHelper mDbHelper;
 	private SQLiteDatabase mDb;
 
 	private static final String CRIAR_TABELA_EMPRESTIMOS = "create table " + TABELA_EMPRESTIMOS
-			+ " ( " + KEY_ID + " integer primary key autoincrement, " + KEY_ITEM
-			+ " text not null, " + KEY_DESCRICAO + " text not null," + KEY_STATUS
-			+ " Integer not null, " + KEY_DATA_DEVOLUCAO + " Integer, " + KEY_ID_CONTATO
+			+ " ( " + COLUNA_ID + " integer primary key autoincrement, " + COLUNA_ITEM
+			+ " text not null, " + COLUNA_DESCRICAO + " text not null," + COLUNA_STATUS
+			+ " Integer not null, "  + COLUNA_ATIVAR_ALARME
+			+ " Integer not null, " + COLUNA_DATA_DEVOLUCAO + " Integer, " + COLUNA_ID_CONTATO
 			+ " Integer not null);";
 
 	private static final String DATABASE_NAME = "data";
@@ -90,21 +95,22 @@ public class EmprestimoDbAdapter {
 		mDbHelper.close();
 	}
 
-	public long inserirEmprestimo(String item, String descricao, Date data, int status,
+	public long inserirEmprestimo(String item, String descricao, Date data, int status,int ativarAlarme,
 			long idContato) {
 		ContentValues initialValues = new ContentValues();
-		initialValues.put(KEY_ITEM, item);
-		initialValues.put(KEY_DESCRICAO, descricao);
-		initialValues.put(KEY_DATA_DEVOLUCAO, data.getTime());
-		initialValues.put(KEY_STATUS, status);
-		initialValues.put(KEY_ID_CONTATO, idContato);
+		initialValues.put(COLUNA_ITEM, item);
+		initialValues.put(COLUNA_DESCRICAO, descricao);
+		initialValues.put(COLUNA_DATA_DEVOLUCAO, data.getTime());
+		initialValues.put(COLUNA_STATUS, status);
+		initialValues.put(COLUNA_ATIVAR_ALARME, ativarAlarme);
+		initialValues.put(COLUNA_ID_CONTATO, idContato);
 
 		return mDb.insert(TABELA_EMPRESTIMOS, null, initialValues);
 	}
 
 	public boolean deleteEmprestimo(long id) {
 
-		return mDb.delete(TABELA_EMPRESTIMOS, KEY_ID + "=" + id, null) > 0;
+		return mDb.delete(TABELA_EMPRESTIMOS, COLUNA_ID + "=" + id, null) > 0;
 	}
 
 	public Cursor consultarTodos() {
@@ -116,7 +122,7 @@ public class EmprestimoDbAdapter {
 
 		Cursor mCursor =
 
-		mDb.query(true, TABELA_EMPRESTIMOS, null, KEY_ID + "=" + id, null, null, null, null, null);
+		mDb.query(true, TABELA_EMPRESTIMOS, null, COLUNA_ID + "=" + id, null, null, null, null, null);
 		if (mCursor != null) {
 			mCursor.moveToFirst();
 		}
@@ -125,14 +131,15 @@ public class EmprestimoDbAdapter {
 	}
 
 	public boolean atualizarEmprestimo(long id, String item, String descricao, Date data,
-			int status, long idContato) {
+			int status,int ativarAlarme, long idContato) {
 		ContentValues values = new ContentValues();
-		values.put(KEY_ITEM, item);
-		values.put(KEY_DESCRICAO, descricao);
-		values.put(KEY_DATA_DEVOLUCAO, data.getTime());
-		values.put(KEY_STATUS, status);
-		values.put(KEY_ID_CONTATO, idContato);
+		values.put(COLUNA_ITEM, item);
+		values.put(COLUNA_DESCRICAO, descricao);
+		values.put(COLUNA_DATA_DEVOLUCAO, data.getTime());
+		values.put(COLUNA_STATUS, status);
+		values.put(COLUNA_ATIVAR_ALARME, ativarAlarme);
+		values.put(COLUNA_ID_CONTATO, idContato);
 
-		return mDb.update(TABELA_EMPRESTIMOS, values, KEY_ID + "=" + id, null) > 0;
+		return mDb.update(TABELA_EMPRESTIMOS, values, COLUNA_ID + "=" + id, null) > 0;
 	}
 }
