@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="org.android.brasil.projetos.gui">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+ 	android:versionCode="2"
+ 	android:versionName="1.0"
+ 	
+ 	package="org.android.brasil.projetos.gui">
+ 	<uses-sdk android:minSdkVersion="7"/>
     <application android:icon="@drawable/icon">
         <activity android:label="@string/app_name" android:name=".Emprestimo">
             <intent-filter>
@@ -8,6 +13,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".EditarEmprestimo" />
+        <receiver android:name="Alarme"></receiver>
     </application>
     	<uses-permission android:name="android.permission.READ_CONTACTS" />
 </manifest> 
