@@ -1,8 +1,12 @@
 package org.android.brasil.projetos.escolarmobile.gui.notas;
 
+import java.util.List;
+
 import org.android.brasil.projetos.escolarmobile.R;
 import org.android.brasil.projetos.escolarmobile.dao.AlunoVO;
 import org.android.brasil.projetos.escolarmobile.dao.MateriaVO;
+import org.android.brasil.projetos.escolarmobile.dao.NotaVO;
+import org.android.brasil.projetos.escolarmobile.dao.TurmaMateriaVO;
 import org.android.brasil.projetos.escolarmobile.dao.TurmaVO;
 
 import android.app.ListActivity;
@@ -21,8 +25,10 @@ public class NotasAluno extends ListActivity {
 	private long idTurma;
 	private long idMateria;
 	private long idAluno;
+	
+	private TurmaVO turmaVO;
 	private AlunoVO alunoVO;
-
+	private List<NotaVO> notasVO;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -41,13 +47,26 @@ public class NotasAluno extends ListActivity {
 	}
 
 	private void updateItens() {
-		alunoVO = new AlunoVO(NotasAluno.this);
-		alunoVO.consultarAluno(idAluno);
+		AlunoVO.open(NotasAluno.this);
+		alunoVO = AlunoVO.consultarAluno(idAluno);
+		AlunoVO.close();
 		nomeAluno.setText(alunoVO.getNome());
-		TurmaVO turmaVO = new TurmaVO(this);
+		
+		TurmaVO.open(NotasAluno.this);
+		turmaVO = TurmaVO.consultarTurmaPorId(idTurma);
+		TurmaVO.close();
+		
 		matriculaTurma.setText("RM: " + alunoVO.getRegistro() + ", Turma: "
-				+ turmaVO.consultarTurmaPorId(alunoVO.getIdTurma()).getNome());
-
+				+ turmaVO.getNome());
+		
+		TurmaMateriaVO.open(NotasAluno.this);
+		long idTurmaMateria = TurmaMateriaVO.getId(idTurma, idMateria);
+		TurmaMateriaVO.close();
+		
+		NotaVO.open(NotasAluno.this);
+		notasVO = NotaVO.consultarNotas(idTurmaMateria);
+		NotaVO.close();
+		
 		// TODO Buscar pelas notas de um aluno de uma matéria de uma dada turma
 		// em um dado período.
 		// Para relacionar uma matéria com uma turma utilizar a turma_materia
@@ -87,9 +106,6 @@ public class NotasAluno extends ListActivity {
 
 		if (c != null) {
 			c.close();
-		}
-		if (alunoVO != null) {
-			alunoVO.close();
 		}
 	}
 

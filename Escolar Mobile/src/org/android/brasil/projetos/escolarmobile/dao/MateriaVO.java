@@ -14,7 +14,7 @@ public class MateriaVO extends VOBasico {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -5030577646395847965L;
+
 	private long id;
 	private long idProfessor;
 	private String nome;
