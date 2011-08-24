@@ -12,7 +12,7 @@ import android.database.sqlite.SQLiteDatabase;
 public class NotaVO extends VOBasico {
 
 	private long id;
-	private long idMatricula;
+	private long idTurmaMateria;
 	private int periodo;
 	private float nota;
 
@@ -39,12 +39,12 @@ public class NotaVO extends VOBasico {
 		this.id = id;
 	}
 
-	public long getIdMatricula() {
-		return idMatricula;
+	public long getIdTurmaMateria() {
+		return idTurmaMateria;
 	}
 
-	public void setIdMatricula(long idMatricula) {
-		this.idMatricula = idMatricula;
+	public void setIdTurmaMateria(long idTurmaMateria) {
+		this.idTurmaMateria = idTurmaMateria;
 	}
 
 	public float getNota() {
@@ -80,7 +80,7 @@ public class NotaVO extends VOBasico {
 	public static boolean atualizarNota(NotaVO notaVO) {
 		ContentValues updatedValues = new ContentValues();
 		updatedValues.put(COLUMN_ID, notaVO.getId());
-		updatedValues.put(COLUMN_ID_TURMA_MATERIA, notaVO.getIdMatricula());
+		updatedValues.put(COLUMN_ID_TURMA_MATERIA, notaVO.getIdTurmaMateria());
 		updatedValues.put(COLUMN_PERIODO, notaVO.getPeriodo());
 		updatedValues.put(COLUMN_NOTA, notaVO.getNota());
 
@@ -107,7 +107,7 @@ public class NotaVO extends VOBasico {
 			while (!c.isAfterLast()) {
 				NotaVO nota = new NotaVO(mCtx);
 				nota.setId(c.getInt(0));
-				nota.setIdMatricula(c.getInt(1));
+				nota.setIdTurmaMateria(c.getInt(1));
 				nota.setPeriodo(c.getInt(2));
 				nota.setNota(c.getFloat(3));
 				notas.add(nota);
@@ -117,7 +117,32 @@ public class NotaVO extends VOBasico {
 		}
 		return notas;
 	}
+	/**
+	 * Consulta as notas de uma turma_materia em um determinado periodo.
+	 * 
+	 * @param periodo
+	 * @return
+	 */
+	public static List<NotaVO> consultarNotas(long idTurmaMateria) {
+		List<NotaVO> notas = new ArrayList<NotaVO>();
+		Cursor c = consultarNota(new String[] { COLUMN_ID_TURMA_MATERIA}, new String[] { String.valueOf(idTurmaMateria)});
 
+		if (c != null && c.getCount() > 0) {
+			c.moveToFirst();
+
+			while (!c.isAfterLast()) {
+				NotaVO nota = new NotaVO(mCtx);
+				nota.setId(c.getInt(c.getColumnIndex(COLUMN_ID)));
+				nota.setIdTurmaMateria(c.getInt(c.getColumnIndex(COLUMN_ID_TURMA_MATERIA)));
+				nota.setPeriodo(c.getInt(c.getColumnIndex(COLUMN_PERIODO)));
+				nota.setNota(c.getFloat(c.getColumnIndex(COLUMN_NOTA)));
+				notas.add(nota);
+				c.moveToNext();
+			}
+			c.close();
+		}
+		return notas;
+	}
 	/**
 	 * Método privado para realizar consultas de notas.
 	 * 
@@ -144,10 +169,10 @@ public class NotaVO extends VOBasico {
 	public static long inserirNota(NotaVO notaVO) {
 		// Apesar de ID ser a verdadeira chave do registro, os nomes dos alunos
 		// devem ser únicos.
-		if (consultarNota(notaVO.getIdMatricula(), notaVO.getPeriodo())
+		if (consultarNota(notaVO.getIdTurmaMateria(), notaVO.getPeriodo())
 				.isEmpty()) {
 			ContentValues initialValues = new ContentValues();
-			initialValues.put(COLUMN_ID_TURMA_MATERIA, notaVO.getIdMatricula());
+			initialValues.put(COLUMN_ID_TURMA_MATERIA, notaVO.getIdTurmaMateria());
 			initialValues.put(COLUMN_PERIODO, notaVO.getPeriodo());
 			initialValues.put(COLUMN_NOTA, notaVO.getNota());
 

@@ -89,6 +89,7 @@ public class TurmaMateriaVO extends VOBasico {
 	 * @return Cursor apontando para o primeiro elemento. Se não houver nenhuma
 	 *         matéria, retorna NULL.
 	 */
+	
 	public static Cursor getMateriasCursor(long idTurma) {
 
 		String sql = "SELECT * FROM " + TABLE_TURMA_MATERIA + " WHERE "
@@ -105,6 +106,25 @@ public class TurmaMateriaVO extends VOBasico {
 			}
 		} else {
 			return null;
+		}
+	}
+	
+	public static long getId(long idTurma, long idMateria) {
+
+		String sql = "SELECT * FROM " + TABLE_TURMA_MATERIA + " WHERE "
+				+ COLUMN_ID_TURMA + " = ? AND "+COLUMN_ID_MATERIA+" = ?";
+		Cursor c = mDb.rawQuery(sql, new String[] { String.valueOf(idTurma),String.valueOf(idMateria) });
+
+		if (c != null) {
+			c.moveToFirst();
+
+			if (c.isAfterLast()) {
+				return -1;
+			} else {
+				return c.getLong(c.getColumnIndex(COLUMN_ID));
+			}
+		} else {
+			return -1;
 		}
 	}
 

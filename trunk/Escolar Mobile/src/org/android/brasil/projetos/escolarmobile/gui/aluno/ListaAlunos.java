@@ -8,6 +8,7 @@ import org.android.brasil.projetos.escolarmobile.dao.AlunoVO;
 import org.android.brasil.projetos.escolarmobile.dao.MateriaVO;
 import org.android.brasil.projetos.escolarmobile.dao.PresencaVO;
 import org.android.brasil.projetos.escolarmobile.dao.TurmaVO;
+import org.android.brasil.projetos.escolarmobile.gui.notas.NotasAluno;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -60,12 +61,12 @@ public class ListaAlunos extends TelaListaBasica {
 						int position, long id) {
 					Toast.makeText(ListaAlunos.this, "Ei seu preguiçoso, bora fazer isso aqui funcionar!",
 							Toast.LENGTH_LONG).show();		
-					/*	Intent i = new Intent(ListaAlunos.this, NotasAluno.class);
+						Intent i = new Intent(ListaAlunos.this, NotasAluno.class);
 						i.putExtra(TurmaVO.TABLE_TURMA, idTurma);
 						i.putExtra(MateriaVO.TABLE_MATERIA, idMateria);
 						i.putExtra(AlunoVO.TABLE_ALUNO, id);
 						startActivity(i);
-					*/
+					
 				}
 			});
 
