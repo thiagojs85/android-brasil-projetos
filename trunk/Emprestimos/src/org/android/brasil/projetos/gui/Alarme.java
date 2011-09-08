@@ -16,7 +16,6 @@ public class Alarme extends BroadcastReceiver {
 			i.putExtras(intent.getExtras());
 			i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			context.startActivity(i);
-			
 		}
 		
 	}
