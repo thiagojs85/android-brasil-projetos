@@ -35,6 +35,7 @@ public class EmprestimoDbAdapter {
 	public static final String COLUNA_ATIVAR_ALARME = "status_alarme";
 	public static final String COLUNA_DATA_DEVOLUCAO = "devolucao";
 	public static final String COLUNA_ID_CONTATO = "id_contato";
+	public static final String COLUNA_ID_CATEGORIA = "id_categoria";
 
 	public static final String TABELA_EMPRESTIMOS = "emprestimos";
 
@@ -46,17 +47,17 @@ public class EmprestimoDbAdapter {
 
 	private static final String TAG = "EmprestimosDbAdapter";
 	private DatabaseHelper mDbHelper;
-	private SQLiteDatabase mDb;
-
+	private static SQLiteDatabase mDb;
+	
 	private static final String CRIAR_TABELA_EMPRESTIMOS = "create table " + TABELA_EMPRESTIMOS
 			+ " ( " + COLUNA_ID + " integer primary key autoincrement, " + COLUNA_ITEM
 			+ " text not null, " + COLUNA_DESCRICAO + " text not null," + COLUNA_STATUS
 			+ " Integer not null, "  + COLUNA_ATIVAR_ALARME
 			+ " Integer not null, " + COLUNA_DATA_DEVOLUCAO + " Integer, " + COLUNA_ID_CONTATO
-			+ " Integer not null);";
+			+ " Integer not null, " + COLUNA_ID_CATEGORIA  + " Integer not null);";
 
 	private static final String DATABASE_NAME = "data";
-	private static final int DATABASE_VERSION = 2;
+	private static final int DATABASE_VERSION = 3;
 
 	private final Context mCtx;
 
@@ -70,6 +71,9 @@ public class EmprestimoDbAdapter {
 		public void onCreate(SQLiteDatabase db) {
 
 			db.execSQL(CRIAR_TABELA_EMPRESTIMOS);
+			db.execSQL(CategoriaVO.createTableCategoria());
+			db.execSQL(CategoriaVO.insertCategoriaDefault());
+			
 		}
 
 		@Override
