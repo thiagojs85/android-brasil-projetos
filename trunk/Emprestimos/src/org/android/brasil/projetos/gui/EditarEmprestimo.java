@@ -20,7 +20,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.android.brasil.projetos.dao.EmprestimoDbAdapter;
+import org.android.brasil.projetos.dao.EmprestimoDAO;
+import org.android.brasil.projetos.model.Emprestimo;
 
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -29,9 +30,7 @@ import android.app.Dialog;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.app.TimePickerDialog.OnTimeSetListener;
-import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -58,7 +57,6 @@ public class EditarEmprestimo extends Activity {
 	private EditText etItem;
 	private EditText etDescricao;
 	private Long mRowId;
-	private EmprestimoDbAdapter mDbHelper;
 	private TextView tvContato;
 
 	private Spinner txtAutoNome;
@@ -165,16 +163,12 @@ public class EditarEmprestimo extends Activity {
 			}
 		});
 
-
 		confirmButton.setOnClickListener(new View.OnClickListener() {
 
 			public void onClick(View view) {
 				if (validarCampos()) {
 					saveState();
-					if (mDbHelper != null) {
-						mDbHelper.close();
-						mDbHelper = null;
-					}
+					Log.w("EditarEmprestimo","Fim da edição");
 					setResult(RESULT_OK);
 					finish();
 				} else {
@@ -186,11 +180,11 @@ public class EditarEmprestimo extends Activity {
 		});
 
 		mRowId = (savedInstanceState == null) ? null : (Long) savedInstanceState
-				.getSerializable(EmprestimoDbAdapter.COLUNA_ID);
+				.getSerializable(EmprestimoDAO.COLUNA_ID_EMPRESTIMO);
 
 		if (mRowId == null) {
 			Bundle extras = getIntent().getExtras();
-			mRowId = extras != null ? extras.getLong(EmprestimoDbAdapter.COLUNA_ID) : null;
+			mRowId = extras != null ? extras.getLong(EmprestimoDAO.COLUNA_ID_EMPRESTIMO) : null;
 		}
 
 		populateFields();
@@ -208,41 +202,39 @@ public class EditarEmprestimo extends Activity {
 
 	private void populateFields() {
 		if (mRowId != null) {
-			if (mDbHelper == null) {
-				mDbHelper = new EmprestimoDbAdapter(this);
-			}
 
-			mDbHelper.open();
-			Cursor c = mDbHelper.consultarEmprestimo(mRowId);
+			EmprestimoDAO.open(getApplicationContext());
+			Cursor c = EmprestimoDAO.consultarEmprestimo(mRowId);
 			startManagingCursor(c);
-			long status = c.getLong(c.getColumnIndexOrThrow(EmprestimoDbAdapter.COLUNA_STATUS));
-			if (status == EmprestimoDbAdapter.STAUTS_EMPRESTAR) {
+			long status = c.getLong(c.getColumnIndexOrThrow(EmprestimoDAO.COLUNA_STATUS));
+			if (status == Emprestimo.STAUTS_EMPRESTAR) {
 				rbPegarEmprestado.setChecked(false);
 				rbEmprestar.setChecked(true);
 
 			}
 
-			if (status == EmprestimoDbAdapter.STAUTS_PEGAR_EMPRESTADO) {
+			if (status == Emprestimo.STAUTS_PEGAR_EMPRESTADO) {
 				rbEmprestar.setChecked(false);
 				rbPegarEmprestado.setChecked(true);
 			}
 
-			long alarme = c.getLong(c.getColumnIndexOrThrow(EmprestimoDbAdapter.COLUNA_ATIVAR_ALARME));
-			if (alarme == EmprestimoDbAdapter.ATIVAR_ALARME) {
+			long alarme = c.getLong(c
+					.getColumnIndexOrThrow(EmprestimoDAO.COLUNA_ATIVAR_ALARME));
+			if (alarme == Emprestimo.ATIVAR_ALARME) {
 				cbAlarme.setChecked(true);
 			}
 
-			if (alarme == EmprestimoDbAdapter.DESATIVAR_ALARME) {
+			if (alarme == Emprestimo.DESATIVAR_ALARME) {
 				cbAlarme.setChecked(false);
 			}
 
-			etItem.setText(c.getString(c.getColumnIndexOrThrow(EmprestimoDbAdapter.COLUNA_ITEM)));
+			etItem.setText(c.getString(c.getColumnIndexOrThrow(EmprestimoDAO.COLUNA_ITEM)));
 
 			etDescricao.setText(c.getString(c
-					.getColumnIndexOrThrow(EmprestimoDbAdapter.COLUNA_DESCRICAO)));
+					.getColumnIndexOrThrow(EmprestimoDAO.COLUNA_DESCRICAO)));
 
 			Adapter ad = txtAutoNome.getAdapter();
-			long id = c.getLong(c.getColumnIndexOrThrow(EmprestimoDbAdapter.COLUNA_ID_CONTATO));
+			long id = c.getLong(c.getColumnIndexOrThrow(EmprestimoDAO.COLUNA_ID_CONTATO));
 			for (int i = 0; i < ad.getCount(); ++i) {
 
 				if (ad.getItemId(i) == id) {
@@ -252,10 +244,9 @@ public class EditarEmprestimo extends Activity {
 			}
 
 			dataDevolucao = new Date(c.getLong(c
-					.getColumnIndexOrThrow(EmprestimoDbAdapter.COLUNA_DATA_DEVOLUCAO)));
+					.getColumnIndexOrThrow(EmprestimoDAO.COLUNA_DATA_DEVOLUCAO)));
 
 			atualizarData();
-			mDbHelper.close();
 
 		}
 	}
@@ -264,15 +255,12 @@ public class EditarEmprestimo extends Activity {
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 		saveState();
-		outState.putSerializable(EmprestimoDbAdapter.COLUNA_ID, mRowId);
+		outState.putSerializable(EmprestimoDAO.COLUNA_ID_EMPRESTIMO, mRowId);
 	}
 
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		if (mDbHelper != null) {
-			mDbHelper.close();
-		}
 	}
 
 	@Override
@@ -290,44 +278,51 @@ public class EditarEmprestimo extends Activity {
 
 			int status = 0;
 			if (rbEmprestar.isChecked()) {
-				status = EmprestimoDbAdapter.STAUTS_EMPRESTAR;
+				status = Emprestimo.STAUTS_EMPRESTAR;
 			} else if (rbPegarEmprestado.isChecked()) {
-				status = EmprestimoDbAdapter.STAUTS_PEGAR_EMPRESTADO;
+				status = Emprestimo.STAUTS_PEGAR_EMPRESTADO;
 			}
 
 			long idContato = txtAutoNome.getSelectedItemId();
 
-			if (mDbHelper == null) {
-				mDbHelper = new EmprestimoDbAdapter(this);
-			}
-			mDbHelper.open();
+			
+			EmprestimoDAO.open(getApplicationContext());
 
-			int alarme = EmprestimoDbAdapter.DESATIVAR_ALARME;
+			int alarme = Emprestimo.DESATIVAR_ALARME;
 			if (cbAlarme.isChecked()) {
-				alarme = EmprestimoDbAdapter.ATIVAR_ALARME;
+				alarme = Emprestimo.ATIVAR_ALARME;
 			}
+
+			Emprestimo emp = new Emprestimo();
+			emp.setItem(item);
+			emp.setDescricao(descricao);
+			emp.setData(data);
+			emp.setStatus(status);
+			emp.setAtivarAlarme(alarme);
+			emp.setIdContato(idContato);
+			//TODO: Remover valor fixo
+			emp.setIdCategoria(0);
 			if (mRowId == null) {
-				long id = mDbHelper.inserirEmprestimo(item, descricao, data, status, alarme,
-						idContato);
+
+				long id = EmprestimoDAO.inserirEmprestimo(emp);
 				if (id > 0) {
 					mRowId = id;
 				}
 			} else {
-				mDbHelper.atualizarEmprestimo(mRowId, item, descricao, data, status, alarme,
-						idContato);
+				emp.setIdEmprestimo(mRowId);
+				EmprestimoDAO.atualizarEmprestimo(emp);
 				;
 			}
-
+			EmprestimoDAO.close();
+			
 			Intent intent = new Intent(EditarEmprestimo.this, Alarme.class);
-			intent.putExtra(EmprestimoDbAdapter.COLUNA_ID, mRowId);
+			intent.putExtra(EmprestimoDAO.COLUNA_ID_EMPRESTIMO, mRowId);
 			PendingIntent sender = PendingIntent.getBroadcast(EditarEmprestimo.this, 0, intent,
 					PendingIntent.FLAG_UPDATE_CURRENT);
 
 			AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
 			am.set(AlarmManager.RTC_WAKEUP, data.getTime(), sender);
 
-
-			mDbHelper.close();
 		}
 	}
 
