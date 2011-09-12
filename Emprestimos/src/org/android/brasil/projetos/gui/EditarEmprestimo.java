@@ -74,7 +74,6 @@ public class EditarEmprestimo extends Activity {
 	private static final int DATE_DIALOG_ID_TIME = 1;
 
 	private DatePickerDialog.OnDateSetListener dataListener = new DatePickerDialog.OnDateSetListener() {
-		@Override
 		public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
 			dataDevolucao.setYear(year - 1900);
 			dataDevolucao.setMonth(monthOfYear);
@@ -84,14 +83,13 @@ public class EditarEmprestimo extends Activity {
 	};
 	private OnTimeSetListener horaListener = new OnTimeSetListener() {
 
-		@Override
 		public void onTimeSet(TimePicker arg0, int hora, int minuto) {
 			dataDevolucao.setHours(hora);
 			dataDevolucao.setMinutes(minuto);
 			atualizarData();
 
 		}
-	};;;
+	};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -127,7 +125,6 @@ public class EditarEmprestimo extends Activity {
 
 		rbEmprestar.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
-			@Override
 			public void onCheckedChanged(CompoundButton arg0, boolean arg1) {
 				if (arg1) {
 					tvContato.setText(R.string.contato);
@@ -138,7 +135,6 @@ public class EditarEmprestimo extends Activity {
 
 		rbPegarEmprestado.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
-			@Override
 			public void onCheckedChanged(CompoundButton arg0, boolean arg1) {
 				if (arg1) {
 					tvContato.setText(R.string.pegar_emprestado_de);
@@ -149,7 +145,6 @@ public class EditarEmprestimo extends Activity {
 
 		etDataDevolucao.setOnClickListener(new OnClickListener() {
 
-			@Override
 			public void onClick(View arg0) {
 				showDialog(DATE_DIALOG_ID_DATE);
 			}
@@ -157,7 +152,6 @@ public class EditarEmprestimo extends Activity {
 
 		etHoraDevolucao.setOnClickListener(new OnClickListener() {
 
-			@Override
 			public void onClick(View arg0) {
 				showDialog(DATE_DIALOG_ID_TIME);
 			}
