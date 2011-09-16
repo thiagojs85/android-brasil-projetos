@@ -20,6 +20,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.android.brasil.projetos.dao.CategoriaDAO;
 import org.android.brasil.projetos.dao.EmprestimoDAO;
 import org.android.brasil.projetos.model.Emprestimo;
 
@@ -39,10 +40,13 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Adapter;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -51,6 +55,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+import org.android.brasil.projetos.gui.R;
+import org.android.brasil.projetos.gui.EditarCategoria;
+
+
 
 public class EditarEmprestimo extends Activity {
 
@@ -60,6 +68,7 @@ public class EditarEmprestimo extends Activity {
 	private TextView tvContato;
 
 	private Spinner txtAutoNome;
+	private Spinner spCategoria;
 
 	private CheckBox cbAlarme;
 
@@ -108,6 +117,7 @@ public class EditarEmprestimo extends Activity {
 		rbPegarEmprestado = (RadioButton) findViewById(R.id.rb_pegar_emprestado);
 		tvContato = (TextView) findViewById(R.id.tv_contato);
 		Button confirmButton = (Button) findViewById(R.id.confirmar);
+		spCategoria = (Spinner) findViewById(R.id.sp_categoria);
 
 		ContentResolver cr = getContentResolver();
 		Cursor c = null;
@@ -119,9 +129,41 @@ public class EditarEmprestimo extends Activity {
 
 		txtAutoNome.setAdapter(new SimpleCursorAdapter(EditarEmprestimo.this,
 				android.R.layout.simple_spinner_dropdown_item, c, from, to));
-
+		
 		dataDevolucao = Calendar.getInstance().getTime();
 		atualizarData();
+		
+		spCategoria.setOnItemSelectedListener(new OnItemSelectedListener() {
+			public void onItemSelected(AdapterView<?> parent, View view,
+					int position, long id) {
+				
+				if(spCategoria.getSelectedItemId() == 1) {
+					startActivity(new Intent(EditarEmprestimo.this ,EditarCategoria.class));
+				}			
+			}
+			
+			public void onNothingSelected(AdapterView<?> arg0) {
+				spCategoria.setVisibility(View.INVISIBLE);
+			}
+		});
+		
+		CategoriaDAO.open(this);
+		c = CategoriaDAO.consultarTodos(new String[] { CategoriaDAO.COLUNA_ID, CategoriaDAO.COLUNA_DESCRICAO });
+		CategoriaDAO.close();
+		
+		if (c != null && c.getCount() > 0) {
+			startManagingCursor(c);
+			spCategoria.setEnabled(true);
+		} else {
+			spCategoria.setEnabled(false);
+		}	
+		
+		spCategoria.setAdapter(new SimpleCursorAdapter(this,
+				android.R.layout.simple_spinner_item, c,
+				new String[] { CategoriaDAO.COLUNA_DESCRICAO }, 
+				new int[] { android.R.id.text1 }));
+		stopManagingCursor(c);
+	
 
 		rbEmprestar.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
@@ -241,6 +283,25 @@ public class EditarEmprestimo extends Activity {
 					.getColumnIndexOrThrow(EmprestimoDAO.COLUNA_DATA_DEVOLUCAO)));
 
 			atualizarData();
+			
+			CategoriaDAO.open(this);
+			c = CategoriaDAO.consultarTodos(new String[] { CategoriaDAO.COLUNA_ID, CategoriaDAO.COLUNA_DESCRICAO });
+			CategoriaDAO.close();
+			
+			if (c != null && c.getCount() > 0) {
+				startManagingCursor(c);
+				spCategoria.setEnabled(true);
+			} else {
+				spCategoria.setEnabled(false);
+			}		
+			
+			// Aconselha-se atualizar segundo a documentação.
+			spCategoria.setAdapter(new SimpleCursorAdapter(this,
+					android.R.layout.simple_spinner_dropdown_item, c,
+					new String[] { CategoriaDAO.COLUNA_DESCRICAO },
+					new int[] { android.R.id.text1 }));
+			stopManagingCursor(c);
+			
 
 		}
 	}
@@ -286,7 +347,9 @@ public class EditarEmprestimo extends Activity {
 			if (cbAlarme.isChecked()) {
 				alarme = Emprestimo.ATIVAR_ALARME;
 			}
-
+			
+			long idCategoria = spCategoria.getSelectedItemId();
+			
 			Emprestimo emp = new Emprestimo();
 			emp.setItem(item);
 			emp.setDescricao(descricao);
@@ -294,8 +357,8 @@ public class EditarEmprestimo extends Activity {
 			emp.setStatus(status);
 			emp.setAtivarAlarme(alarme);
 			emp.setIdContato(idContato);
-			//TODO: Remover valor fixo
-			emp.setIdCategoria(0);
+			emp.setIdCategoria(idCategoria);
+
 			if (mRowId == null) {
 
 				long id = EmprestimoDAO.inserirEmprestimo(emp);
@@ -305,7 +368,7 @@ public class EditarEmprestimo extends Activity {
 			} else {
 				emp.setIdEmprestimo(mRowId);
 				EmprestimoDAO.atualizarEmprestimo(emp);
-				;
+				
 			}
 			EmprestimoDAO.close();
 			
