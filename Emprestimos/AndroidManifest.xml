@@ -13,6 +13,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".EditarEmprestimo" />
+        <activity android:name=".EditarCategoria" />
         <receiver android:name="Alarme"></receiver>
     </application>
     	<uses-permission android:name="android.permission.READ_CONTACTS" />

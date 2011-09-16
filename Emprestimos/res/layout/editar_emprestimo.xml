@@ -61,8 +61,19 @@
 		<Spinner
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
-			android:inputType="text"
-			android:id="@+id/txt_auto_nome" />
+			android:inputType="text" android:id="@+id/txt_auto_nome"/>
+			
+		<TextView 
+			android:id="@+id/tv_contato"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content" 
+			android:text="@string/categoria" />
+		
+		<Spinner
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:inputType="text" android:id="@+id/sp_categoria"/>
+						
 		<CheckBox 
 			android:id="@+id/cb_alarme"
 			android:layout_width="fill_parent"
