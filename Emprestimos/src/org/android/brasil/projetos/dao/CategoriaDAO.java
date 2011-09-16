@@ -55,7 +55,7 @@ public class CategoriaDAO  extends BasicoDAO{
 	private static ContentValues deCategoriaParaContentValues(Categoria cat) {
 		ContentValues values = new ContentValues();
 		values.put(COLUNA_DESCRICAO, cat.getNomeCategoria());
-		return null;
+		return values;
 	}
 	
 	public static Cursor consultarTodos(String[] colunas) {

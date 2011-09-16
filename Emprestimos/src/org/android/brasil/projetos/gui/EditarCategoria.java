@@ -30,7 +30,7 @@ public class EditarCategoria extends Activity  {
 					saveState();
 					Toast.makeText(EditarCategoria.this, "Salvo com sucesso!", Toast.LENGTH_SHORT).show();
 				} else {
-					Toast.makeText(EditarCategoria.this, "Entre com a descri��o!", Toast.LENGTH_SHORT).show();
+					Toast.makeText(EditarCategoria.this, "Entre com a descrição!", Toast.LENGTH_SHORT).show();
 				}				
 			}
 		});
