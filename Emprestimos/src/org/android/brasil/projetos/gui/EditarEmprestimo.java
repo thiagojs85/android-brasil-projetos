@@ -41,12 +41,11 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Adapter;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -55,8 +54,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
-import org.android.brasil.projetos.gui.R;
-import org.android.brasil.projetos.gui.EditarCategoria;
 
 
 
@@ -133,17 +130,15 @@ public class EditarEmprestimo extends Activity {
 		dataDevolucao = Calendar.getInstance().getTime();
 		atualizarData();
 		
-		spCategoria.setOnItemSelectedListener(new OnItemSelectedListener() {
-			public void onItemSelected(AdapterView<?> parent, View view,
-					int position, long id) {
-				
+		spCategoria.setOnItemClickListener(new OnItemClickListener() {
+
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+					long arg3) {
 				if(spCategoria.getSelectedItemId() == 1) {
 					startActivity(new Intent(EditarEmprestimo.this ,EditarCategoria.class));
 				}			
-			}
-			
-			public void onNothingSelected(AdapterView<?> arg0) {
-				spCategoria.setVisibility(View.INVISIBLE);
+
+				
 			}
 		});
 		
