@@ -1,7 +1,6 @@
 package org.android.brasil.projetos.gui;
 
 import org.android.brasil.projetos.dao.EmprestimoDAO;
-import org.android.brasil.projetos.dao.EmprestimoDbAdapter;
 
 import android.app.ListActivity;
 import android.content.Intent;

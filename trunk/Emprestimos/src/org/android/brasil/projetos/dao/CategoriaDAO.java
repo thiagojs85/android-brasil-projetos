@@ -4,6 +4,7 @@ import org.android.brasil.projetos.model.Categoria;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 
 public class CategoriaDAO  extends BasicoDAO{
 	
@@ -45,7 +46,7 @@ public class CategoriaDAO  extends BasicoDAO{
 	
 	public static long atualizar(Categoria cat){
 		ContentValues values = deCategoriaParaContentValues(cat);
-		return atualizar(TABELA_CATEGORIA, values,new String[] {COLUNA_ID} ,new String[] {String.valueOf(cat.getIdCategoria())});
+		return atualizar(TABELA_CATEGORIA, values,new String[] {COLUNA_ID} ,new String[] {String.valueOf(cat.getId())});
 	}
 
 	public static boolean remover(long idCategoria){
@@ -53,8 +54,12 @@ public class CategoriaDAO  extends BasicoDAO{
 	}
 	private static ContentValues deCategoriaParaContentValues(Categoria cat) {
 		ContentValues values = new ContentValues();
-		values.put(COLUNA_DESCRICAO, cat.getNomeDescricao());
+		values.put(COLUNA_DESCRICAO, cat.getNomeCategoria());
 		return null;
+	}
+	
+	public static Cursor consultarTodos(String[] colunas) {
+		return consultarTodos(TABELA_CATEGORIA, colunas);
 	}
 
 	

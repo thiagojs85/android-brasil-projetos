@@ -2,21 +2,20 @@ package org.android.brasil.projetos.model;
 
 public class Categoria {
 	private long id;
-	private String nome;
+	private String nomeCategoria;
 
-	public long getIdCategoria() {
+	public long getId() {
 		return id;
 	}
-
-	public void setIdCategoria(long id) {
+	public void setId(long id) {
 		this.id = id;
 	}
-
-	public void setNomeCategoria(String cat) {
-		nome = cat;
+	public String getNomeCategoria() {
+		return nomeCategoria;
+	}
+	public void setNomeCategoria(String nomeCategoria) {
+		this.nomeCategoria = nomeCategoria;
 	}
 
-	public String getNomeDescricao() {
-		return nome;
-	}
+	
 }
