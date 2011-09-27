@@ -31,7 +31,7 @@ public class EmprestimoDbAdapter {
 	
 
 	private static final String DATABASE_NAME = "data";
-	private static final int DATABASE_VERSION = 3;
+	private static final int DATABASE_VERSION = 5;
 
 	private static Context mCtx;
 
@@ -47,7 +47,10 @@ public class EmprestimoDbAdapter {
 			db.execSQL(EmprestimoDAO.CRIAR_TABELA_EMPRESTIMOS);
 			db.execSQL(CategoriaDAO.createTableCategoria());
 			db.execSQL(CategoriaDAO.insertCategoriaDefault());
-			
+			db.execSQL(CategoriaDAO.categoriaDefaultTodos);
+			db.execSQL(CategoriaDAO.categoriaDefaultCD);
+			db.execSQL(CategoriaDAO.categoriaDefaultDVD);
+			db.execSQL(CategoriaDAO.categoriaDefaultLivro);
 		}
 
 		@Override

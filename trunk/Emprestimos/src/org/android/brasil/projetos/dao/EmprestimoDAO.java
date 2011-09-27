@@ -71,4 +71,14 @@ public class EmprestimoDAO extends BasicoDAO {
 		ContentValues values = deEmprestimoParaContentValues(emp);
 		return atualizar(TABELA_EMPRESTIMOS, values, new String[]{EmprestimoDAO.COLUNA_ID_EMPRESTIMO},new String[]{ String.valueOf(emp.getIdEmprestimo()) } );
 	}
+	
+	public static Cursor consultarEmprestimoPorCategoria(long idCategoria) throws SQLException {
+		Cursor mCursor = mDb.query(false, TABELA_EMPRESTIMOS, null , " id_categoria = " + idCategoria, null, null,null, null, null);
+
+		if (mCursor != null) {
+			mCursor.moveToFirst();
+		}
+
+		return mCursor;
+	}
 }

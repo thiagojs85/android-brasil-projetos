@@ -41,7 +41,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Adapter;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -130,20 +129,8 @@ public class EditarEmprestimo extends Activity {
 		dataDevolucao = Calendar.getInstance().getTime();
 		atualizarData();
 		
-		spCategoria.setOnItemClickListener(new OnItemClickListener() {
-
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-					long arg3) {
-				if(spCategoria.getSelectedItemId() == 1) {
-					startActivity(new Intent(EditarEmprestimo.this ,EditarCategoria.class));
-				}			
-
-				
-			}
-		});
-		
 		CategoriaDAO.open(this);
-		c = CategoriaDAO.consultarTodos(new String[] { CategoriaDAO.COLUNA_ID, CategoriaDAO.COLUNA_DESCRICAO });
+		c = CategoriaDAO.consultarCategorias("_id <> 2");
 		CategoriaDAO.close();
 		
 		if (c != null && c.getCount() > 0) {
@@ -157,9 +144,27 @@ public class EditarEmprestimo extends Activity {
 				android.R.layout.simple_spinner_item, c,
 				new String[] { CategoriaDAO.COLUNA_DESCRICAO }, 
 				new int[] { android.R.id.text1 }));
+		
+		spCategoria.setSelection(2);
+		
+		spCategoria.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+			public void onItemSelected(AdapterView<?> parent, View view,
+					int position, long id) {
+				
+				if(spCategoria.getSelectedItemId() == 1) {
+					startActivity(new Intent(EditarEmprestimo.this ,CategoriaUI.class));
+					finish();
+				}			
+			}
+			
+			public void onNothingSelected(AdapterView<?> arg0) {
+				
+			}
+		});
+		
+	
 		stopManagingCursor(c);
 	
-
 		rbEmprestar.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
 			public void onCheckedChanged(CompoundButton arg0, boolean arg1) {
@@ -224,12 +229,21 @@ public class EditarEmprestimo extends Activity {
 	private boolean validarCampos() {
 		String item = etItem.getText().toString();
 
-		if (item.trim().equals("")) {
+		if (item.trim().equals("") && !validarCategoria()) {
 			return false;
 		}
 
 		return true;
 	}
+	
+	private boolean validarCategoria() {
+		if (spCategoria.getId() == 1) {
+			return false;
+		}
+
+		return true;
+	}
+
 
 	private void populateFields() {
 		if (mRowId != null) {
@@ -279,24 +293,16 @@ public class EditarEmprestimo extends Activity {
 
 			atualizarData();
 			
-			CategoriaDAO.open(this);
-			c = CategoriaDAO.consultarTodos(new String[] { CategoriaDAO.COLUNA_ID, CategoriaDAO.COLUNA_DESCRICAO });
-			CategoriaDAO.close();
+			ad = spCategoria.getAdapter();
+			long idCat = c.getLong(c.getColumnIndexOrThrow(EmprestimoDAO.COLUNA_ID_CATEGORIA));
 			
-			if (c != null && c.getCount() > 0) {
-				startManagingCursor(c);
-				spCategoria.setEnabled(true);
-			} else {
-				spCategoria.setEnabled(false);
-			}		
-			
-			// Aconselha-se atualizar segundo a documentação.
-			spCategoria.setAdapter(new SimpleCursorAdapter(this,
-					android.R.layout.simple_spinner_dropdown_item, c,
-					new String[] { CategoriaDAO.COLUNA_DESCRICAO },
-					new int[] { android.R.id.text1 }));
-			stopManagingCursor(c);
-			
+			for (int i = 0; i < ad.getCount(); ++i) {
+
+				if (ad.getItemId(i) == idCat) {
+					spCategoria.setSelection(i);
+					break;
+				}
+			}			
 
 		}
 	}
@@ -365,7 +371,6 @@ public class EditarEmprestimo extends Activity {
 				EmprestimoDAO.atualizarEmprestimo(emp);
 				
 			}
-			EmprestimoDAO.close();
 			
 			Intent intent = new Intent(EditarEmprestimo.this, Alarme.class);
 			intent.putExtra(EmprestimoDAO.COLUNA_ID_EMPRESTIMO, mRowId);
@@ -374,6 +379,8 @@ public class EditarEmprestimo extends Activity {
 
 			AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
 			am.set(AlarmManager.RTC_WAKEUP, data.getTime(), sender);
+			
+			EmprestimoDAO.close();
 
 		}
 	}

@@ -1,5 +1,6 @@
 package org.android.brasil.projetos.gui;
 
+import org.android.brasil.projetos.dao.CategoriaDAO;
 import org.android.brasil.projetos.dao.EmprestimoDAO;
 
 import android.app.ListActivity;
@@ -12,8 +13,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.Spinner;
 
 public class EmprestimoUI extends ListActivity {
 	private static final int ACTIVITY_CREATE = 0;
@@ -21,6 +24,9 @@ public class EmprestimoUI extends ListActivity {
 
 	private static final int INSERT_ID = Menu.FIRST;
 	private static final int DELETE_ID = Menu.FIRST + 1;
+	
+	private Spinner spCategoria;
+	private boolean loading = true;
 
 
 	/** Called when the activity is first created. */
@@ -28,6 +34,9 @@ public class EmprestimoUI extends ListActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.lista_emprestimo);
+		
+		spCategoria = (Spinner) findViewById(R.id.spCategoria);
+		
 		fillData();
 		registerForContextMenu(getListView());
 	}
@@ -50,6 +59,55 @@ public class EmprestimoUI extends ListActivity {
 		SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, R.layout.linha_emprestimo,
 				c, from, to);
 		setListAdapter(adapter);
+		
+		spCategoria.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+			public void onItemSelected(AdapterView<?> parent, View view,
+					int position, long id) {
+				
+				EmprestimoDAO.open(getApplicationContext());
+				
+				Cursor c;
+				if (id != 2 ) {
+					c = EmprestimoDAO.consultarEmprestimoPorCategoria(id);
+				
+				} else {
+					c = EmprestimoDAO.consultarTodos();
+				}
+				
+				EmprestimoDAO.close();
+				startManagingCursor(c);
+
+				String[] from = new String[] { EmprestimoDAO.COLUNA_ITEM };
+				int[] to = new int[] { R.id.text1 };
+
+				SimpleCursorAdapter adt = new SimpleCursorAdapter(EmprestimoUI.this, R.layout.linha_emprestimo,c, from, to);
+				setListAdapter(adt);
+			}
+			
+			public void onNothingSelected(AdapterView<?> arg0) {
+				
+			}
+		});
+		
+		CategoriaDAO.open(this);
+		c = CategoriaDAO.consultarCategorias("_id >1");
+		CategoriaDAO.close();
+		
+		if (c != null && c.getCount() > 0) {
+			startManagingCursor(c);
+			spCategoria.setEnabled(true);
+		} else {
+			spCategoria.setEnabled(false);
+		}	
+		
+		spCategoria.setAdapter(new SimpleCursorAdapter(this,
+				android.R.layout.simple_spinner_item, c,
+				new String[] { CategoriaDAO.COLUNA_DESCRICAO }, 
+				new int[] { android.R.id.text1 }));
+		
+		spCategoria.setSelection(0);
+		
+		stopManagingCursor(c);
 	}
 
 	@Override
