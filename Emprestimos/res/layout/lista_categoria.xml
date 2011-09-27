@@ -9,9 +9,7 @@
     android:layout_height="fill_parent">
 <LinearLayout
     android:layout_width="fill_parent" android:layout_height="398dp"
-    android:orientation="vertical">
-    <Spinner android:id="@+id/spCategoria" android:layout_height="wrap_content" android:layout_width="fill_parent"></Spinner>
-    
+    android:orientation="horizontal">
     <ListView
 		android:id="@+id/android:list"
         android:layout_width="fill_parent"
@@ -21,7 +19,7 @@
   		android:id="@+id/android:empty"
         android:layout_width="fill_parent"
        	android:layout_height="wrap_content"
-        android:text="@string/sem_emprestimos"/>
+        android:text="@string/sem_categoria"/>
 </LinearLayout>
 </ScrollView>
 </LinearLayout>

@@ -2,6 +2,7 @@
 <resources>
 	<string name="app_name">Empréstimos</string>
 	<string name="sem_emprestimos">Sem empréstimos ainda.</string>
+	<string name="sem_categoria">Nenhuma categortia cadastrada.</string>
 
 	<string name="emprestar">Emprestar</string>
 	<string name="pegar_emprestado">Pegar Emprestado</string>
@@ -13,8 +14,12 @@
 
 	<string name="contato">Emprestar Para:</string>
 	<string name="pegar_emprestado_de">Pegar Emprestado de:</string>
+	
+		<string name="menu_inserirCategoria">Adicionar Categoria</string>
+	<string name="menu_deleteCategoria">Deletar Categoria</string>
 
 	<string name="categoria">Categoria:</string>
+	<string name="ListaCategoria">Categorias</string>
 	
 	<string name="descricao">Descrição</string>
 	<string name="confirmar">Confirmar</string>
