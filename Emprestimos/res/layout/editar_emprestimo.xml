@@ -1,114 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:orientation="vertical"
-	android:layout_width="fill_parent"
-	android:layout_height="fill_parent">
+	style="@style/FillFill">
 <ScrollView 
 	android:fillViewport="true"
-	android:layout_width="fill_parent"
-	android:layout_height="fill_parent">
+	style="@style/FillFill">
 	<LinearLayout
 		android:orientation="vertical"
-		android:layout_width="fill_parent"
-		android:layout_height="fill_parent">
+		style="@style/FillFill">
 	
 		<RadioGroup
 			android:id="@+id/rg_perguntas"
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content"
+			style="@style/FillWrap"
 			android:gravity="center"
 			android:orientation="horizontal">
 			
 		  	<RadioButton 
 				android:id="@+id/rb_emprestar"
-				style="@style/RadioButtonElement"
+				android:gravity="center"
+				style="@style/WrapWrap.RadioButton"
+				android:paddingRight="20sp"
 				android:checked="true"
 		    	android:text="@string/emprestar" />
 		    	
 			<RadioButton
 				android:id="@+id/rb_pegar_emprestado"
-				style="@style/RadioButtonElement"
+				android:gravity="center"
+				style="@style/WrapWrap.RadioButton"
+				android:paddingRight="20sp"
 				android:text="@string/pegar_emprestado" />
 		</RadioGroup>
 		
 		<TextView
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content" 
+			style="@style/FillWrap" 
 			android:text="@string/item" />
 		<EditText
 			android:id="@+id/item" 
-		 	android:layout_width="fill_parent"
-			android:layout_height="wrap_content"
+		 	style="@style/FillWrap.EditText"
 			android:singleLine="true" />
 	
 		<TextView 
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content" 
+			style="@style/WrapWrap" 
 			android:text="@string/descricao" />
 			
 		<EditText
 			android:id="@+id/descricao"
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content"
+			style="@style/FillWrap.EditText"
 			android:scrollbars="vertical" />
 		
 		<TextView 
 			android:id="@+id/tv_contato"
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content" 
+			style="@style/FillWrap" 
 			android:text="@string/contato" />
 		
 		<Spinner
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content"
-			android:inputType="text" android:id="@+id/txt_auto_nome"/>
+			style="@style/FillWrap.Spinner"
+			android:id="@+id/txt_auto_nome"/>
 			
 		<TextView 
 			android:id="@+id/tv_contato"
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content" 
+			style="@style/FillWrap"
 			android:text="@string/categoria" />
 		
 		<Spinner
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content"
-			android:inputType="text" android:id="@+id/sp_categoria"/>
+			style="@style/FillWrap.Spinner"
+			android:id="@+id/sp_categoria"/>
 						
 		<CheckBox 
 			android:id="@+id/cb_alarme"
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content"
+			style="@style/FillWrap"
 			android:text="Ativar alarme"		
 		/>
 		<TextView 
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content" 
+			style="@style/FillWrap"
 			android:text="@string/data_devolucao" />
 			
 	   	<EditText 
 			android:id="@+id/data"
-			android:maxLength="10"
 			android:gravity="center_horizontal"
-			android:focusable="false"
-			style="@style/EditTextElement"/>
+			style="@style/FillWrap.EditText.NoFocus"/>
 	
 		<TextView 
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content" 
+			style="@style/FillWrap" 
 			android:text="@string/hora_devolucao" />
 			
 	   	<EditText 
 			android:id="@+id/hora"
-			android:maxLength="10"
 			android:gravity="center_horizontal"
-			android:focusable="false"
-			style="@style/EditTextElement"/>
+			style="@style/FillWrap.EditText.NoFocus"/>
 	
 		<Button
 			android:id="@+id/confirmar" 
 		  	android:text="@string/confirmar"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content" />
+			style="@style/WrapWrap"/>
 	
 	</LinearLayout>
 </ScrollView>

@@ -1,11 +1,9 @@
 package org.android.brasil.projetos.gui;
 
 import org.android.brasil.projetos.dao.CategoriaDAO;
-import org.android.brasil.projetos.dao.EmprestimoDAO;
 import org.android.brasil.projetos.model.Categoria;
 
 import android.app.Activity;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -33,6 +31,8 @@ public class EditarCategoria extends Activity  {
 				if(!etDescricao.getText().toString().trim().equals("")) {
 					saveState();
 					Toast.makeText(EditarCategoria.this, "Salvo com sucesso!", Toast.LENGTH_SHORT).show();
+					setResult(RESULT_OK);
+					finish();
 				} else {
 					Toast.makeText(EditarCategoria.this, "Entre com a descrição!", Toast.LENGTH_SHORT).show();
 				}				
@@ -55,11 +55,10 @@ public class EditarCategoria extends Activity  {
 
 			CategoriaDAO.open(getApplicationContext());
 			Log.w("Erro", mRowId.toString());
-			Cursor c = CategoriaDAO.consultarCategoria(mRowId);
-			startManagingCursor(c);
-
-			etDescricao.setText(c.getString(c
-					.getColumnIndexOrThrow(EmprestimoDAO.COLUNA_DESCRICAO)));
+			Categoria cat = CategoriaDAO.consultar(mRowId);
+			CategoriaDAO.close();
+			
+			etDescricao.setText(cat.getNomeCategoria());
 
 		}
 	}
@@ -68,7 +67,7 @@ public class EditarCategoria extends Activity  {
 		CategoriaDAO.open(getApplicationContext());
 		Categoria cat = new Categoria();
 		
-		cat.setNomeCategoria(etDescricao.getText().toString());
+		cat.setNomeCategoria(etDescricao.getText().toString().trim());
 		
 		if (mRowId == null) {
 			
@@ -78,12 +77,11 @@ public class EditarCategoria extends Activity  {
 				mRowId = id;
 			}
 			
-			CategoriaDAO.close();	
 		} else {
 			cat.setId(mRowId);
 			CategoriaDAO.atualizar(cat);
 		}	
-	
+		CategoriaDAO.close();
 	}
 
 }
