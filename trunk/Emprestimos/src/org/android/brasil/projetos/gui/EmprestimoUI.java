@@ -2,6 +2,7 @@ package org.android.brasil.projetos.gui;
 
 import org.android.brasil.projetos.dao.CategoriaDAO;
 import org.android.brasil.projetos.dao.EmprestimoDAO;
+import org.android.brasil.projetos.model.Categoria;
 
 import android.app.ListActivity;
 import android.content.Intent;
@@ -12,8 +13,8 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
@@ -26,8 +27,10 @@ public class EmprestimoUI extends ListActivity {
 	private static final int DELETE_ID = Menu.FIRST + 1;
 	
 	private Spinner spCategoria;
-	private boolean loading = true;
 
+	private Cursor cursorEmprestimos;
+	private Cursor cursorCategoria;
+	
 
 	/** Called when the activity is first created. */
 	@Override
@@ -42,10 +45,18 @@ public class EmprestimoUI extends ListActivity {
 	}
 
 	private void fillData() {
+		
+		//Fix para Android 3.0 ou superiores
+		if(cursorCategoria != null && !cursorCategoria.isClosed()){
+			stopManagingCursor(cursorCategoria);
+			cursorCategoria.close();
+		}
+		
 		EmprestimoDAO.open(getApplicationContext());
-		Cursor c = EmprestimoDAO.consultarTodos();
+		cursorEmprestimos = EmprestimoDAO.consultarTodos();
 		EmprestimoDAO.close();
-		startManagingCursor(c);
+		
+		startManagingCursor(cursorEmprestimos);
 
 		// Create an array to specify the fields we want to display in the list
 		// (only TITLE)
@@ -56,31 +67,48 @@ public class EmprestimoUI extends ListActivity {
 		int[] to = new int[] { R.id.text1 };
 
 		// Now create a simple cursor adapter and set it to display
-		SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, R.layout.linha_emprestimo,
-				c, from, to);
+		SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, R.layout.linha_emprestimo_listview,
+				cursorEmprestimos, from, to);
 		setListAdapter(adapter);
 		
 		spCategoria.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 			public void onItemSelected(AdapterView<?> parent, View view,
 					int position, long id) {
+				boolean todos = false;
+				
+				
+				//Busca o objeto categoria selecionado
+				CategoriaDAO.open(getApplicationContext());
+				Categoria cat = CategoriaDAO.consultar(id);
+				CategoriaDAO.close();
+				
+				//Verificação mais confiavel se a opção "Todos" foi escolhida				
+				if(cat.getNomeCategoria().equals(CategoriaDAO.TODOS)){
+					todos = true;
+				}
+				
+				//Fix para Android 3.0 ou superiores
+				if(cursorEmprestimos != null && !cursorEmprestimos.isClosed()){
+					stopManagingCursor(cursorEmprestimos);
+					cursorEmprestimos.close();
+				}
 				
 				EmprestimoDAO.open(getApplicationContext());
 				
-				Cursor c;
-				if (id != 2 ) {
-					c = EmprestimoDAO.consultarEmprestimoPorCategoria(id);
+				if (!todos) {
+					cursorEmprestimos = EmprestimoDAO.consultarEmprestimoPorCategoria(id);
 				
 				} else {
-					c = EmprestimoDAO.consultarTodos();
+					cursorEmprestimos = EmprestimoDAO.consultarTodos();
 				}
 				
 				EmprestimoDAO.close();
-				startManagingCursor(c);
+				startManagingCursor(cursorEmprestimos);
 
 				String[] from = new String[] { EmprestimoDAO.COLUNA_ITEM };
 				int[] to = new int[] { R.id.text1 };
 
-				SimpleCursorAdapter adt = new SimpleCursorAdapter(EmprestimoUI.this, R.layout.linha_emprestimo,c, from, to);
+				SimpleCursorAdapter adt = new SimpleCursorAdapter(getApplicationContext(), R.layout.linha_emprestimo_listview,cursorEmprestimos, from, to);
 				setListAdapter(adt);
 			}
 			
@@ -90,24 +118,24 @@ public class EmprestimoUI extends ListActivity {
 		});
 		
 		CategoriaDAO.open(this);
-		c = CategoriaDAO.consultarCategorias("_id >1");
+		cursorCategoria = CategoriaDAO.consultarTodasCategorias();
 		CategoriaDAO.close();
 		
-		if (c != null && c.getCount() > 0) {
-			startManagingCursor(c);
+		if (cursorCategoria != null && cursorCategoria.getCount() > 0) {
+			startManagingCursor(cursorCategoria);
 			spCategoria.setEnabled(true);
 		} else {
 			spCategoria.setEnabled(false);
 		}	
 		
 		spCategoria.setAdapter(new SimpleCursorAdapter(this,
-				android.R.layout.simple_spinner_item, c,
+				R.layout.linha_categoria_spinner, cursorCategoria,
 				new String[] { CategoriaDAO.COLUNA_DESCRICAO }, 
-				new int[] { android.R.id.text1 }));
+				new int[] { R.id.text1 }));
 		
-		spCategoria.setSelection(0);
-		
-		stopManagingCursor(c);
+		if (cursorCategoria != null && cursorCategoria.getCount() > 0) {
+			spCategoria.setSelection(1);
+		}
 	}
 
 	@Override
@@ -121,7 +149,7 @@ public class EmprestimoUI extends ListActivity {
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
 		switch (item.getItemId()) {
 		case INSERT_ID:
-			createNote();
+			editarEmprestimo();
 			return true;
 		}
 
@@ -148,7 +176,7 @@ public class EmprestimoUI extends ListActivity {
 		return super.onContextItemSelected(item);
 	}
 
-	private void createNote() {
+	private void editarEmprestimo() {
 		Intent i = new Intent(this, EditarEmprestimo.class);
 		startActivityForResult(i, ACTIVITY_CREATE);
 	}
@@ -165,5 +193,19 @@ public class EmprestimoUI extends ListActivity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
 		super.onActivityResult(requestCode, resultCode, intent);
 		fillData();
+	}
+	
+	@Override
+	protected void onPause(){
+		super.onPause();
+		if(cursorEmprestimos != null && !cursorEmprestimos.isClosed()){
+			stopManagingCursor(cursorEmprestimos);
+			cursorEmprestimos.close();
+		}
+		
+		if(cursorCategoria != null && !cursorCategoria.isClosed()){
+			stopManagingCursor(cursorCategoria);
+			cursorCategoria.close();
+		}
 	}
 }

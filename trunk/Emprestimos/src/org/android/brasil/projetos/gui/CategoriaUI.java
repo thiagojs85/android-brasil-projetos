@@ -22,6 +22,7 @@ public class CategoriaUI extends ListActivity {
 
 	private static final int INSERT_ID = Menu.FIRST;
 	private static final int DELETE_ID = Menu.FIRST + 1;
+	private Cursor cursorCategoria;
 	
 	/** Called when the activity is first created. */
 	@Override
@@ -37,10 +38,17 @@ public class CategoriaUI extends ListActivity {
 	}
 
 	private void fillData() {
+
+		//Fix para Android 3.0 ou superiores
+		if(cursorCategoria != null && !cursorCategoria.isClosed()){
+			stopManagingCursor(cursorCategoria);
+			cursorCategoria.close();
+		}
+		
 		CategoriaDAO.open(getApplicationContext());
-		Cursor c = CategoriaDAO.consultarCategorias("_id > 2");
+		cursorCategoria = CategoriaDAO.consultarTodasCategorias();
 		CategoriaDAO.close();
-		startManagingCursor(c);
+		startManagingCursor(cursorCategoria);
 
 		// Create an array to specify the fields we want to display in the list
 		// (only TITLE)
@@ -51,8 +59,8 @@ public class CategoriaUI extends ListActivity {
 		int[] to = new int[] { R.id.text1 };
 
 		// Now create a simple cursor adapter and set it to display
-		SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, R.layout.linha_categoria,
-				c, from, to);
+		SimpleCursorAdapter adapter = new SimpleCursorAdapter(this, R.layout.linha_categoria_listview,
+				cursorCategoria, from, to);
 		setListAdapter(adapter);
 	}
 
@@ -84,6 +92,9 @@ public class CategoriaUI extends ListActivity {
 	public boolean onContextItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case DELETE_ID:
+			
+			//TODO: TEM QUE VERIFICAR SE EXISTE ALGUM ITEM DE EMPRESTIMO 
+			//COM ESSE ID e DELETAR O ITEM TAMBÉM, MAS TEM QUE AVISAR O USUÁRIO ANTES!!!!!!
 			AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 			CategoriaDAO.open(getApplicationContext());
 			CategoriaDAO.deleteCategoria(info.id);

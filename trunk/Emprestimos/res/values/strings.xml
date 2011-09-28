@@ -2,8 +2,8 @@
 <resources>
 	<string name="app_name">Empréstimos</string>
 	<string name="sem_emprestimos">Sem empréstimos ainda.</string>
-	<string name="sem_categoria">Nenhuma categortia cadastrada.</string>
-
+	<string name="sem_categoria">Nenhuma categoria cadastrada.</string>
+	
 	<string name="emprestar">Emprestar</string>
 	<string name="pegar_emprestado">Pegar Emprestado</string>
 
@@ -14,31 +14,18 @@
 
 	<string name="contato">Emprestar Para:</string>
 	<string name="pegar_emprestado_de">Pegar Emprestado de:</string>
-	
-		<string name="menu_inserirCategoria">Adicionar Categoria</string>
-	<string name="menu_deleteCategoria">Deletar Categoria</string>
 
+	<string name="menu_inserirCategoria">Adicionar Categoria</string>
+	<string name="menu_deleteCategoria">Deletar Categoria</string>
+	
 	<string name="categoria">Categoria:</string>
 	<string name="ListaCategoria">Categorias</string>
-	
+
 	<string name="descricao">Descrição</string>
 	<string name="confirmar">Confirmar</string>
 	<string name="editar_emprestimo">Editar Emprestimo</string>
 	<string name="data_devolucao">Data da Devolução</string>
 	<string name="hora_devolucao">Hora da Devolução</string>
-
-	<style name="EditTextElement">
-		<item name="android:inputType">text</item>
-		<item name="android:layout_width">fill_parent</item>
-		<item name="android:layout_height">wrap_content</item>
-	</style>
-
-	<style name="RadioButtonElement">
-		<item name="android:gravity">center</item>
-		<item name="android:layout_width">wrap_content</item>
-		<item name="android:layout_height">wrap_content</item>
-		<item name="android:paddingRight">20sp</item>
-	</style>
 	
 	<string name="editar_categoria">Editar Categoria</string>
 </resources>

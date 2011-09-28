@@ -1,6 +1,7 @@
 package org.android.brasil.projetos.model;
 
 public class Categoria {
+	
 	private long id;
 	private String nomeCategoria;
 

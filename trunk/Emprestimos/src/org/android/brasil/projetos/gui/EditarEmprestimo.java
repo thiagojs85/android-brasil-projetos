@@ -63,7 +63,7 @@ public class EditarEmprestimo extends Activity {
 	private Long mRowId;
 	private TextView tvContato;
 
-	private Spinner txtAutoNome;
+	private Spinner spNomes;
 	private Spinner spCategoria;
 
 	private CheckBox cbAlarme;
@@ -74,7 +74,9 @@ public class EditarEmprestimo extends Activity {
 	private Date dataDevolucao;
 	private EditText etDataDevolucao;
 	private EditText etHoraDevolucao;
-
+	
+	private Cursor cursorContatos;
+	
 	private static final int DATE_DIALOG_ID_DATE = 0;
 	private static final int DATE_DIALOG_ID_TIME = 1;
 
@@ -107,7 +109,7 @@ public class EditarEmprestimo extends Activity {
 		etDescricao = (EditText) findViewById(R.id.descricao);
 		etDataDevolucao = (EditText) findViewById(R.id.data);
 		etHoraDevolucao = (EditText) findViewById(R.id.hora);
-		txtAutoNome = (Spinner) findViewById(R.id.txt_auto_nome);
+		spNomes = (Spinner) findViewById(R.id.txt_auto_nome);
 		cbAlarme = (CheckBox) findViewById(R.id.cb_alarme);
 		rbEmprestar = (RadioButton) findViewById(R.id.rb_emprestar);
 		rbPegarEmprestado = (RadioButton) findViewById(R.id.rb_pegar_emprestado);
@@ -116,32 +118,37 @@ public class EditarEmprestimo extends Activity {
 		spCategoria = (Spinner) findViewById(R.id.sp_categoria);
 
 		ContentResolver cr = getContentResolver();
-		Cursor c = null;
-		c = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
+
+		cursorContatos = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
 
 		String[] from = new String[] { ContactsContract.Contacts.DISPLAY_NAME };
 		int[] to = new int[] { android.R.id.text1 };
-		startManagingCursor(c);
+		startManagingCursor(cursorContatos);
 
-		txtAutoNome.setAdapter(new SimpleCursorAdapter(EditarEmprestimo.this,
-				android.R.layout.simple_spinner_dropdown_item, c, from, to));
+		spNomes.setAdapter(new SimpleCursorAdapter(EditarEmprestimo.this,
+				android.R.layout.simple_spinner_dropdown_item, cursorContatos, from, to));
 		
 		dataDevolucao = Calendar.getInstance().getTime();
 		atualizarData();
 		
+		if(cursorContatos != null && ! cursorContatos.isClosed()){
+			stopManagingCursor(cursorContatos);
+			cursorContatos.close();
+		}
+		
 		CategoriaDAO.open(this);
-		c = CategoriaDAO.consultarCategorias("_id <> 2");
+		cursorContatos = CategoriaDAO.consultarTodasCategorias();
 		CategoriaDAO.close();
 		
-		if (c != null && c.getCount() > 0) {
-			startManagingCursor(c);
+		if (cursorContatos != null && cursorContatos.getCount() > 0) {
+			startManagingCursor(cursorContatos);
 			spCategoria.setEnabled(true);
 		} else {
 			spCategoria.setEnabled(false);
 		}	
 		
 		spCategoria.setAdapter(new SimpleCursorAdapter(this,
-				android.R.layout.simple_spinner_item, c,
+				android.R.layout.simple_spinner_item, cursorContatos,
 				new String[] { CategoriaDAO.COLUNA_DESCRICAO }, 
 				new int[] { android.R.id.text1 }));
 		
@@ -163,7 +170,7 @@ public class EditarEmprestimo extends Activity {
 		});
 		
 	
-		stopManagingCursor(c);
+		stopManagingCursor(cursorContatos);
 	
 		rbEmprestar.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
@@ -278,12 +285,12 @@ public class EditarEmprestimo extends Activity {
 			etDescricao.setText(c.getString(c
 					.getColumnIndexOrThrow(EmprestimoDAO.COLUNA_DESCRICAO)));
 
-			Adapter ad = txtAutoNome.getAdapter();
+			Adapter ad = spNomes.getAdapter();
 			long id = c.getLong(c.getColumnIndexOrThrow(EmprestimoDAO.COLUNA_ID_CONTATO));
 			for (int i = 0; i < ad.getCount(); ++i) {
 
 				if (ad.getItemId(i) == id) {
-					txtAutoNome.setSelection(i);
+					spNomes.setSelection(i);
 					break;
 				}
 			}
@@ -339,14 +346,20 @@ public class EditarEmprestimo extends Activity {
 				status = Emprestimo.STAUTS_PEGAR_EMPRESTADO;
 			}
 
-			long idContato = txtAutoNome.getSelectedItemId();
-
-			
-			EmprestimoDAO.open(getApplicationContext());
+			long idContato = spNomes.getSelectedItemId();
 
 			int alarme = Emprestimo.DESATIVAR_ALARME;
 			if (cbAlarme.isChecked()) {
 				alarme = Emprestimo.ATIVAR_ALARME;
+				
+				Intent intent = new Intent(EditarEmprestimo.this, Alarme.class);
+				intent.putExtra(EmprestimoDAO.COLUNA_ID_EMPRESTIMO, mRowId);
+				PendingIntent sender = PendingIntent.getBroadcast(EditarEmprestimo.this, 0, intent,
+						PendingIntent.FLAG_UPDATE_CURRENT);
+
+				AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
+				am.set(AlarmManager.RTC_WAKEUP, data.getTime(), sender);
+
 			}
 			
 			long idCategoria = spCategoria.getSelectedItemId();
@@ -360,6 +373,7 @@ public class EditarEmprestimo extends Activity {
 			emp.setIdContato(idContato);
 			emp.setIdCategoria(idCategoria);
 
+			EmprestimoDAO.open(getApplicationContext());
 			if (mRowId == null) {
 
 				long id = EmprestimoDAO.inserirEmprestimo(emp);
@@ -370,16 +384,7 @@ public class EditarEmprestimo extends Activity {
 				emp.setIdEmprestimo(mRowId);
 				EmprestimoDAO.atualizarEmprestimo(emp);
 				
-			}
-			
-			Intent intent = new Intent(EditarEmprestimo.this, Alarme.class);
-			intent.putExtra(EmprestimoDAO.COLUNA_ID_EMPRESTIMO, mRowId);
-			PendingIntent sender = PendingIntent.getBroadcast(EditarEmprestimo.this, 0, intent,
-					PendingIntent.FLAG_UPDATE_CURRENT);
-
-			AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
-			am.set(AlarmManager.RTC_WAKEUP, data.getTime(), sender);
-			
+			}			
 			EmprestimoDAO.close();
 
 		}
