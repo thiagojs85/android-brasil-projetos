@@ -16,7 +16,5 @@ public class Categoria {
 	}
 	public void setNomeCategoria(String nomeCategoria) {
 		this.nomeCategoria = nomeCategoria;
-	}
-
-	
+	}	
 }

@@ -80,6 +80,15 @@ public class EditarEmprestimo extends Activity {
 	private static final int DATE_DIALOG_ID_DATE = 0;
 	private static final int DATE_DIALOG_ID_TIME = 1;
 
+	@Override
+	protected void onPause(){
+		super.onPause();
+		if(cursorContatos != null && !cursorContatos.isClosed()){
+			stopManagingCursor(cursorContatos);
+			cursorContatos.close();
+		}
+	}
+	
 	private DatePickerDialog.OnDateSetListener dataListener = new DatePickerDialog.OnDateSetListener() {
 		public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
 			dataDevolucao.setYear(year - 1900);
@@ -137,18 +146,18 @@ public class EditarEmprestimo extends Activity {
 		}
 		
 		CategoriaDAO.open(this);
-		cursorContatos = CategoriaDAO.consultarTodasCategorias();
+		Cursor cursorCategorias = CategoriaDAO.consultarTodasCategorias();
 		CategoriaDAO.close();
 		
-		if (cursorContatos != null && cursorContatos.getCount() > 0) {
-			startManagingCursor(cursorContatos);
+		if (cursorCategorias != null && cursorCategorias.getCount() > 0) {
+			startManagingCursor(cursorCategorias);
 			spCategoria.setEnabled(true);
 		} else {
 			spCategoria.setEnabled(false);
 		}	
 		
 		spCategoria.setAdapter(new SimpleCursorAdapter(this,
-				android.R.layout.simple_spinner_item, cursorContatos,
+				android.R.layout.simple_spinner_item, cursorCategorias,
 				new String[] { CategoriaDAO.COLUNA_DESCRICAO }, 
 				new int[] { android.R.id.text1 }));
 		
@@ -170,7 +179,7 @@ public class EditarEmprestimo extends Activity {
 		});
 		
 	
-		stopManagingCursor(cursorContatos);
+		stopManagingCursor(cursorCategorias);
 	
 		rbEmprestar.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
@@ -254,7 +263,10 @@ public class EditarEmprestimo extends Activity {
 
 	private void populateFields() {
 		if (mRowId != null) {
-
+			if(cursorContatos != null && !cursorContatos.isClosed()){
+				stopManagingCursor(cursorContatos);
+				cursorContatos.close();
+			}
 			EmprestimoDAO.open(getApplicationContext());
 			Cursor c = EmprestimoDAO.consultarEmprestimo(mRowId);
 			startManagingCursor(c);

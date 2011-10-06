@@ -1,5 +1,6 @@
 package org.android.brasil.projetos.dao;
 
+import org.android.brasil.projetos.dao.util.TableBuilder;
 import org.android.brasil.projetos.model.Categoria;
 
 import android.content.ContentValues;
@@ -18,18 +19,23 @@ public class CategoriaDAO  extends BasicoDAO{
 	public static final String TABELA_CATEGORIA = "categoria";
 	
 	
-	private static final String CRIAR_TABELA_CATEGORIA = "create table " + TABELA_CATEGORIA
-	+ " ( " + COLUNA_ID + " integer primary key autoincrement, " + COLUNA_DESCRICAO
-	+ " text not null);";
+	private static String defineTable() {
+		TableBuilder tb = new TableBuilder(TABELA_CATEGORIA);
+		tb.setPrimaryKey(COLUNA_ID, "INTEGER");
+		tb.addColuna(COLUNA_DESCRICAO, "TEXT", true);
+		return tb.toString();
+	}
+	
+	private static final String CRIAR_TABELA_CATEGORIA = defineTable();
 	
 	public static final String TODOS = "Todos";
 	public static final String OUTRA = "Outra";
 	
-	private static final String categoriaDefault = "insert into categoria (descricao) values ('"+OUTRA+"')";
-	public static final String categoriaDefaultTodos = "insert into categoria (descricao) values ('"+TODOS+"')";
-	public static final String categoriaDefaultCD = "insert into categoria (descricao) values ('CD')";
-	public static final String categoriaDefaultDVD = "insert into categoria (descricao) values ('DVD')";
-	public static final String categoriaDefaultLivro = "insert into categoria (descricao) values ('Livro')";
+	private static final String categoriaDefault = "insert into "+TABELA_CATEGORIA+" (descricao) values ('"+OUTRA+"')";
+	public static final String categoriaDefaultTodos = "insert into "+TABELA_CATEGORIA+" (descricao) values ('"+TODOS+"')";
+	public static final String categoriaDefaultCD = "insert into "+TABELA_CATEGORIA+" (descricao) values ('CD')";
+	public static final String categoriaDefaultDVD = "insert into "+TABELA_CATEGORIA+" (descricao) values ('DVD')";
+	public static final String categoriaDefaultLivro = "insert into "+TABELA_CATEGORIA+" (descricao) values ('Livro')";
 	
 	
 	
@@ -38,6 +44,7 @@ public class CategoriaDAO  extends BasicoDAO{
 		return CRIAR_TABELA_CATEGORIA;
 	}
 	
+
 	public static Categoria deCursorParaCategoria(Cursor c){
 		Categoria cat = new Categoria();
 		cat.setId(c.getLong(c.getColumnIndex(COLUNA_ID)));

@@ -43,8 +43,9 @@ public class EmprestimoDbAdapter {
 
 		@Override
 		public void onCreate(SQLiteDatabase db) {
-
-			db.execSQL(EmprestimoDAO.CRIAR_TABELA_EMPRESTIMOS);
+			System.out.println(EmprestimoDAO.CREATE_TABLE);
+			System.out.println(CategoriaDAO.createTableCategoria());
+			db.execSQL(EmprestimoDAO.CREATE_TABLE);
 			db.execSQL(CategoriaDAO.createTableCategoria());
 			db.execSQL(CategoriaDAO.insertCategoriaDefault());
 			db.execSQL(CategoriaDAO.categoriaDefaultTodos);
