@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.android.brasil.projetos.dao.util.TableBuilder;
 import org.android.brasil.projetos.model.Emprestimo;
 
 import android.content.ContentValues;
@@ -24,21 +23,16 @@ public class EmprestimoDAO extends BasicoDAO {
 
 	public static final String TABELA_EMPRESTIMOS = "emprestimos";
 
-	private static String defineTable() {
-		TableBuilder tb = new TableBuilder(TABELA_EMPRESTIMOS);
-		tb.setPrimaryKey(COLUNA_ID_EMPRESTIMO, "INTEGER");
-		tb.addColuna(COLUNA_ITEM, "TEXT", true);
-		tb.addColuna(COLUNA_DESCRICAO, "TEXT", true);
-		tb.addColuna(COLUNA_STATUS, "INTEGER", true);
-		tb.addColuna(COLUNA_ATIVAR_ALARME, "INTEGER", true);
-		tb.addColuna(COLUNA_DATA_DEVOLUCAO, "INTEGER", false);
-		tb.addColuna(COLUNA_ID_CONTATO, "INTEGER", true);
-		tb.addFK(COLUNA_ID_CATEGORIA, "INTEGER", CategoriaDAO.TABELA_CATEGORIA,
-				CategoriaDAO.COLUNA_ID, tb.CASCADE, tb.CASCADE);
-		return tb.toString();
-	}
-
-	public static final String CREATE_TABLE = defineTable();
+	public static final String CRIAR_TABELA_EMPRESTIMOS = "create table "
+			+ TABELA_EMPRESTIMOS + " ( " + COLUNA_ID_EMPRESTIMO
+			+ " integer primary key autoincrement, " + COLUNA_ITEM
+			+ " text not null, " + COLUNA_DESCRICAO + " text not null,"
+			+ COLUNA_STATUS + " Integer not null, " + COLUNA_ATIVAR_ALARME
+			+ " Integer not null, " + COLUNA_DATA_DEVOLUCAO + " Integer, "
+			+ COLUNA_ID_CONTATO + " Integer not null, " + COLUNA_ID_CATEGORIA
+			+ " Integer not null,  FOREIGN KEY (" + COLUNA_ID_CATEGORIA
+			+ " )  REFERENCES " + CategoriaDAO.TABELA_CATEGORIA + " ("
+			+ CategoriaDAO.COLUNA_ID + " ));";
 
 	public EmprestimoDAO(Context ctx) {
 		super(ctx);
@@ -83,6 +77,11 @@ public class EmprestimoDAO extends BasicoDAO {
 	public static boolean deleteEmprestimo(long id) {
 
 		return remover(TABELA_EMPRESTIMOS, COLUNA_ID_EMPRESTIMO, id);
+	}
+	
+	public static boolean deleteEmprestimoPorCategoria(long idCategoria) {
+
+		return remover(TABELA_EMPRESTIMOS, COLUNA_ID_CATEGORIA, idCategoria);
 	}
 
 	public static Cursor consultarTodos() {

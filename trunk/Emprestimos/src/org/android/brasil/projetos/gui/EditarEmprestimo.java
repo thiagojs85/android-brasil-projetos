@@ -23,6 +23,7 @@ import java.util.Date;
 import org.android.brasil.projetos.dao.CategoriaDAO;
 import org.android.brasil.projetos.dao.EmprestimoDAO;
 import org.android.brasil.projetos.model.Emprestimo;
+import org.android.brasil.projetos.model.TipoCategoria;
 
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -34,6 +35,7 @@ import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.util.Log;
@@ -75,20 +77,12 @@ public class EditarEmprestimo extends Activity {
 	private EditText etDataDevolucao;
 	private EditText etHoraDevolucao;
 	
-	private Cursor cursorContatos;
+	private Cursor cursorContatos  = null;;
+	private Cursor cursorCategorias  = null;;
 	
 	private static final int DATE_DIALOG_ID_DATE = 0;
 	private static final int DATE_DIALOG_ID_TIME = 1;
 
-	@Override
-	protected void onPause(){
-		super.onPause();
-		if(cursorContatos != null && !cursorContatos.isClosed()){
-			stopManagingCursor(cursorContatos);
-			cursorContatos.close();
-		}
-	}
-	
 	private DatePickerDialog.OnDateSetListener dataListener = new DatePickerDialog.OnDateSetListener() {
 		public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
 			dataDevolucao.setYear(year - 1900);
@@ -137,48 +131,16 @@ public class EditarEmprestimo extends Activity {
 		spNomes.setAdapter(new SimpleCursorAdapter(EditarEmprestimo.this,
 				android.R.layout.simple_spinner_dropdown_item, cursorContatos, from, to));
 		
-		dataDevolucao = Calendar.getInstance().getTime();
-		atualizarData();
+		stopManagingCursor(cursorContatos);
 		
-		if(cursorContatos != null && ! cursorContatos.isClosed()){
+/*		if(cursorContatos != null && ! cursorContatos.isClosed()){
 			stopManagingCursor(cursorContatos);
 			cursorContatos.close();
-		}
-		
-		CategoriaDAO.open(this);
-		Cursor cursorCategorias = CategoriaDAO.consultarTodasCategorias();
-		CategoriaDAO.close();
-		
-		if (cursorCategorias != null && cursorCategorias.getCount() > 0) {
-			startManagingCursor(cursorCategorias);
-			spCategoria.setEnabled(true);
-		} else {
-			spCategoria.setEnabled(false);
-		}	
-		
-		spCategoria.setAdapter(new SimpleCursorAdapter(this,
-				android.R.layout.simple_spinner_item, cursorCategorias,
-				new String[] { CategoriaDAO.COLUNA_DESCRICAO }, 
-				new int[] { android.R.id.text1 }));
-		
-		spCategoria.setSelection(2);
-		
-		spCategoria.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-			public void onItemSelected(AdapterView<?> parent, View view,
-					int position, long id) {
+		}*/
 				
-				if(spCategoria.getSelectedItemId() == 1) {
-					startActivity(new Intent(EditarEmprestimo.this ,CategoriaUI.class));
-					finish();
-				}			
-			}
-			
-			public void onNothingSelected(AdapterView<?> arg0) {
+		dataDevolucao = Calendar.getInstance().getTime();
+		atualizarData();
 				
-			}
-		});
-		
-	
 		stopManagingCursor(cursorCategorias);
 	
 		rbEmprestar.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -241,35 +203,68 @@ public class EditarEmprestimo extends Activity {
 
 		populateFields();
 	}
+	
+	private void carregarCategoria() {
+			
+		CategoriaDAO.open(getApplicationContext());
+		cursorCategorias = CategoriaDAO.consultarTodasCategorias();
+		CategoriaDAO.close();
+		
+		if (cursorCategorias != null && cursorCategorias.getCount() > 0) {
+			startManagingCursor(cursorCategorias);
+			spCategoria.setEnabled(true);
+		} else {
+			spCategoria.setEnabled(false);
+		}	
+		
+		spCategoria.setAdapter(new SimpleCursorAdapter(this,
+				android.R.layout.simple_spinner_item, cursorCategorias,
+				new String[] { CategoriaDAO.COLUNA_DESCRICAO }, 
+				new int[] { android.R.id.text1 }));
+		
+		spCategoria.setSelection(1);
+		
+		spCategoria.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+			public void onItemSelected(AdapterView<?> parent, View view,
+					int position, long id) {
+				
+				if(id == 1) {
+					Intent i = new Intent(EditarEmprestimo.this, CategoriaUI.class);
+					startActivityForResult(i, 0);
+				}			
+			}
+			
+			public void onNothingSelected(AdapterView<?> arg0) {
+				
+			}
+		});
+	}
 
 	private boolean validarCampos() {
 		String item = etItem.getText().toString();
+		long idCategoria = spCategoria.getSelectedItemId();
 
-		if (item.trim().equals("") && !validarCategoria()) {
+		if (item.trim().equals("") || idCategoria == 1 ) {
 			return false;
 		}
 
 		return true;
 	}
-	
-	private boolean validarCategoria() {
-		if (spCategoria.getId() == 1) {
-			return false;
-		}
-
-		return true;
-	}
-
 
 	private void populateFields() {
+		
+		carregarCategoria();
+		
 		if (mRowId != null) {
-			if(cursorContatos != null && !cursorContatos.isClosed()){
-				stopManagingCursor(cursorContatos);
-				cursorContatos.close();
-			}
+
 			EmprestimoDAO.open(getApplicationContext());
 			Cursor c = EmprestimoDAO.consultarEmprestimo(mRowId);
 			startManagingCursor(c);
+			
+			if(c.getCount() == 0) {
+				return;
+			}
+			
 			long status = c.getLong(c.getColumnIndexOrThrow(EmprestimoDAO.COLUNA_STATUS));
 			if (status == Emprestimo.STAUTS_EMPRESTAR) {
 				rbPegarEmprestado.setChecked(false);
@@ -324,7 +319,7 @@ public class EditarEmprestimo extends Activity {
 			}			
 
 		}
-	}
+	} 
 
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
