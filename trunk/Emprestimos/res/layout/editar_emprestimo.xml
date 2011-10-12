@@ -55,7 +55,8 @@
 		
 		<Spinner
 			style="@style/FillWrap.Spinner"
-			android:id="@+id/txt_auto_nome"/>
+			android:id="@+id/txt_auto_nome"
+			android:inputType="text"/>
 			
 		<TextView 
 			android:id="@+id/tv_contato"
