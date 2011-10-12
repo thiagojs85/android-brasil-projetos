@@ -23,7 +23,6 @@ import java.util.Date;
 import org.android.brasil.projetos.dao.CategoriaDAO;
 import org.android.brasil.projetos.dao.EmprestimoDAO;
 import org.android.brasil.projetos.model.Emprestimo;
-import org.android.brasil.projetos.model.TipoCategoria;
 
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -35,7 +34,6 @@ import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.util.Log;
