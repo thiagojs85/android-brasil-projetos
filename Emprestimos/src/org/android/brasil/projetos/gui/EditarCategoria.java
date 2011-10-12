@@ -54,7 +54,6 @@ public class EditarCategoria extends Activity  {
 		if (mRowId != null) {
 
 			CategoriaDAO.open(getApplicationContext());
-			Log.w("Erro", mRowId.toString());
 			Categoria cat = CategoriaDAO.consultar(mRowId);
 			CategoriaDAO.close();
 			
