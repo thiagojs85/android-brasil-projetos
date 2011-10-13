@@ -10,15 +10,11 @@ public abstract class BasicoDAO {
 	protected static SQLiteDatabase mDb;
 	protected static Context mCtx;
 	private static String TAG = "DB";
-	
-	/**
-	 * Construtor básico
-	 * 
-	 * @param ctx
-	 *            é uma instância de Context.
-	 */
-	public BasicoDAO(Context ctx) {
-		mCtx = ctx;
+	private static int contador;
+
+	private synchronized static int numeroConexoes(int i) {
+		contador = contador + i;
+		return contador;
 	}
 
 	/**
@@ -30,9 +26,14 @@ public abstract class BasicoDAO {
 	 */
 	public synchronized static void open(Context ctx) {
 		if (mDb == null || (mDb != null && !mDb.isOpen())) {
-			mDb = EmprestimoDbAdapter.open(ctx);
+
+			mDb = DbAdapter.open(ctx);
 		}
 		mCtx = ctx;
+		
+		if(numeroConexoes(0) >= 0){
+			numeroConexoes(+1);
+		}
 	}
 
 	/**
@@ -40,11 +41,24 @@ public abstract class BasicoDAO {
 	 * utilizado algum método estático!
 	 */
 	public synchronized static void close() {
-		if (mDb != null && mDb.isOpen()) {
-			EmprestimoDbAdapter.close();
+		if (mDb != null && mDb.isOpen() && (numeroConexoes(0) == 1)) {
+			DbAdapter.close();
 			mDb.close();
 		}
+		if (numeroConexoes(0) > 0) {
+			numeroConexoes(-1);
+		}
 
+	}
+
+	/**
+	 * Construtor básico
+	 * 
+	 * @param ctx
+	 *            é uma instância de Context.
+	 */
+	public BasicoDAO(Context ctx) {
+		mCtx = ctx;
 	}
 
 	/**
@@ -248,10 +262,11 @@ public abstract class BasicoDAO {
 			condicao = condicao.substring(0, condicao.length() - 5);
 
 		}
-		if((andKeys != null) && (andValues != null) && andKeys.length > 0){
-			condicao = condicao+ " AND "+ condicaoANDBuilder(andKeys, andValues);	
+		if ((andKeys != null) && (andValues != null) && andKeys.length > 0) {
+			condicao = condicao + " AND "
+					+ condicaoANDBuilder(andKeys, andValues);
 		}
-		
+
 		return consultaBasica(table, colunas, condicao);
 
 	}
@@ -273,16 +288,16 @@ public abstract class BasicoDAO {
 			String[] keys, String[] values) {
 		long id = -1;
 		mDb.beginTransaction();
-		try{
-		id = mDb.update(table, cvalues, condicaoANDBuilder(keys, values),
-				null);
-		mDb.setTransactionSuccessful();
-		}catch (Exception e) {
-            Log.e(TAG, e.getMessage());
-		}finally{
+		try {
+			id = mDb.update(table, cvalues, condicaoANDBuilder(keys, values),
+					null);
+			mDb.setTransactionSuccessful();
+		} catch (Exception e) {
+			Log.e(TAG, e.getMessage());
+		} finally {
 			mDb.endTransaction();
 		}
-		
+
 		return id;
 	}
 
@@ -350,15 +365,15 @@ public abstract class BasicoDAO {
 	 */
 	protected static long inserir(String table, ContentValues values) {
 		long id = -1;
-		 mDb.beginTransaction();//开始事务
-         try {
-		id = mDb.insert(table, null, values);
-        mDb.setTransactionSuccessful();	
-         } catch (Exception e) {
-             Log.e(TAG, e.getMessage());
-         } finally {
-             mDb.endTransaction();
-         }
+		mDb.beginTransaction();// 开始事务
+		try {
+			id = mDb.insert(table, null, values);
+			mDb.setTransactionSuccessful();
+		} catch (Exception e) {
+			Log.e(TAG, e.getMessage());
+		} finally {
+			mDb.endTransaction();
+		}
 		return id;
 	}
 

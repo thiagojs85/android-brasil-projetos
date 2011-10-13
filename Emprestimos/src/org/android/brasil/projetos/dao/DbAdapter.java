@@ -22,7 +22,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-public class EmprestimoDbAdapter {
+public class DbAdapter {
 
 
 	private static final String TAG = "EmprestimosDbAdapter";
@@ -64,7 +64,7 @@ public class EmprestimoDbAdapter {
 		}
 	}
 
-	public EmprestimoDbAdapter(Context ctx) {
+	public DbAdapter(Context ctx) {
 		this.mCtx = ctx;
 	}
 
