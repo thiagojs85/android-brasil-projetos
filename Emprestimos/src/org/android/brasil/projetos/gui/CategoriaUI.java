@@ -114,7 +114,6 @@ public class CategoriaUI extends ListActivity {
 			}
 
 			CategoriaDAO.open(getApplicationContext());
-			EmprestimoDAO.open(getApplicationContext());
 
 			Cursor curEmprestimo = EmprestimoDAO.consultarEmprestimoPorCategoria(info.id);
 
@@ -123,7 +122,7 @@ public class CategoriaUI extends ListActivity {
 				AlertDialog.Builder alerta = new AlertDialog.Builder(
 						CategoriaUI.this);
 				alerta.setIcon(R.drawable.im_atencao);
-				alerta.setTitle("Titulo");
+				alerta.setTitle("Exclusão");
 				alerta.setMessage("Deseja excluir esta categoria e \n " + curEmprestimo.getCount() + " empréstimo(s) com esta categoria ?");
 
 				alerta.setPositiveButton("Sim",
