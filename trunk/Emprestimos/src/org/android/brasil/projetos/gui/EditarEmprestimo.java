@@ -117,6 +117,11 @@ public class EditarEmprestimo extends Activity {
 		tvContato = (TextView) findViewById(R.id.tv_contato);
 		Button confirmButton = (Button) findViewById(R.id.confirmar);
 		spCategoria = (Spinner) findViewById(R.id.sp_categoria);
+		
+		if(cursorContatos != null && ! cursorContatos.isClosed()){
+			stopManagingCursor(cursorContatos);
+			cursorContatos.close();
+		}		
 
 		ContentResolver cr = getContentResolver();
 
@@ -124,22 +129,17 @@ public class EditarEmprestimo extends Activity {
 
 		String[] from = new String[] { ContactsContract.Contacts.DISPLAY_NAME };
 		int[] to = new int[] { android.R.id.text1 };
+		
 		startManagingCursor(cursorContatos);
 
 		spNomes.setAdapter(new SimpleCursorAdapter(EditarEmprestimo.this,
 				android.R.layout.simple_spinner_dropdown_item, cursorContatos, from, to));
-		
-		stopManagingCursor(cursorContatos);
-		
-/*		if(cursorContatos != null && ! cursorContatos.isClosed()){
-			stopManagingCursor(cursorContatos);
-			cursorContatos.close();
-		}*/
-				
+	
 		dataDevolucao = Calendar.getInstance().getTime();
 		atualizarData();
 				
 		stopManagingCursor(cursorCategorias);
+		stopManagingCursor(cursorContatos);
 	
 		rbEmprestar.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
