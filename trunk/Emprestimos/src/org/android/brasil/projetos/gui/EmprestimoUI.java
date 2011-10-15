@@ -31,8 +31,6 @@ public class EmprestimoUI extends ListActivity {
 	private Cursor cursorEmprestimos;
 	private Cursor cursorCategoria;
 	
-
-	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -47,9 +45,9 @@ public class EmprestimoUI extends ListActivity {
 	private void fillData() {
 		
 		//Fix para Android 3.0 ou superiores
-		if(cursorCategoria != null && !cursorCategoria.isClosed()){
-			stopManagingCursor(cursorCategoria);
-			cursorCategoria.close();
+		if(cursorEmprestimos != null && !cursorEmprestimos.isClosed()){
+			stopManagingCursor(cursorEmprestimos);
+			cursorEmprestimos.close();
 		}
 		
 		EmprestimoDAO.open(getApplicationContext());
@@ -103,6 +101,7 @@ public class EmprestimoUI extends ListActivity {
 				}
 				
 				EmprestimoDAO.close();
+				
 				startManagingCursor(cursorEmprestimos);
 
 				String[] from = new String[] { EmprestimoDAO.COLUNA_ITEM };
@@ -116,7 +115,14 @@ public class EmprestimoUI extends ListActivity {
 				
 			}
 		});
+
+		//Fix para Android 3.0 ou superiores
+		if(cursorCategoria != null && !cursorCategoria.isClosed()){
+			stopManagingCursor(cursorCategoria);
+			cursorCategoria.close();
+		}
 		
+
 		CategoriaDAO.open(this);
 		cursorCategoria = CategoriaDAO.consultarTodasCategorias();
 		CategoriaDAO.close();

@@ -42,14 +42,13 @@ public class EmprestimoDAO extends BasicoDAO {
 
 	public EmprestimoDAO(Context ctx) {
 		super(ctx);
-		// TODO Auto-generated constructor stub
 	}
 
 	private static Emprestimo deCursorParaEmprestimo(Cursor c) {
 		Emprestimo emp = new Emprestimo();
 		emp.setAtivarAlarme(c.getInt(c.getColumnIndex(COLUNA_ATIVAR_ALARME)));
 
-		emp.setData(new Date(c.getInt(c.getColumnIndex(COLUNA_DATA_DEVOLUCAO))));
+		emp.setData(new Date(c.getLong(c.getColumnIndex(COLUNA_DATA_DEVOLUCAO))));
 
 		emp.setDescricao(c.getString(c.getColumnIndex(COLUNA_DESCRICAO)));
 		emp.setIdCategoria(c.getLong(c.getColumnIndex(COLUNA_ID_CATEGORIA)));
@@ -97,11 +96,19 @@ public class EmprestimoDAO extends BasicoDAO {
 		return consultarTodos(TABELA_EMPRESTIMOS);
 	}
 
-	public static Cursor consultarEmprestimo(long idEmprestimo)
-			throws SQLException {
+	public static Cursor consultarEmprestimo(long idEmprestimo){
 		Cursor mCursor = consultar(TABELA_EMPRESTIMOS, COLUNA_ID_EMPRESTIMO,
 				String.valueOf(idEmprestimo));
 		return mCursor;
+
+	}
+	
+	public static Emprestimo consultar(long idEmprestimo){
+		Cursor mCursor = consultar(TABELA_EMPRESTIMOS, COLUNA_ID_EMPRESTIMO,
+				String.valueOf(idEmprestimo));
+		Emprestimo emp = deCursorParaEmprestimo(mCursor);
+		mCursor.close();
+		return emp;
 
 	}
 
