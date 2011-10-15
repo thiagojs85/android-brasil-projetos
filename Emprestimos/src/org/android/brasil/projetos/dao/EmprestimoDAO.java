@@ -148,8 +148,10 @@ public class EmprestimoDAO extends BasicoDAO {
 			throws SQLException {
 		Cursor mCursor = consultar(TABELA_EMPRESTIMOS, COLUNA_ID_CATEGORIA,
 				String.valueOf(idCategoria));
-
-		return mCursor.getCount();
+		long qtde = mCursor.getCount();
+		mCursor.close();
+		
+		return qtde;
 	}
 
 }

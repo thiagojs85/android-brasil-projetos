@@ -2,6 +2,7 @@ package org.android.brasil.projetos.gui;
 
 import org.android.brasil.projetos.dao.CategoriaDAO;
 import org.android.brasil.projetos.dao.EmprestimoDAO;
+import org.android.brasil.projetos.model.Emprestimo;
 import org.android.brasil.projetos.model.TipoCategoria;
 
 import android.app.AlertDialog;
@@ -113,11 +114,8 @@ public class CategoriaUI extends ListActivity {
 			}
 
 			EmprestimoDAO.open(getApplicationContext());
-			//TODO: Fazer método que retorne o número de Emprestimos naquela categoria e não o cursor!
-			
 			long qtde = EmprestimoDAO.consultarQtdeEmprestimosPorCategoria(info.id);
-			
-
+			EmprestimoDAO.close();
 			
 			if (qtde > 0) {
 				AlertDialog.Builder alerta = new AlertDialog.Builder(
