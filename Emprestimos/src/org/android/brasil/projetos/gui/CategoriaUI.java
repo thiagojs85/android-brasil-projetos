@@ -96,7 +96,7 @@ public class CategoriaUI extends ListActivity {
 
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
-
+		
 		switch (item.getItemId()) {
 		case DELETE_ID:
 
@@ -114,17 +114,18 @@ public class CategoriaUI extends ListActivity {
 
 			EmprestimoDAO.open(getApplicationContext());
 			//TODO: Fazer método que retorne o número de Emprestimos naquela categoria e não o cursor!
-			Cursor curEmprestimo = EmprestimoDAO
-					.consultarEmprestimoPorCategoria(info.id);
-			EmprestimoDAO.close();
 			
-			if (curEmprestimo.getCount() > 0) {
+			long qtde = EmprestimoDAO.consultarQtdeEmprestimosPorCategoria(info.id);
+			
+
+			
+			if (qtde > 0) {
 				AlertDialog.Builder alerta = new AlertDialog.Builder(
 						CategoriaUI.this);
 				alerta.setIcon(R.drawable.im_atencao);
 				alerta.setTitle("Exclusão");
 				alerta.setMessage("Deseja excluir esta categoria e \n "
-						+ curEmprestimo.getCount()
+						+ qtde
 						+ " empréstimo(s) com esta categoria ?");
 
 				alerta.setPositiveButton("Sim",
@@ -157,24 +158,12 @@ public class CategoriaUI extends ListActivity {
 
 				alerta.show();
 
-				// Tem que fechar essas coisas antes de retornar!!
-				if (curEmprestimo != null && !curEmprestimo.isClosed()) {
-					stopManagingCursor(curEmprestimo);
-					curEmprestimo.close();
-				}
-
 				return super.onContextItemSelected(item);
 			}
 
 			CategoriaDAO.open(getApplicationContext());
 			CategoriaDAO.deleteCategoria(idCategoria);
 			CategoriaDAO.close();
-
-			if (curEmprestimo != null && !curEmprestimo.isClosed()) {
-				stopManagingCursor(curEmprestimo);
-				curEmprestimo.close();
-			}
-
 			fillData();
 			Toast.makeText(CategoriaUI.this, "Excluído com sucesso!",
 					Toast.LENGTH_SHORT).show();

@@ -14,7 +14,7 @@ public class TableBuilder {
 	public static final int RESTRICT = 1;
 	public static final int SET_NULL = 2;
 	public static final int SET_DEFAULT = 3;
-	public static final int CASCADE = 4;
+	public final int CASCADE = 4;
 
 	private String tabela;
 	private List<String> pks;
