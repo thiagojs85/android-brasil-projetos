@@ -11,9 +11,10 @@ public class Emprestimo {
 	private int ativarAlarme;
 	private long idContato;
 	private long idCategoria;
+	private String contato;
 
-	public static final int STAUTS_EMPRESTAR = 0;
-	public static final int STAUTS_PEGAR_EMPRESTADO = 1;
+	public static final int STATUS_EMPRESTAR = 0;
+	public static final int STATUS_PEGAR_EMPRESTADO = 1;
 	
 	public static final int ATIVAR_ALARME = 0;
 	public static final int DESATIVAR_ALARME = 1;
@@ -82,5 +83,13 @@ public class Emprestimo {
 	public void setIdCategoria(long idCat) {
 		idCategoria = idCat;
 		
+	}
+
+	public String getContato() {
+		return contato;
+	}
+
+	public void setContato(String contato) {
+		this.contato = contato;
 	}
 }

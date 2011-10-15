@@ -58,6 +58,17 @@
 			android:id="@+id/txt_auto_nome"
 			android:inputType="text"/>
 			
+		<EditText
+			android:id="@+id/etContato"
+			style="@style/FillWrap.EditText"
+			android:scrollbars="vertical" />
+	
+		<CheckBox android:text="Outro Contato" 
+			style="@style/FillWrap"
+			android:id="@+id/cbContato" 
+			android:layout_width="wrap_content" 
+			android:layout_height="wrap_content"/>
+
 		<TextView 
 			android:id="@+id/tv_contato"
 			style="@style/FillWrap"

@@ -21,6 +21,8 @@ public class EmprestimoDAO extends BasicoDAO {
 	public static final String COLUNA_DATA_DEVOLUCAO = "devolucao";
 	public static final String COLUNA_ID_CONTATO = "id_contato";
 	public static final String COLUNA_ID_CATEGORIA = "id_categoria";
+	public static final String COLUNA_CONTATO = "contato";
+	
 
 	public static final String TABELA_EMPRESTIMOS = "emprestimos";
 
@@ -33,6 +35,7 @@ public class EmprestimoDAO extends BasicoDAO {
 		tb.addColuna(COLUNA_ATIVAR_ALARME, "INTEGER", true);
 		tb.addColuna(COLUNA_DATA_DEVOLUCAO, "INTEGER", false);
 		tb.addColuna(COLUNA_ID_CONTATO, "INTEGER", true);
+		tb.addColuna(COLUNA_CONTATO, "INTEGER", false);
 		tb.addFK(COLUNA_ID_CATEGORIA, "INTEGER", CategoriaDAO.TABELA_CATEGORIA,
 				CategoriaDAO.COLUNA_ID, tb.CASCADE, tb.CASCADE);
 		return tb.toString();
@@ -42,22 +45,24 @@ public class EmprestimoDAO extends BasicoDAO {
 
 	public EmprestimoDAO(Context ctx) {
 		super(ctx);
+		// TODO Auto-generated constructor stub
 	}
 
 	private static Emprestimo deCursorParaEmprestimo(Cursor c) {
 		Emprestimo emp = new Emprestimo();
 		emp.setAtivarAlarme(c.getInt(c.getColumnIndex(COLUNA_ATIVAR_ALARME)));
 
-		emp.setData(new Date(c.getLong(c.getColumnIndex(COLUNA_DATA_DEVOLUCAO))));
+		emp.setData(new Date(c.getInt(c.getColumnIndex(COLUNA_DATA_DEVOLUCAO))));
 
 		emp.setDescricao(c.getString(c.getColumnIndex(COLUNA_DESCRICAO)));
 		emp.setIdCategoria(c.getLong(c.getColumnIndex(COLUNA_ID_CATEGORIA)));
 		emp.setIdContato(c.getLong(c.getColumnIndex(COLUNA_ID_CONTATO)));
 		emp.setIdEmprestimo(c.getLong(c.getColumnIndex(COLUNA_ID_EMPRESTIMO)));
 		emp.setItem(c.getString(c.getColumnIndex(COLUNA_ITEM)));
+		emp.setItem(c.getString(c.getColumnIndex(COLUNA_CONTATO)));
 
-		emp.setStatus(c.getInt(c.getColumnIndex(COLUNA_STATUS)) == Emprestimo.STAUTS_EMPRESTAR ? Emprestimo.STAUTS_EMPRESTAR
-				: Emprestimo.STAUTS_PEGAR_EMPRESTADO);
+		emp.setStatus(c.getInt(c.getColumnIndex(COLUNA_STATUS)) == Emprestimo.STATUS_EMPRESTAR ? Emprestimo.STATUS_EMPRESTAR
+				: Emprestimo.STATUS_PEGAR_EMPRESTADO);
 		return emp;
 	}
 
@@ -71,6 +76,7 @@ public class EmprestimoDAO extends BasicoDAO {
 		values.put(COLUNA_ATIVAR_ALARME, emp.getAtivarAlarme());
 		values.put(COLUNA_ID_CONTATO, emp.getIdContato());
 		values.put(COLUNA_ID_CATEGORIA, emp.getIdCategoria());
+		values.put(COLUNA_CONTATO, emp.getContato());
 		return values;
 	}
 
@@ -96,19 +102,11 @@ public class EmprestimoDAO extends BasicoDAO {
 		return consultarTodos(TABELA_EMPRESTIMOS);
 	}
 
-	public static Cursor consultarEmprestimo(long idEmprestimo){
+	public static Cursor consultarEmprestimo(long idEmprestimo)
+			throws SQLException {
 		Cursor mCursor = consultar(TABELA_EMPRESTIMOS, COLUNA_ID_EMPRESTIMO,
 				String.valueOf(idEmprestimo));
 		return mCursor;
-
-	}
-	
-	public static Emprestimo consultar(long idEmprestimo){
-		Cursor mCursor = consultar(TABELA_EMPRESTIMOS, COLUNA_ID_EMPRESTIMO,
-				String.valueOf(idEmprestimo));
-		Emprestimo emp = deCursorParaEmprestimo(mCursor);
-		mCursor.close();
-		return emp;
 
 	}
 
