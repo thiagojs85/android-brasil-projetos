@@ -2,7 +2,6 @@ package org.android.brasil.projetos.gui;
 
 import org.android.brasil.projetos.dao.CategoriaDAO;
 import org.android.brasil.projetos.dao.EmprestimoDAO;
-import org.android.brasil.projetos.model.Emprestimo;
 import org.android.brasil.projetos.model.TipoCategoria;
 
 import android.app.AlertDialog;
