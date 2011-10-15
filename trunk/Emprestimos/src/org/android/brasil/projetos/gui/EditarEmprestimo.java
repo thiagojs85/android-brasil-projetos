@@ -65,6 +65,7 @@ public class EditarEmprestimo extends Activity {
 	private Spinner spCategoria;
 
 	private CheckBox cbAlarme;
+	private CheckBox cbContato;
 
 	private RadioButton rbEmprestar;
 	private RadioButton rbPegarEmprestado;
@@ -72,9 +73,10 @@ public class EditarEmprestimo extends Activity {
 	private Date dataDevolucao;
 	private EditText etDataDevolucao;
 	private EditText etHoraDevolucao;
+	private EditText etContato;
 
-	private Cursor cursorContatos;
-	private Cursor cursorCategorias;
+	private Cursor cursorContatos = null;;
+	private Cursor cursorCategorias = null;;
 
 	private static final int DATE_DIALOG_ID_DATE = 0;
 	private static final int DATE_DIALOG_ID_TIME = 1;
@@ -116,8 +118,11 @@ public class EditarEmprestimo extends Activity {
 		tvContato = (TextView) findViewById(R.id.tv_contato);
 		Button confirmButton = (Button) findViewById(R.id.confirmar);
 		spCategoria = (Spinner) findViewById(R.id.sp_categoria);
+		cbContato = (CheckBox) findViewById(R.id.cbContato);
+		etContato = (EditText) findViewById(R.id.etContato);
+		
+		etContato.setEnabled(false);
 
-		// Fix para Android 3.0 ou superiores
 		if (cursorContatos != null && !cursorContatos.isClosed()) {
 			stopManagingCursor(cursorContatos);
 			cursorContatos.close();
@@ -139,6 +144,9 @@ public class EditarEmprestimo extends Activity {
 
 		dataDevolucao = Calendar.getInstance().getTime();
 		atualizarData();
+
+		stopManagingCursor(cursorCategorias);
+		stopManagingCursor(cursorContatos);
 
 		rbEmprestar.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
@@ -193,6 +201,20 @@ public class EditarEmprestimo extends Activity {
 
 		});
 
+		cbContato.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				if (isChecked) {
+					spNomes.setEnabled(false);
+					etContato.setEnabled(true);
+				} else {
+					spNomes.setEnabled(true);
+					etContato.setEnabled(false);
+				}
+
+			}
+		});
+
 		mRowId = (savedInstanceState == null) ? null
 				: (Long) savedInstanceState
 						.getSerializable(EmprestimoDAO.COLUNA_ID_EMPRESTIMO);
@@ -207,12 +229,6 @@ public class EditarEmprestimo extends Activity {
 	}
 
 	private void carregarCategoria() {
-
-		// Fix para Android 3.0 ou superiores
-		if (cursorCategorias != null && !cursorCategorias.isClosed()) {
-			stopManagingCursor(cursorCategorias);
-			cursorCategorias.close();
-		}
 
 		CategoriaDAO.open(getApplicationContext());
 		cursorCategorias = CategoriaDAO.consultarTodasCategorias();
@@ -237,10 +253,6 @@ public class EditarEmprestimo extends Activity {
 					public void onItemSelected(AdapterView<?> parent,
 							View view, int position, long id) {
 
-						// TODO:Não gostei dessa comparação..porque id 1? Todos?
-						// Outra? Deve dar para usar alguma constante ou ENUM
-						// para o id
-						// na hora de inserir no banco e usa-la aqui tb
 						if (id == 1) {
 							Intent i = new Intent(EditarEmprestimo.this,
 									CategoriaUI.class);
@@ -257,9 +269,7 @@ public class EditarEmprestimo extends Activity {
 	private boolean validarCampos() {
 		String item = etItem.getText().toString();
 		long idCategoria = spCategoria.getSelectedItemId();
-		// TODO:Não gostei dessa comparação..porque id 1? Todos?
-		// Outra? Deve dar para usar alguma constante ou ENUM para o id
-		// na hora de inserir no banco e usa-la aqui tb
+
 		if (item.trim().equals("") || idCategoria == 1) {
 			return false;
 		}
@@ -273,30 +283,29 @@ public class EditarEmprestimo extends Activity {
 
 		if (mRowId != null) {
 
-			// TODO: Se um usuário deletar a categoria do emprestimo que está
-			// sendo editado, o emprestimo vai ser apagado do banco, quando
-			// tentar recuperar o objeto Emprestimo abaixo vai dar pau, antes de
-			// pegar tem que verificar se existe aquele id no banco, fazer um
-			// método boolean EmprestimoDAO.existe(long id)
 			EmprestimoDAO.open(getApplicationContext());
-			//if(EmprestimoDAO.existe(mRowid)){
-			Emprestimo emprestimo = EmprestimoDAO.consultar(mRowId);
-			//}
-			EmprestimoDAO.close();
+			Cursor c = EmprestimoDAO.consultarEmprestimo(mRowId);
+			startManagingCursor(c);
 
-			long status = emprestimo.getStatus();
-			if (status == Emprestimo.STAUTS_EMPRESTAR) {
+			if (c.getCount() == 0) {
+				return;
+			}
+
+			long status = c.getLong(c
+					.getColumnIndexOrThrow(EmprestimoDAO.COLUNA_STATUS));
+			if (status == Emprestimo.STATUS_EMPRESTAR) {
 				rbPegarEmprestado.setChecked(false);
 				rbEmprestar.setChecked(true);
 
 			}
 
-			if (status == Emprestimo.STAUTS_PEGAR_EMPRESTADO) {
+			if (status == Emprestimo.STATUS_PEGAR_EMPRESTADO) {
 				rbEmprestar.setChecked(false);
 				rbPegarEmprestado.setChecked(true);
 			}
 
-			long alarme = emprestimo.getAtivarAlarme();
+			long alarme = c.getLong(c
+					.getColumnIndexOrThrow(EmprestimoDAO.COLUNA_ATIVAR_ALARME));
 			if (alarme == Emprestimo.ATIVAR_ALARME) {
 				cbAlarme.setChecked(true);
 			}
@@ -305,26 +314,53 @@ public class EditarEmprestimo extends Activity {
 				cbAlarme.setChecked(false);
 			}
 
-			etItem.setText(emprestimo.getItem());
+			etItem.setText(c.getString(c
+					.getColumnIndexOrThrow(EmprestimoDAO.COLUNA_ITEM)));
 
-			etDescricao.setText(emprestimo.getDescricao());
+			etDescricao.setText(c.getString(c
+					.getColumnIndexOrThrow(EmprestimoDAO.COLUNA_DESCRICAO)));
 
 			Adapter ad = spNomes.getAdapter();
-			long id = emprestimo.getIdContato();
-			for (int i = 0; i < ad.getCount(); ++i) {
 
-				if (ad.getItemId(i) == id) {
-					spNomes.setSelection(i);
-					break;
+			String contato = c.getString(c
+					.getColumnIndexOrThrow(EmprestimoDAO.COLUNA_CONTATO));
+
+			if (contato != null) {
+				
+				etContato.setEnabled(true);
+				spNomes.setEnabled(false);
+				
+				etContato.setText(c.getString(c
+						.getColumnIndexOrThrow(EmprestimoDAO.COLUNA_CONTATO)));
+				
+				cbContato.setChecked(true);
+
+			} else {
+				
+				etContato.setEnabled(false);
+				spNomes.setEnabled(true);
+				cbContato.setChecked(false);
+				
+				long id = c.getLong(c.getColumnIndexOrThrow(EmprestimoDAO.COLUNA_ID_CONTATO));
+
+				for (int i = 0; i < ad.getCount(); ++i) {
+
+					if (ad.getItemId(i) == id) {
+						spNomes.setSelection(i);
+						break;
+					}
 				}
 			}
 
-			dataDevolucao = emprestimo.getData();
+			dataDevolucao = new Date(
+					c.getLong(c
+							.getColumnIndexOrThrow(EmprestimoDAO.COLUNA_DATA_DEVOLUCAO)));
 
 			atualizarData();
 
 			ad = spCategoria.getAdapter();
-			long idCat = emprestimo.getIdCategoria();
+			long idCat = c.getLong(c
+					.getColumnIndexOrThrow(EmprestimoDAO.COLUNA_ID_CATEGORIA));
 
 			for (int i = 0; i < ad.getCount(); ++i) {
 
@@ -364,9 +400,9 @@ public class EditarEmprestimo extends Activity {
 
 			int status = 0;
 			if (rbEmprestar.isChecked()) {
-				status = Emprestimo.STAUTS_EMPRESTAR;
+				status = Emprestimo.STATUS_EMPRESTAR;
 			} else if (rbPegarEmprestado.isChecked()) {
-				status = Emprestimo.STAUTS_PEGAR_EMPRESTADO;
+				status = Emprestimo.STATUS_PEGAR_EMPRESTADO;
 			}
 
 			long idContato = spNomes.getSelectedItemId();
@@ -394,11 +430,18 @@ public class EditarEmprestimo extends Activity {
 			emp.setData(data);
 			emp.setStatus(status);
 			emp.setAtivarAlarme(alarme);
-			emp.setIdContato(idContato);
+
+			if (spNomes.isEnabled()) {
+				emp.setIdContato(idContato);
+				emp.setContato(null);
+			} else {
+				emp.setContato(etContato.getText().toString());
+				emp.setIdContato(idContato);
+			}
+
 			emp.setIdCategoria(idCategoria);
 
 			EmprestimoDAO.open(getApplicationContext());
-
 			if (mRowId == null) {
 
 				long id = EmprestimoDAO.inserirEmprestimo(emp);
