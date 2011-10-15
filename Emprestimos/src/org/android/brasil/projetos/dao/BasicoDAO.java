@@ -30,8 +30,8 @@ public abstract class BasicoDAO {
 			mDb = DbAdapter.open(ctx);
 		}
 		mCtx = ctx;
-		
-		if(numeroConexoes(0) >= 0){
+
+		if (numeroConexoes(0) >= 0) {
 			numeroConexoes(+1);
 		}
 	}
@@ -299,6 +299,12 @@ public abstract class BasicoDAO {
 		}
 
 		return id;
+	}
+
+	protected static long atualizar(String table, ContentValues cvalues,
+			String key, String value) {
+		return atualizar(table, cvalues, new String[] { key },
+				new String[] { value });
 	}
 
 	/**

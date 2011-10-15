@@ -27,7 +27,7 @@ public class CategoriaUI extends ListActivity {
 
 	private static final int INSERT_ID = Menu.FIRST;
 	private static final int DELETE_ID = Menu.FIRST + 1;
-	private long idCategoria = 0;
+	private long idCategoria;
 	private Cursor cursorCategoria;
 
 	/** Called when the activity is first created. */
@@ -100,39 +100,50 @@ public class CategoriaUI extends ListActivity {
 		switch (item.getItemId()) {
 		case DELETE_ID:
 
-			// TODO: TEM QUE VERIFICAR SE EXISTE ALGUM ITEM DE EMPRESTIMO
-			// COM ESSE ID e DELETAR O ITEM TAMBÉM, MAS TEM QUE AVISAR O USUÁRIO
-			// ANTES!!!!!!
-			AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+			AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
+					.getMenuInfo();
 
 			idCategoria = info.id;
 
-			if (idCategoria == TipoCategoria.OUTRA.getId() || idCategoria == TipoCategoria.TODOS.getId()) {
+			if (idCategoria == TipoCategoria.OUTRA.getId()
+					|| idCategoria == TipoCategoria.TODOS.getId()) {
 				Toast.makeText(this, "Esta categoria não pode ser excluída!",
 						Toast.LENGTH_SHORT).show();
 				return false;
 			}
 
-			CategoriaDAO.open(getApplicationContext());
-
-			Cursor curEmprestimo = EmprestimoDAO.consultarEmprestimoPorCategoria(info.id);
-
-
+			EmprestimoDAO.open(getApplicationContext());
+			//TODO: Fazer método que retorne o número de Emprestimos naquela categoria e não o cursor!
+			Cursor curEmprestimo = EmprestimoDAO
+					.consultarEmprestimoPorCategoria(info.id);
+			EmprestimoDAO.close();
+			
 			if (curEmprestimo.getCount() > 0) {
 				AlertDialog.Builder alerta = new AlertDialog.Builder(
 						CategoriaUI.this);
 				alerta.setIcon(R.drawable.im_atencao);
 				alerta.setTitle("Exclusão");
-				alerta.setMessage("Deseja excluir esta categoria e \n " + curEmprestimo.getCount() + " empréstimo(s) com esta categoria ?");
+				alerta.setMessage("Deseja excluir esta categoria e \n "
+						+ curEmprestimo.getCount()
+						+ " empréstimo(s) com esta categoria ?");
 
 				alerta.setPositiveButton("Sim",
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog,
 									int whichButton) {
+								CategoriaDAO.open(getApplicationContext());
 								CategoriaDAO.deleteCategoria(idCategoria);
-								EmprestimoDAO.deleteEmprestimoPorCategoria(idCategoria);
+								CategoriaDAO.close();
+								
+								EmprestimoDAO.open(getApplicationContext());
+								EmprestimoDAO
+										.deleteEmprestimoPorCategoria(idCategoria);
+								EmprestimoDAO.close();
+								
 								fillData();
-								Toast.makeText(CategoriaUI.this, "Excluído com sucesso!", Toast.LENGTH_SHORT).show();
+								Toast.makeText(CategoriaUI.this,
+										"Excluído com sucesso!",
+										Toast.LENGTH_SHORT).show();
 							}
 						});
 
@@ -145,21 +156,28 @@ public class CategoriaUI extends ListActivity {
 						});
 
 				alerta.show();
-				return true;
+
+				// Tem que fechar essas coisas antes de retornar!!
+				if (curEmprestimo != null && !curEmprestimo.isClosed()) {
+					stopManagingCursor(curEmprestimo);
+					curEmprestimo.close();
+				}
+
+				return super.onContextItemSelected(item);
 			}
-			
+
+			CategoriaDAO.open(getApplicationContext());
 			CategoriaDAO.deleteCategoria(idCategoria);
-			
+			CategoriaDAO.close();
+
 			if (curEmprestimo != null && !curEmprestimo.isClosed()) {
 				stopManagingCursor(curEmprestimo);
 				curEmprestimo.close();
 			}
-			
-			EmprestimoDAO.close();
-			CategoriaDAO.close();
+
 			fillData();
-			Toast.makeText(CategoriaUI.this, "Excluído com sucesso!", Toast.LENGTH_SHORT).show();
-			return true;
+			Toast.makeText(CategoriaUI.this, "Excluído com sucesso!",
+					Toast.LENGTH_SHORT).show();
 		}
 		return super.onContextItemSelected(item);
 	}
@@ -174,7 +192,7 @@ public class CategoriaUI extends ListActivity {
 		super.onListItemClick(l, v, position, id);
 		Intent i = new Intent(this, EditarCategoria.class);
 		i.putExtra(CategoriaDAO.COLUNA_ID, id);
-		Log.w("Erro", String.valueOf(id));
+		Log.w("CategoriaUI id: ", String.valueOf(id));
 		startActivityForResult(i, ACTIVITY_EDIT);
 	}
 
