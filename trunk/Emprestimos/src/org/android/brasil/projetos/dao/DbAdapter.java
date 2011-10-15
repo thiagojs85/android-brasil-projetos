@@ -65,7 +65,7 @@ public class DbAdapter {
 	}
 
 	public DbAdapter(Context ctx) {
-		this.mCtx = ctx;
+		DbAdapter.mCtx = ctx;
 	}
 
 	public static  SQLiteDatabase open(Context ctx) throws SQLException {

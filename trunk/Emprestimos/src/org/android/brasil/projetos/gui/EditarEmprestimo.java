@@ -22,7 +22,9 @@ import java.util.Date;
 
 import org.android.brasil.projetos.dao.CategoriaDAO;
 import org.android.brasil.projetos.dao.EmprestimoDAO;
+import org.android.brasil.projetos.model.Categoria;
 import org.android.brasil.projetos.model.Emprestimo;
+import org.android.brasil.projetos.model.TipoCategoria;
 
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -246,14 +248,14 @@ public class EditarEmprestimo extends Activity {
 				new String[] { CategoriaDAO.COLUNA_DESCRICAO },
 				new int[] { android.R.id.text1 }));
 
-		spCategoria.setSelection(1);
+		spCategoria.setSelection(1, true);
 
 		spCategoria
 				.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 					public void onItemSelected(AdapterView<?> parent,
 							View view, int position, long id) {
 
-						if (id == 1) {
+						if (id == TipoCategoria.OUTRA.getId()) {
 							Intent i = new Intent(EditarEmprestimo.this,
 									CategoriaUI.class);
 							startActivityForResult(i, 0);
@@ -268,9 +270,17 @@ public class EditarEmprestimo extends Activity {
 
 	private boolean validarCampos() {
 		String item = etItem.getText().toString();
-		long idCategoria = spCategoria.getSelectedItemId();
-
-		if (item.trim().equals("") || idCategoria == 1) {
+		
+		//Busca o objeto categoria selecionado
+		CategoriaDAO.open(getApplicationContext());
+		Categoria cat = CategoriaDAO.consultar(spCategoria.getSelectedItemId());
+		CategoriaDAO.close();
+						
+		if(cat.getNomeCategoria().equals(CategoriaDAO.OUTRA)){
+			return false;
+		}
+		
+		if (item.trim().equals("")) {
 			return false;
 		}
 
@@ -436,7 +446,7 @@ public class EditarEmprestimo extends Activity {
 				emp.setContato(null);
 			} else {
 				emp.setContato(etContato.getText().toString());
-				emp.setIdContato(idContato);
+				emp.setIdContato(0);
 			}
 
 			emp.setIdCategoria(idCategoria);

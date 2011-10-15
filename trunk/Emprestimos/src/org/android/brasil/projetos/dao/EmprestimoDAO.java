@@ -22,7 +22,6 @@ public class EmprestimoDAO extends BasicoDAO {
 	public static final String COLUNA_ID_CONTATO = "id_contato";
 	public static final String COLUNA_ID_CATEGORIA = "id_categoria";
 	public static final String COLUNA_CONTATO = "contato";
-	
 
 	public static final String TABELA_EMPRESTIMOS = "emprestimos";
 
@@ -35,7 +34,7 @@ public class EmprestimoDAO extends BasicoDAO {
 		tb.addColuna(COLUNA_ATIVAR_ALARME, "INTEGER", true);
 		tb.addColuna(COLUNA_DATA_DEVOLUCAO, "INTEGER", false);
 		tb.addColuna(COLUNA_ID_CONTATO, "INTEGER", true);
-		tb.addColuna(COLUNA_CONTATO, "INTEGER", false);
+		tb.addColuna(COLUNA_CONTATO, "TEXT", false);
 		tb.addFK(COLUNA_ID_CATEGORIA, "INTEGER", CategoriaDAO.TABELA_CATEGORIA,
 				CategoriaDAO.COLUNA_ID, tb.CASCADE, tb.CASCADE);
 		return tb.toString();
@@ -45,14 +44,13 @@ public class EmprestimoDAO extends BasicoDAO {
 
 	public EmprestimoDAO(Context ctx) {
 		super(ctx);
-		// TODO Auto-generated constructor stub
 	}
 
 	private static Emprestimo deCursorParaEmprestimo(Cursor c) {
 		Emprestimo emp = new Emprestimo();
 		emp.setAtivarAlarme(c.getInt(c.getColumnIndex(COLUNA_ATIVAR_ALARME)));
 
-		emp.setData(new Date(c.getInt(c.getColumnIndex(COLUNA_DATA_DEVOLUCAO))));
+		emp.setData(new Date(c.getLong(c.getColumnIndex(COLUNA_DATA_DEVOLUCAO))));
 
 		emp.setDescricao(c.getString(c.getColumnIndex(COLUNA_DESCRICAO)));
 		emp.setIdCategoria(c.getLong(c.getColumnIndex(COLUNA_ID_CATEGORIA)));
@@ -89,24 +87,30 @@ public class EmprestimoDAO extends BasicoDAO {
 
 		return remover(TABELA_EMPRESTIMOS, COLUNA_ID_EMPRESTIMO, id);
 	}
-	
+
 	public static boolean deleteEmprestimoPorCategoria(long idCategoria) {
 
 		return remover(TABELA_EMPRESTIMOS, COLUNA_ID_CATEGORIA, idCategoria);
 	}
-	
-	
 
 	public static Cursor consultarTodos() {
 
 		return consultarTodos(TABELA_EMPRESTIMOS);
 	}
 
-	public static Cursor consultarEmprestimo(long idEmprestimo)
-			throws SQLException {
+	public static Cursor consultarEmprestimo(long idEmprestimo) {
 		Cursor mCursor = consultar(TABELA_EMPRESTIMOS, COLUNA_ID_EMPRESTIMO,
 				String.valueOf(idEmprestimo));
 		return mCursor;
+
+	}
+
+	public static Emprestimo consultar(long idEmprestimo) {
+		Cursor mCursor = consultar(TABELA_EMPRESTIMOS, COLUNA_ID_EMPRESTIMO,
+				String.valueOf(idEmprestimo));
+		Emprestimo emp = deCursorParaEmprestimo(mCursor);
+		mCursor.close();
+		return emp;
 
 	}
 
@@ -138,6 +142,14 @@ public class EmprestimoDAO extends BasicoDAO {
 				String.valueOf(idCategoria));
 
 		return mCursor;
+	}
+
+	public static long consultarQtdeEmprestimosPorCategoria(long idCategoria)
+			throws SQLException {
+		Cursor mCursor = consultar(TABELA_EMPRESTIMOS, COLUNA_ID_CATEGORIA,
+				String.valueOf(idCategoria));
+
+		return mCursor.getCount();
 	}
 
 }
