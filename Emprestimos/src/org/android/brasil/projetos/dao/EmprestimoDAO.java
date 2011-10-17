@@ -47,6 +47,9 @@ public class EmprestimoDAO extends BasicoDAO {
 	}
 
 	private static Emprestimo deCursorParaEmprestimo(Cursor c) {
+		if(c == null || (c != null && c.getCount() == 0)){
+			return null;
+		}
 		Emprestimo emp = new Emprestimo();
 		emp.setAtivarAlarme(c.getInt(c.getColumnIndex(COLUNA_ATIVAR_ALARME)));
 
@@ -57,7 +60,7 @@ public class EmprestimoDAO extends BasicoDAO {
 		emp.setIdContato(c.getLong(c.getColumnIndex(COLUNA_ID_CONTATO)));
 		emp.setIdEmprestimo(c.getLong(c.getColumnIndex(COLUNA_ID_EMPRESTIMO)));
 		emp.setItem(c.getString(c.getColumnIndex(COLUNA_ITEM)));
-		emp.setItem(c.getString(c.getColumnIndex(COLUNA_CONTATO)));
+		emp.setContato(c.getString(c.getColumnIndex(COLUNA_CONTATO)));
 
 		emp.setStatus(c.getInt(c.getColumnIndex(COLUNA_STATUS)) == Emprestimo.STATUS_EMPRESTAR ? Emprestimo.STATUS_EMPRESTAR
 				: Emprestimo.STATUS_PEGAR_EMPRESTADO);

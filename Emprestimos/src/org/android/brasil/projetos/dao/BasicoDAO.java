@@ -144,14 +144,8 @@ public abstract class BasicoDAO {
 	 */
 	private static Cursor consultaBasica(String table, String[] colunas,
 			String condicao) {
-		Cursor mCursor = mDb.query(false, table, colunas, condicao, null, null,
-				null, null, null);
 
-		if (mCursor != null) {
-			mCursor.moveToFirst();
-		}
-
-		return mCursor;
+		return consultaBasica(table, colunas, condicao, null);
 	}
 
 	/**
@@ -345,7 +339,10 @@ public abstract class BasicoDAO {
 	 *         de erro.
 	 */
 	protected static boolean remover(String table, String coluna, long id) {
-		return mDb.delete(table, coluna + " = " + id, null) > 0;
+		if (coluna != null) {
+			coluna = coluna + " = " + id;
+		}
+		return mDb.delete(table, coluna, null) > 0;
 	}
 
 	/**
@@ -357,7 +354,7 @@ public abstract class BasicoDAO {
 	 *         de erro.
 	 */
 	protected static boolean removerTodos(String table) {
-		return mDb.delete(table, null, null) > 0;
+		return remover(table, null, 0);
 	}
 
 	/**
@@ -371,7 +368,7 @@ public abstract class BasicoDAO {
 	 */
 	protected static long inserir(String table, ContentValues values) {
 		long id = -1;
-		mDb.beginTransaction();// 开始事务
+		mDb.beginTransaction();
 		try {
 			id = mDb.insert(table, null, values);
 			mDb.setTransactionSuccessful();
