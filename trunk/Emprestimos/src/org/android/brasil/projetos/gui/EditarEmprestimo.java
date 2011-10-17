@@ -77,8 +77,8 @@ public class EditarEmprestimo extends Activity {
 	private EditText etHoraDevolucao;
 	private EditText etContato;
 
-	private Cursor cursorContatos = null;;
-	private Cursor cursorCategorias = null;;
+	private Cursor cursorContatos;
+	private Cursor cursorCategorias;
 
 	private static final int DATE_DIALOG_ID_DATE = 0;
 	private static final int DATE_DIALOG_ID_TIME = 1;
@@ -122,9 +122,11 @@ public class EditarEmprestimo extends Activity {
 		spCategoria = (Spinner) findViewById(R.id.sp_categoria);
 		cbContato = (CheckBox) findViewById(R.id.cbContato);
 		etContato = (EditText) findViewById(R.id.etContato);
-		
-		etContato.setEnabled(false);
 
+		etContato.setEnabled(false);
+		etContato.setVisibility(View.GONE);
+
+		// Fix para Android 3.0 ou superiores
 		if (cursorContatos != null && !cursorContatos.isClosed()) {
 			stopManagingCursor(cursorContatos);
 			cursorContatos.close();
@@ -146,9 +148,6 @@ public class EditarEmprestimo extends Activity {
 
 		dataDevolucao = Calendar.getInstance().getTime();
 		atualizarData();
-
-		stopManagingCursor(cursorCategorias);
-		stopManagingCursor(cursorContatos);
 
 		rbEmprestar.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
@@ -209,9 +208,11 @@ public class EditarEmprestimo extends Activity {
 				if (isChecked) {
 					spNomes.setEnabled(false);
 					etContato.setEnabled(true);
+					etContato.setVisibility(View.VISIBLE);
 				} else {
 					spNomes.setEnabled(true);
 					etContato.setEnabled(false);
+					etContato.setVisibility(View.GONE);
 				}
 
 			}
@@ -231,6 +232,12 @@ public class EditarEmprestimo extends Activity {
 	}
 
 	private void carregarCategoria() {
+
+		// Fix para Android 3.0 ou superiores
+		if (cursorCategorias != null && !cursorCategorias.isClosed()) {
+			stopManagingCursor(cursorCategorias);
+			cursorCategorias.close();
+		}
 
 		CategoriaDAO.open(getApplicationContext());
 		cursorCategorias = CategoriaDAO.consultarTodasCategorias();
@@ -270,20 +277,19 @@ public class EditarEmprestimo extends Activity {
 
 	private boolean validarCampos() {
 		String item = etItem.getText().toString();
-		
-		//Busca o objeto categoria selecionado
+
+		// Busca o objeto categoria selecionado
 		CategoriaDAO.open(getApplicationContext());
 		Categoria cat = CategoriaDAO.consultar(spCategoria.getSelectedItemId());
 		CategoriaDAO.close();
-						
-		if(cat.getNomeCategoria().equals(CategoriaDAO.OUTRA)){
-			return false;
-		}
-		
-		if (item.trim().equals("")) {
+
+		if (cat.getNomeCategoria().equals(CategoriaDAO.OUTRA)) {
 			return false;
 		}
 
+		if (item.trim().equals("")) {
+			return false;
+		}
 		return true;
 	}
 
@@ -293,16 +299,22 @@ public class EditarEmprestimo extends Activity {
 
 		if (mRowId != null) {
 
+			// TODO: Se um usuário deletar a categoria do emprestimo que está
+			// sendo editado, o emprestimo vai ser apagado do banco, quando
+			// tentar recuperar o objeto Emprestimo abaixo vai dar pau, antes de
+			// pegar tem que verificar se existe aquele id no banco, fazer um
+			// método boolean EmprestimoDAO.existe(long id)
 			EmprestimoDAO.open(getApplicationContext());
-			Cursor c = EmprestimoDAO.consultarEmprestimo(mRowId);
-			startManagingCursor(c);
+			// if(EmprestimoDAO.existe(mRowid)){
+			Emprestimo emprestimo = EmprestimoDAO.consultar(mRowId);
+			// }
+			EmprestimoDAO.close();
 
-			if (c.getCount() == 0) {
+			if(emprestimo == null){
 				return;
 			}
-
-			long status = c.getLong(c
-					.getColumnIndexOrThrow(EmprestimoDAO.COLUNA_STATUS));
+			
+			long status = emprestimo.getStatus();
 			if (status == Emprestimo.STATUS_EMPRESTAR) {
 				rbPegarEmprestado.setChecked(false);
 				rbEmprestar.setChecked(true);
@@ -314,8 +326,7 @@ public class EditarEmprestimo extends Activity {
 				rbPegarEmprestado.setChecked(true);
 			}
 
-			long alarme = c.getLong(c
-					.getColumnIndexOrThrow(EmprestimoDAO.COLUNA_ATIVAR_ALARME));
+			long alarme = emprestimo.getAtivarAlarme();
 			if (alarme == Emprestimo.ATIVAR_ALARME) {
 				cbAlarme.setChecked(true);
 			}
@@ -324,34 +335,31 @@ public class EditarEmprestimo extends Activity {
 				cbAlarme.setChecked(false);
 			}
 
-			etItem.setText(c.getString(c
-					.getColumnIndexOrThrow(EmprestimoDAO.COLUNA_ITEM)));
+			etItem.setText(emprestimo.getItem());
 
-			etDescricao.setText(c.getString(c
-					.getColumnIndexOrThrow(EmprestimoDAO.COLUNA_DESCRICAO)));
+			etDescricao.setText(emprestimo.getDescricao());
 
+
+			String contato = emprestimo.getContato();
 			Adapter ad = spNomes.getAdapter();
+			
+			if (contato != null ) {
 
-			String contato = c.getString(c
-					.getColumnIndexOrThrow(EmprestimoDAO.COLUNA_CONTATO));
-
-			if (contato != null) {
-				
 				etContato.setEnabled(true);
+				etContato.setVisibility(View.VISIBLE);
 				spNomes.setEnabled(false);
-				
-				etContato.setText(c.getString(c
-						.getColumnIndexOrThrow(EmprestimoDAO.COLUNA_CONTATO)));
-				
+
+				etContato.setText(contato);
 				cbContato.setChecked(true);
 
 			} else {
-				
+
 				etContato.setEnabled(false);
+				etContato.setVisibility(View.GONE);
 				spNomes.setEnabled(true);
 				cbContato.setChecked(false);
-				
-				long id = c.getLong(c.getColumnIndexOrThrow(EmprestimoDAO.COLUNA_ID_CONTATO));
+
+				long id = emprestimo.getIdContato();
 
 				for (int i = 0; i < ad.getCount(); ++i) {
 
@@ -360,26 +368,22 @@ public class EditarEmprestimo extends Activity {
 						break;
 					}
 				}
-			}
 
-			dataDevolucao = new Date(
-					c.getLong(c
-							.getColumnIndexOrThrow(EmprestimoDAO.COLUNA_DATA_DEVOLUCAO)));
+				dataDevolucao = emprestimo.getData();
 
-			atualizarData();
+				atualizarData();
 
-			ad = spCategoria.getAdapter();
-			long idCat = c.getLong(c
-					.getColumnIndexOrThrow(EmprestimoDAO.COLUNA_ID_CATEGORIA));
+				ad = spCategoria.getAdapter();
+				long idCat = emprestimo.getIdCategoria();
 
-			for (int i = 0; i < ad.getCount(); ++i) {
+				for (int i = 0; i < ad.getCount(); ++i) {
 
-				if (ad.getItemId(i) == idCat) {
-					spCategoria.setSelection(i);
-					break;
+					if (ad.getItemId(i) == idCat) {
+						spCategoria.setSelection(i);
+						break;
+					}
 				}
 			}
-
 		}
 	}
 
@@ -440,18 +444,11 @@ public class EditarEmprestimo extends Activity {
 			emp.setData(data);
 			emp.setStatus(status);
 			emp.setAtivarAlarme(alarme);
-
-			if (spNomes.isEnabled()) {
-				emp.setIdContato(idContato);
-				emp.setContato(null);
-			} else {
-				emp.setContato(etContato.getText().toString());
-				emp.setIdContato(0);
-			}
-
+			emp.setIdContato(idContato);
 			emp.setIdCategoria(idCategoria);
 
 			EmprestimoDAO.open(getApplicationContext());
+
 			if (mRowId == null) {
 
 				long id = EmprestimoDAO.inserirEmprestimo(emp);
