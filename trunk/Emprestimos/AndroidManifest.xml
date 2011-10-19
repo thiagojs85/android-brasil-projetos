@@ -15,7 +15,9 @@
         <activity android:name=".EditarEmprestimo" />
         <activity android:name=".EditarCategoria" />
         <activity android:name=".CategoriaUI" />
+        <activity android:name=".Notificacao" />
         <receiver android:name="Alarme"></receiver>
     </application>
     	<uses-permission android:name="android.permission.READ_CONTACTS" />
+    	<uses-permission android:name="android.permission.VIBRATE" />
 </manifest> 
