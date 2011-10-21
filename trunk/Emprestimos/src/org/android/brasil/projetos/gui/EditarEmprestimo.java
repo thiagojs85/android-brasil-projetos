@@ -299,92 +299,100 @@ public class EditarEmprestimo extends Activity {
 
 		if (mRowId != null) {
 
-			// TODO: Se um usuário deletar a categoria do emprestimo que está
-			// sendo editado, o emprestimo vai ser apagado do banco, quando
-			// tentar recuperar o objeto Emprestimo abaixo vai dar pau, antes de
-			// pegar tem que verificar se existe aquele id no banco, fazer um
-			// método boolean EmprestimoDAO.existe(long id)
 			EmprestimoDAO.open(getApplicationContext());
-			// if(EmprestimoDAO.existe(mRowid)){
-			Emprestimo emprestimo = EmprestimoDAO.consultar(mRowId);
-			// }
-			EmprestimoDAO.close();
 
-			if(emprestimo == null){
-				return;
-			}
-			
-			long status = emprestimo.getStatus();
-			if (status == Emprestimo.STATUS_EMPRESTAR) {
-				rbPegarEmprestado.setChecked(false);
-				rbEmprestar.setChecked(true);
+			if (EmprestimoDAO.existe(mRowId)) {
+				Emprestimo emprestimo = EmprestimoDAO.consultar(mRowId);
 
-			}
+				EmprestimoDAO.close();
 
-			if (status == Emprestimo.STATUS_PEGAR_EMPRESTADO) {
-				rbEmprestar.setChecked(false);
-				rbPegarEmprestado.setChecked(true);
-			}
+				long status = emprestimo.getStatus();
+				if (status == Emprestimo.STATUS_EMPRESTAR) {
+					rbPegarEmprestado.setChecked(false);
+					rbEmprestar.setChecked(true);
 
-			long alarme = emprestimo.getAtivarAlarme();
-			if (alarme == Emprestimo.ATIVAR_ALARME) {
-				cbAlarme.setChecked(true);
-			}
+				}
 
-			if (alarme == Emprestimo.DESATIVAR_ALARME) {
-				cbAlarme.setChecked(false);
-			}
+				if (status == Emprestimo.STATUS_PEGAR_EMPRESTADO) {
+					rbEmprestar.setChecked(false);
+					rbPegarEmprestado.setChecked(true);
+				}
 
-			etItem.setText(emprestimo.getItem());
+				long alarme = emprestimo.getAtivarAlarme();
+				if (alarme == Emprestimo.ATIVAR_ALARME) {
+					cbAlarme.setChecked(true);
+				}
 
-			etDescricao.setText(emprestimo.getDescricao());
+				if (alarme == Emprestimo.DESATIVAR_ALARME) {
+					cbAlarme.setChecked(false);
+				}
 
+				etItem.setText(emprestimo.getItem());
 
-			String contato = emprestimo.getContato();
-			Adapter ad = spNomes.getAdapter();
-			
-			if (contato != null ) {
+				etDescricao.setText(emprestimo.getDescricao());
 
-				etContato.setEnabled(true);
-				etContato.setVisibility(View.VISIBLE);
-				spNomes.setEnabled(false);
+				String contato = emprestimo.getContato();
+				Adapter ad = spNomes.getAdapter();
 
-				etContato.setText(contato);
-				cbContato.setChecked(true);
+				if (contato != null) {
 
+					etContato.setEnabled(true);
+					etContato.setVisibility(View.VISIBLE);
+					spNomes.setEnabled(false);
+
+					etContato.setText(contato);
+					cbContato.setChecked(true);
+
+				} else {
+
+					etContato.setEnabled(false);
+					etContato.setVisibility(View.GONE);
+					spNomes.setEnabled(true);
+					cbContato.setChecked(false);
+
+					long id = emprestimo.getIdContato();
+
+					for (int i = 0; i < ad.getCount(); ++i) {
+
+						if (ad.getItemId(i) == id) {
+							spNomes.setSelection(i);
+							break;
+						}
+					}
+
+					dataDevolucao = emprestimo.getData();
+
+					atualizarData();
+
+					ad = spCategoria.getAdapter();
+					long idCat = emprestimo.getIdCategoria();
+
+					for (int i = 0; i < ad.getCount(); ++i) {
+
+						if (ad.getItemId(i) == idCat) {
+							spCategoria.setSelection(i);
+							break;
+						}
+					}
+				}
 			} else {
-
-				etContato.setEnabled(false);
-				etContato.setVisibility(View.GONE);
-				spNomes.setEnabled(true);
-				cbContato.setChecked(false);
-
-				long id = emprestimo.getIdContato();
-
-				for (int i = 0; i < ad.getCount(); ++i) {
-
-					if (ad.getItemId(i) == id) {
-						spNomes.setSelection(i);
-						break;
-					}
-				}
-
-				dataDevolucao = emprestimo.getData();
-
-				atualizarData();
-
-				ad = spCategoria.getAdapter();
-				long idCat = emprestimo.getIdCategoria();
-
-				for (int i = 0; i < ad.getCount(); ++i) {
-
-					if (ad.getItemId(i) == idCat) {
-						spCategoria.setSelection(i);
-						break;
-					}
-				}
+				limparCamposTela();
 			}
 		}
+	}
+
+	private void limparCamposTela() {
+		etItem.setText("");
+		etDescricao.setText("");
+		spNomes.setSelection(0);
+		spCategoria.setSelection(1, true);
+		cbAlarme.setChecked(false);
+		cbContato.setChecked(false);
+		etContato.setVisibility(View.GONE);
+		atualizarData();
+		etContato.setText("");
+		rbEmprestar.setSelected(true);
+		
 	}
 
 	@Override
@@ -446,6 +454,12 @@ public class EditarEmprestimo extends Activity {
 			emp.setAtivarAlarme(alarme);
 			emp.setIdContato(idContato);
 			emp.setIdCategoria(idCategoria);
+
+			if (cbContato.isChecked()) {
+				emp.setContato(etContato.getText().toString());
+			} else {
+				emp.setContato(null);
+			}
 
 			EmprestimoDAO.open(getApplicationContext());
 
