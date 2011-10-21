@@ -116,6 +116,24 @@ public class EmprestimoDAO extends BasicoDAO {
 		return emp;
 
 	}
+	
+	public static boolean existe(long idEmprestimo) {
+		boolean existe;
+		
+		Cursor mCursor = consultar(TABELA_EMPRESTIMOS, COLUNA_ID_EMPRESTIMO,
+				String.valueOf(idEmprestimo));
+				
+		if(mCursor.getCount() > 0 ) {
+			existe = true;
+		} else {
+			existe = false;
+		}
+		
+		mCursor.close();
+		
+		return existe;
+
+	}
 
 	public static long atualizarEmprestimo(Emprestimo emp) {
 		ContentValues values = deEmprestimoParaContentValues(emp);
