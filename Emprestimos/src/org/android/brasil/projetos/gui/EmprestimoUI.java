@@ -36,14 +36,14 @@ public class EmprestimoUI extends ListActivity {
 
 		spCategoria = (Spinner) findViewById(R.id.spCategoria);
 
+		ec = new EmprestimoController(this);
+		cc = new CategoriaController(this);
+
 		fillData();
 		registerForContextMenu(getListView());
 	}
 
 	private void fillData() {
-
-		ec = new EmprestimoController(this);
-		cc = new CategoriaController(this);
 
 		setListAdapter(ec.getEmprestimoAdapter(ec.TODOS));
 
@@ -51,8 +51,6 @@ public class EmprestimoUI extends ListActivity {
 				.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 					public void onItemSelected(AdapterView<?> parent,
 							View view, int position, long id) {
-						boolean todos = false;
-
 						setListAdapter(ec.getEmprestimoAdapter(id));
 					}
 
@@ -106,9 +104,7 @@ public class EmprestimoUI extends ListActivity {
 		case DELETE_ID:
 			AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
 					.getMenuInfo();
-			EmprestimoDAO.open(getApplicationContext());
-			EmprestimoDAO.deleteEmprestimo(info.id);
-			EmprestimoDAO.close();
+			ec.deletarEmprestimo(info.id);
 			fillData();
 			return true;
 		}
