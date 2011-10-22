@@ -30,8 +30,7 @@ public class CategoriaUI extends ListActivity {
 
 	private static final int INSERT_ID = Menu.FIRST;
 	private static final int DELETE_ID = Menu.FIRST + 1;
-	private Long mRowId;
-	private String descricaoCategoria;
+	private Long idCategoria;
 	private Cursor cursorCategoria;
 
 	private EditText etDescricao;
@@ -89,11 +88,10 @@ public class CategoriaUI extends ListActivity {
 		switch (item.getItemId()) {
 		case INSERT_ID:
 
-			mRowId = null;
-			descricaoCategoria = "";
+			idCategoria = null;
 			etDescricao.setText("");
 
-			showCustomDialog();
+			dialogEditarCategoria(null);
 			return true;
 		}
 
@@ -116,10 +114,10 @@ public class CategoriaUI extends ListActivity {
 			AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
 					.getMenuInfo();
 
-			mRowId = info.id;
+			idCategoria = info.id;
 
-			if (mRowId == TipoCategoria.OUTRA.getId()
-					|| mRowId == TipoCategoria.TODOS.getId()) {
+			if (idCategoria == TipoCategoria.OUTRA.getId()
+					|| idCategoria == TipoCategoria.TODOS.getId()) {
 				Toast.makeText(this, "Esta categoria não pode ser excluída!",
 						Toast.LENGTH_SHORT).show();
 				return false;
@@ -143,12 +141,12 @@ public class CategoriaUI extends ListActivity {
 							public void onClick(DialogInterface dialog,
 									int whichButton) {
 								CategoriaDAO.open(getApplicationContext());
-								CategoriaDAO.deleteCategoria(mRowId);
+								CategoriaDAO.deleteCategoria(idCategoria);
 								CategoriaDAO.close();
 
 								EmprestimoDAO.open(getApplicationContext());
 								EmprestimoDAO
-										.deleteEmprestimoPorCategoria(mRowId);
+										.deleteEmprestimoPorCategoria(idCategoria);
 								EmprestimoDAO.close();
 
 								fillData();
@@ -172,7 +170,7 @@ public class CategoriaUI extends ListActivity {
 			}
 
 			CategoriaDAO.open(getApplicationContext());
-			CategoriaDAO.deleteCategoria(mRowId);
+			CategoriaDAO.deleteCategoria(idCategoria);
 			CategoriaDAO.close();
 			fillData();
 			Toast.makeText(CategoriaUI.this, "Excluído com sucesso!",
@@ -189,14 +187,13 @@ public class CategoriaUI extends ListActivity {
 		Categoria cat = CategoriaDAO.consultar(id);
 		CategoriaDAO.close();
 
-		descricaoCategoria = cat.getNomeCategoria();
-		mRowId = id;
+		idCategoria = id;
 
-		showCustomDialog();
+		dialogEditarCategoria(cat);
 
 	}
 
-	private void showCustomDialog() {
+	private void dialogEditarCategoria(Categoria cat) {
 
 		final Dialog dialog = new Dialog(this);
 
@@ -208,8 +205,10 @@ public class CategoriaUI extends ListActivity {
 		btnCancelar = (Button) dialog.findViewById(R.id.bt_cancel);
 		etDescricao = (EditText) dialog.findViewById(R.id.inputText);
 
-		etDescricao.setText(descricaoCategoria);
-
+		if (cat != null) {
+			etDescricao.setText(cat.getNomeCategoria());
+		}
+		
 		btnConfirmar.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				saveState();
@@ -239,21 +238,21 @@ public class CategoriaUI extends ListActivity {
 
 		cat.setNomeCategoria(etDescricao.getText().toString().trim());
 
-		if (mRowId == null) {
-			
+		if (idCategoria == null) {
+
 			long id = CategoriaDAO.inserir(cat);
-			
-			if(id >0) {
-				mRowId = id;
+
+			if (id > 0) {
+				idCategoria = id;
 			}
-			
+
 		} else {
-			cat.setId(mRowId);
+			cat.setId(idCategoria);
 			CategoriaDAO.atualizar(cat);
-		}	
+		}
 		CategoriaDAO.close();
-		
+
 		fillData();
-		
+
 	}
 }
