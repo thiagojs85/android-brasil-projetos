@@ -50,6 +50,13 @@ public class EmprestimoController {
 		return adapter;
 	}
 
+	public boolean deletarEmprestimo(long id){
+		EmprestimoDAO.open(act);
+		boolean resp = EmprestimoDAO.deleteEmprestimo(id);
+		EmprestimoDAO.close();
+		return resp;
+	}
+	
 	public void close() {
 		cursorEmprestimos.close();
 		
