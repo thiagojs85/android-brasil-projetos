@@ -1,7 +1,6 @@
 package org.android.brasil.projetos.control;
 
 import org.android.brasil.projetos.dao.CategoriaDAO;
-import org.android.brasil.projetos.dao.EmprestimoDAO;
 import org.android.brasil.projetos.gui.R;
 
 import android.app.Activity;
