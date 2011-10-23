@@ -89,7 +89,10 @@ public class CategoriaUI extends ListActivity {
 		case INSERT_ID:
 
 			idCategoria = null;
-			etDescricao.setText("");
+
+			if (etDescricao != null) {
+				etDescricao.setText("");
+			}
 
 			dialogEditarCategoria(null);
 			return true;
@@ -208,11 +211,15 @@ public class CategoriaUI extends ListActivity {
 		if (cat != null) {
 			etDescricao.setText(cat.getNomeCategoria());
 		}
-		
+
 		btnConfirmar.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				saveState();
-				dialog.dismiss();
+				
+				if(validarDescricao()) {
+					saveState();
+					dialog.dismiss();
+				}
+				
 			}
 		});
 
@@ -233,6 +240,7 @@ public class CategoriaUI extends ListActivity {
 	}
 
 	private void saveState() {
+
 		CategoriaDAO.open(getApplicationContext());
 		Categoria cat = new Categoria();
 
@@ -254,5 +262,16 @@ public class CategoriaUI extends ListActivity {
 
 		fillData();
 
+	}
+
+	private boolean validarDescricao() {
+
+		if (etDescricao.getText().toString().equals("")) {
+			Toast.makeText(CategoriaUI.this, "Preencha a descrição!",
+					Toast.LENGTH_SHORT).show();
+			return false;
+		}
+
+		return true;
 	}
 }
