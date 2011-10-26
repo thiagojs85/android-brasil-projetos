@@ -1,5 +1,6 @@
 package org.android.brasil.projetos.gui;
 
+import org.android.brasil.projetos.control.CategoriaController;
 import org.android.brasil.projetos.dao.CategoriaDAO;
 import org.android.brasil.projetos.dao.EmprestimoDAO;
 import org.android.brasil.projetos.model.Categoria;
@@ -31,49 +32,29 @@ public class CategoriaUI extends ListActivity {
 	private static final int INSERT_ID = Menu.FIRST;
 	private static final int DELETE_ID = Menu.FIRST + 1;
 	private Long idCategoria;
-	private Cursor cursorCategoria;
 
 	private EditText etDescricao;
 	private Button btnConfirmar;
 	private Button btnCancelar;
 
+	private CategoriaController cc;
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.lista_categoria);
 		setTitle(R.string.ListaCategoria);
-
+		cc = new CategoriaController(this);
 		fillData();
 		registerForContextMenu(getListView());
 
 	}
 
 	private void fillData() {
-
-		// Fix para Android 3.0 ou superiores
-		if (cursorCategoria != null && !cursorCategoria.isClosed()) {
-			stopManagingCursor(cursorCategoria);
-			cursorCategoria.close();
+		if(cc == null){
+			cc = new CategoriaController(this);
 		}
-
-		CategoriaDAO.open(getApplicationContext());
-		cursorCategoria = CategoriaDAO.consultarTodasCategorias();
-		CategoriaDAO.close();
-		startManagingCursor(cursorCategoria);
-
-		// Create an array to specify the fields we want to display in the list
-		// (only TITLE)
-		String[] from = new String[] { CategoriaDAO.COLUNA_DESCRICAO };
-
-		// and an array of the fields we want to bind those fields to (in this
-		// case just text1)
-		int[] to = new int[] { R.id.text1 };
-
-		// Now create a simple cursor adapter and set it to display
-		SimpleCursorAdapter adapter = new SimpleCursorAdapter(this,
-				R.layout.linha_categoria_listview, cursorCategoria, from, to);
-		setListAdapter(adapter);
+		setListAdapter(cc.getCategoriaAdapter(cc.TODOS));
 	}
 
 	@Override
@@ -126,6 +107,7 @@ public class CategoriaUI extends ListActivity {
 				return false;
 			}
 
+			//TODO: Remover todos os acessos diretos a banco e passa-los para a classe de controle;
 			EmprestimoDAO.open(getApplicationContext());
 			long qtde = EmprestimoDAO
 					.consultarQtdeEmprestimosPorCategoria(info.id);
@@ -143,6 +125,7 @@ public class CategoriaUI extends ListActivity {
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog,
 									int whichButton) {
+								//TODO: Remover todos os acessos diretos a banco e passa-los para a classe de controle;
 								CategoriaDAO.open(getApplicationContext());
 								CategoriaDAO.deleteCategoria(idCategoria);
 								CategoriaDAO.close();
@@ -171,7 +154,7 @@ public class CategoriaUI extends ListActivity {
 
 				return super.onContextItemSelected(item);
 			}
-
+			//TODO: Remover todos os acessos diretos a banco e passa-los para a classe de controle;
 			CategoriaDAO.open(getApplicationContext());
 			CategoriaDAO.deleteCategoria(idCategoria);
 			CategoriaDAO.close();
@@ -240,7 +223,8 @@ public class CategoriaUI extends ListActivity {
 	}
 
 	private void saveState() {
-
+		//TODO: Remover todos os acessos diretos a banco e passa-los para a classe de controle;
+		//Essa logica deve ficar no Controller tb.
 		CategoriaDAO.open(getApplicationContext());
 		Categoria cat = new Categoria();
 

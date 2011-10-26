@@ -20,6 +20,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.android.brasil.projetos.control.CategoriaController;
 import org.android.brasil.projetos.dao.CategoriaDAO;
 import org.android.brasil.projetos.dao.EmprestimoDAO;
 import org.android.brasil.projetos.model.Categoria;
@@ -78,8 +79,8 @@ public class EditarEmprestimo extends Activity {
 	private EditText etContato;
 
 	private Cursor cursorContatos;
-	private Cursor cursorCategorias;
-
+	private CategoriaController cc;
+	
 	private static final int DATE_DIALOG_ID_DATE = 0;
 	private static final int DATE_DIALOG_ID_TIME = 1;
 
@@ -126,6 +127,9 @@ public class EditarEmprestimo extends Activity {
 		etContato.setEnabled(false);
 		etContato.setVisibility(View.GONE);
 
+		cc = new CategoriaController(this);
+		
+		//TODO: Criar um ContatosController!
 		// Fix para Android 3.0 ou superiores
 		if (cursorContatos != null && !cursorContatos.isClosed()) {
 			stopManagingCursor(cursorContatos);
@@ -232,28 +236,17 @@ public class EditarEmprestimo extends Activity {
 	}
 
 	private void carregarCategoria() {
-
-		// Fix para Android 3.0 ou superiores
-		if (cursorCategorias != null && !cursorCategorias.isClosed()) {
-			stopManagingCursor(cursorCategorias);
-			cursorCategorias.close();
+		if(cc == null){
+			cc = new CategoriaController(this);
 		}
-
-		CategoriaDAO.open(getApplicationContext());
-		cursorCategorias = CategoriaDAO.consultarTodasCategorias();
-		CategoriaDAO.close();
-
-		if (cursorCategorias != null && cursorCategorias.getCount() > 0) {
-			startManagingCursor(cursorCategorias);
+		SimpleCursorAdapter adapterCategorias = cc.getCategoriaAdapter(cc.TODOS);
+		if (adapterCategorias != null && adapterCategorias.getCount() > 0) {
 			spCategoria.setEnabled(true);
 		} else {
 			spCategoria.setEnabled(false);
 		}
 
-		spCategoria.setAdapter(new SimpleCursorAdapter(this,
-				android.R.layout.simple_spinner_item, cursorCategorias,
-				new String[] { CategoriaDAO.COLUNA_DESCRICAO },
-				new int[] { android.R.id.text1 }));
+		spCategoria.setAdapter(adapterCategorias);
 
 		spCategoria.setSelection(1, true);
 
@@ -279,6 +272,7 @@ public class EditarEmprestimo extends Activity {
 		String item = etItem.getText().toString();
 
 		// Busca o objeto categoria selecionado
+		//TODO:Passar para o controler!!
 		CategoriaDAO.open(getApplicationContext());
 		Categoria cat = CategoriaDAO.consultar(spCategoria.getSelectedItemId());
 		CategoriaDAO.close();
@@ -298,7 +292,7 @@ public class EditarEmprestimo extends Activity {
 		carregarCategoria();
 
 		if (mRowId != null) {
-
+			//TODO:Passar para o controler!!
 			EmprestimoDAO.open(getApplicationContext());
 
 			if (EmprestimoDAO.existe(mRowId)) {
