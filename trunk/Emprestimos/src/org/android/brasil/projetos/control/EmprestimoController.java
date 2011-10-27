@@ -45,7 +45,7 @@ public class EmprestimoController {
 
 		// Now create a simple cursor adapter and set it to display
 		SimpleCursorAdapter adapter = new SimpleCursorAdapter(act,
-				R.layout.linha_emprestimo_listview, cursorEmprestimos, from, to);
+				R.layout.linha_listview, cursorEmprestimos, from, to);
 
 		return adapter;
 	}

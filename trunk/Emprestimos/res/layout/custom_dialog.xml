@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:id="@+id/layout_root"
-              android:orientation="horizontal"
-              android:layout_width="fill_parent"
-              android:layout_height="fill_parent"
-              android:padding="10dp"
-              >
+	    android:id="@+id/layout_root"
+	    android:orientation="horizontal"
+	    android:padding="10dp"
+	    style="@style/FillFill.Layout">
  
     <EditText android:id="@+id/inputText"
-        android:layout_height="wrap_content"
-        android:layout_width="fill_parent"
+        style="@style/FillWrap.EditText"
         android:layout_below="@+id/msg">
     </EditText>
  
     <Button android:id="@+id/bt_confirmar"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
+        style="@style/WrapWrap"
         android:layout_below="@+id/inputText"
         android:text="Confirmar">
     </Button>
-    <Button android:text="Cancelar" android:layout_height="wrap_content" android:id="@+id/bt_cancel" android:layout_width="wrap_content" android:layout_alignTop="@+id/bt_confirmar" android:layout_toRightOf="@+id/bt_confirmar"></Button>
+    <Button android:text="Cancelar"  
+        android:id="@+id/bt_cancel" 
+        style="@style/WrapWrap"
+        android:layout_alignTop="@+id/bt_confirmar" 
+        android:layout_toRightOf="@+id/bt_confirmar"></Button>
  
 </RelativeLayout>

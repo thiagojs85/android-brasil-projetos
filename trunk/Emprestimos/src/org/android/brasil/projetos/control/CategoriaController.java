@@ -33,7 +33,7 @@ public class CategoriaController {
 		CategoriaDAO.close();
 	
 		SimpleCursorAdapter adapter = new SimpleCursorAdapter(act,
-				R.layout.linha_categoria_spinner, cursorCategoria,
+				R.layout.linha_spinner, cursorCategoria,
 				new String[] { CategoriaDAO.COLUNA_DESCRICAO }, 
 				new int[] { R.id.text1 });
 		
