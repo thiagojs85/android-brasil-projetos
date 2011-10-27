@@ -1,30 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:id="@+id/base"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+	style="@style/FillFill.Layout">
 	<ScrollView 
 		android:fillViewport="true"
-	    android:layout_width="fill_parent"
-	    android:layout_height="fill_parent">
+	    style="@style/FillFill.Layout">
 		<LinearLayout
-		    android:layout_width="fill_parent"
-		    android:layout_height="fill_parent"
+		    style="@style/FillFill.Layout"
 		    android:orientation="vertical">
 		    <Spinner
 		    	android:id="@+id/spCategoria"
-		    	android:layout_height="wrap_content"
-		    	android:layout_width="fill_parent"/>
+		    	style="@style/FillWrap.Spinner"/>
 		    
 		    <ListView
 				android:id="@+id/android:list"
 		        android:layout_width="fill_parent"
+		        android:divider="@android:color/darker_gray"
+		        android:dividerHeight="2sp"
 		       	android:layout_height="wrap_content"/>
 		       	
 		  	<TextView
 		  		android:id="@+id/android:empty"
-		        android:layout_width="fill_parent"
-		       	android:layout_height="wrap_content"
+		        style="@style/FillWrap.TextView"
 		        android:text="@string/sem_emprestimos"/>
 		</LinearLayout>
 	</ScrollView>

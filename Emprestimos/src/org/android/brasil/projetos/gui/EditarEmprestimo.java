@@ -142,12 +142,12 @@ public class EditarEmprestimo extends Activity {
 				null, null, null);
 
 		String[] from = new String[] { ContactsContract.Contacts.DISPLAY_NAME };
-		int[] to = new int[] { android.R.id.text1 };
+		int[] to = new int[] { R.id.text1 };
 
 		startManagingCursor(cursorContatos);
 
 		spNomes.setAdapter(new SimpleCursorAdapter(EditarEmprestimo.this,
-				android.R.layout.simple_spinner_dropdown_item, cursorContatos,
+				R.layout.linha_spinner, cursorContatos,
 				from, to));
 
 		dataDevolucao = Calendar.getInstance().getTime();

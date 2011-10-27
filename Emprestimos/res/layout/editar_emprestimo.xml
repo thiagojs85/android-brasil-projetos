@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:orientation="vertical"
-	style="@style/FillFill">
+	style="@style/FillFill.Layout">
 <ScrollView 
 	android:fillViewport="true"
-	style="@style/FillFill">
+	style="@style/FillFill.Layout">
 	<LinearLayout
 		android:orientation="vertical"
-		style="@style/FillFill">
+		style="@style/FillFill.Layout">
 	
 		<RadioGroup
 			android:id="@+id/rg_perguntas"
@@ -21,6 +21,7 @@
 				style="@style/WrapWrap.RadioButton"
 				android:paddingRight="20sp"
 				android:checked="true"
+				android:textColor="@android:color/black"
 		    	android:text="@string/emprestar" />
 		    	
 			<RadioButton
@@ -28,11 +29,13 @@
 				android:gravity="center"
 				style="@style/WrapWrap.RadioButton"
 				android:paddingRight="20sp"
+				android:textColor="@android:color/black"
 				android:text="@string/pegar_emprestado" />
 		</RadioGroup>
 		
 		<TextView
-			style="@style/FillWrap" 
+			style="@style/FillWrap.TextView"
+			android:textColor="@android:color/black"
 			android:text="@string/item" />
 		<EditText
 			android:id="@+id/item" 
@@ -40,7 +43,8 @@
 			android:singleLine="true" />
 	
 		<TextView 
-			style="@style/WrapWrap" 
+			style="@style/FillWrap.TextView" 
+			android:textColor="@android:color/black"
 			android:text="@string/descricao" />
 			
 		<EditText
@@ -50,7 +54,7 @@
 		
 		<TextView 
 			android:id="@+id/tv_contato"
-			style="@style/FillWrap" 
+			style="@style/FillWrap.TextView" 
 			android:text="@string/contato" />
 		
 		<Spinner
@@ -64,14 +68,12 @@
 			android:scrollbars="vertical" />
 	
 		<CheckBox android:text="Outro Contato" 
-			style="@style/FillWrap"
-			android:id="@+id/cbContato" 
-			android:layout_width="wrap_content" 
-			android:layout_height="wrap_content"/>
+			style="@style/WrapWrap.CheckBox"
+			android:id="@+id/cbContato" />
 
 		<TextView 
 			android:id="@+id/tv_contato"
-			style="@style/FillWrap"
+			style="@style/FillWrap.TextView"
 			android:text="@string/categoria" />
 		
 		<Spinner
@@ -80,11 +82,11 @@
 						
 		<CheckBox 
 			android:id="@+id/cb_alarme"
-			style="@style/FillWrap"
+			style="@style/WrapWrap.CheckBox"
 			android:text="Ativar alarme"		
 		/>
 		<TextView 
-			style="@style/FillWrap"
+			style="@style/FillWrap.TextView"
 			android:text="@string/data_devolucao" />
 			
 	   	<EditText 
@@ -93,7 +95,7 @@
 			style="@style/FillWrap.EditText.NoFocus"/>
 	
 		<TextView 
-			style="@style/FillWrap" 
+			style="@style/FillWrap.TextView"
 			android:text="@string/hora_devolucao" />
 			
 	   	<EditText 
