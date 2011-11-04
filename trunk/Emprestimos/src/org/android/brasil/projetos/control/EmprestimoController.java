@@ -2,6 +2,7 @@ package org.android.brasil.projetos.control;
 
 import org.android.brasil.projetos.dao.EmprestimoDAO;
 import org.android.brasil.projetos.gui.R;
+import org.android.brasil.projetos.model.Emprestimo;
 
 import android.app.Activity;
 import android.database.Cursor;
@@ -54,8 +55,39 @@ public class EmprestimoController {
 		EmprestimoDAO.open(act);
 		boolean resp = EmprestimoDAO.deleteEmprestimo(id);
 		EmprestimoDAO.close();
+		
 		return resp;
 	}
+	
+
+	public Emprestimo getEmprestimo(long id){
+		EmprestimoDAO.open(act);
+		Emprestimo emprestimo = EmprestimoDAO.consultar(id);
+		EmprestimoDAO.close();
+		
+		return emprestimo;
+	}
+	
+	public boolean existe(long id) {
+		EmprestimoDAO.open(act);
+	 	boolean isValido = EmprestimoDAO.existe(id);
+	 	EmprestimoDAO.close();
+	 	
+	 	return isValido;
+	}
+	
+	public void atualizarEmprestimo(Emprestimo emp) {
+		EmprestimoDAO.open(act);
+		EmprestimoDAO.atualizarEmprestimo(emp);
+		EmprestimoDAO.close();
+	}
+	
+	public long inserirEmprestimo(Emprestimo emp) {
+		EmprestimoDAO.open(act);
+		long id =	EmprestimoDAO.inserirEmprestimo(emp);
+		EmprestimoDAO.close();
+		return id;
+	}	
 	
 	public void close() {
 		cursorEmprestimos.close();

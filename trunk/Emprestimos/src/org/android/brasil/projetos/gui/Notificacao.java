@@ -8,12 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-/**
- * Exemplo de Activity que cria uma notifica��o
- * 
- * @author ricardo
- * 
- */
 public class Notificacao extends Activity {
 
 	@Override

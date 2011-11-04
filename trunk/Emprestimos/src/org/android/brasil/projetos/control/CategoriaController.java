@@ -2,6 +2,7 @@ package org.android.brasil.projetos.control;
 
 import org.android.brasil.projetos.dao.CategoriaDAO;
 import org.android.brasil.projetos.gui.R;
+import org.android.brasil.projetos.model.Categoria;
 
 import android.app.Activity;
 import android.database.Cursor;
@@ -39,6 +40,15 @@ public class CategoriaController {
 		
 		return adapter;
 	}
+	
+	public Categoria getCategoria(long id) {
+		CategoriaDAO.open(act);
+		Categoria cat = CategoriaDAO.consultar(id);
+		CategoriaDAO.close();
+		
+		return cat;
+	}
+	
 
 	public void close() {
 		cursorCategoria.close();
