@@ -64,6 +64,7 @@
 
 	<style name="WrapWrap.CheckBox">
 		<item name="android:layout_marginLeft">20sp</item>
+		<item name="android:textColor">@android:color/black</item>
 	</style>
 	    
 </resources>

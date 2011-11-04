@@ -16,13 +16,17 @@
 
 package org.android.brasil.projetos.gui;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
 import org.android.brasil.projetos.control.CategoriaController;
+import org.android.brasil.projetos.control.ContatosController;
+import org.android.brasil.projetos.control.EmprestimoController;
 import org.android.brasil.projetos.dao.CategoriaDAO;
 import org.android.brasil.projetos.dao.EmprestimoDAO;
+import org.android.brasil.projetos.dao.util.Util;
 import org.android.brasil.projetos.model.Categoria;
 import org.android.brasil.projetos.model.Emprestimo;
 import org.android.brasil.projetos.model.TipoCategoria;
@@ -34,11 +38,8 @@ import android.app.Dialog;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.app.TimePickerDialog.OnTimeSetListener;
-import android.content.ContentResolver;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -77,9 +78,9 @@ public class EditarEmprestimo extends Activity {
 	private EditText etDataDevolucao;
 	private EditText etHoraDevolucao;
 	private EditText etContato;
-
-	private Cursor cursorContatos;
 	private CategoriaController cc;
+	private EmprestimoController ec;
+	private ContatosController ctc;
 	
 	private static final int DATE_DIALOG_ID_DATE = 0;
 	private static final int DATE_DIALOG_ID_TIME = 1;
@@ -128,28 +129,11 @@ public class EditarEmprestimo extends Activity {
 		etContato.setVisibility(View.GONE);
 
 		cc = new CategoriaController(this);
+		ec = new EmprestimoController(this);
+		ctc = new ContatosController(this);
+	
+		spNomes.setAdapter(ctc.getContatoAdapter());
 		
-		//TODO: Criar um ContatosController!
-		// Fix para Android 3.0 ou superiores
-		if (cursorContatos != null && !cursorContatos.isClosed()) {
-			stopManagingCursor(cursorContatos);
-			cursorContatos.close();
-		}
-
-		ContentResolver cr = getContentResolver();
-
-		cursorContatos = cr.query(ContactsContract.Contacts.CONTENT_URI, null,
-				null, null, null);
-
-		String[] from = new String[] { ContactsContract.Contacts.DISPLAY_NAME };
-		int[] to = new int[] { R.id.text1 };
-
-		startManagingCursor(cursorContatos);
-
-		spNomes.setAdapter(new SimpleCursorAdapter(EditarEmprestimo.this,
-				R.layout.linha_spinner, cursorContatos,
-				from, to));
-
 		dataDevolucao = Calendar.getInstance().getTime();
 		atualizarData();
 
@@ -197,10 +181,6 @@ public class EditarEmprestimo extends Activity {
 					Log.w("EditarEmprestimo", "Fim da edição");
 					setResult(RESULT_OK);
 					finish();
-				} else {
-					Toast.makeText(EditarEmprestimo.this,
-							"O nome do item deve ser informado!",
-							Toast.LENGTH_LONG).show();
 				}
 			}
 
@@ -239,7 +219,7 @@ public class EditarEmprestimo extends Activity {
 		if(cc == null){
 			cc = new CategoriaController(this);
 		}
-		SimpleCursorAdapter adapterCategorias = cc.getCategoriaAdapter(cc.TODOS);
+		SimpleCursorAdapter adapterCategorias = cc.getCategoriaAdapter(CategoriaController.TODOS);
 		if (adapterCategorias != null && adapterCategorias.getCount() > 0) {
 			spCategoria.setEnabled(true);
 		} else {
@@ -270,20 +250,48 @@ public class EditarEmprestimo extends Activity {
 
 	private boolean validarCampos() {
 		String item = etItem.getText().toString();
-
-		// Busca o objeto categoria selecionado
-		//TODO:Passar para o controler!!
-		CategoriaDAO.open(getApplicationContext());
-		Categoria cat = CategoriaDAO.consultar(spCategoria.getSelectedItemId());
-		CategoriaDAO.close();
-
+		
+		Categoria cat = cc.getCategoria(spCategoria.getSelectedItemId());
+		
 		if (cat.getNomeCategoria().equals(CategoriaDAO.OUTRA)) {
 			return false;
 		}
 
 		if (item.trim().equals("")) {
+			Toast.makeText(EditarEmprestimo.this,
+					"O nome do item deve ser informado!", Toast.LENGTH_LONG)
+					.show();
 			return false;
 		}
+
+		String data = etDataDevolucao.getText().toString();
+		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+		Date d = null;
+		Date d1 = Calendar.getInstance().getTime();
+		d1.setHours(0);
+		d1.setMinutes(0);
+		d1.setSeconds(0);
+		
+		try {
+			d = formatter.parse(data);// catch exception
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+				
+		if (Util.dataDiff(d,d1) > 0) {
+			
+			Calendar c = Calendar.getInstance();
+			
+	        int ano = c.get(Calendar.YEAR);
+	        int mes = c.get(Calendar.MONTH)+1;
+	        int dia = c.get(Calendar.DAY_OF_MONTH);
+			
+			Toast.makeText(EditarEmprestimo.this, "Data deve ser maior ou igual a " + dia + "/" + mes + "/" + ano ,
+					Toast.LENGTH_SHORT).show();
+			return false;
+		}
+
 		return true;
 	}
 
@@ -293,12 +301,9 @@ public class EditarEmprestimo extends Activity {
 
 		if (mRowId != null) {
 			//TODO:Passar para o controler!!
-			EmprestimoDAO.open(getApplicationContext());
-
-			if (EmprestimoDAO.existe(mRowId)) {
-				Emprestimo emprestimo = EmprestimoDAO.consultar(mRowId);
-
-				EmprestimoDAO.close();
+			
+			if (ec.existe(mRowId)) {
+				Emprestimo emprestimo = ec.getEmprestimo(mRowId);
 
 				long status = emprestimo.getStatus();
 				if (status == Emprestimo.STATUS_EMPRESTAR) {
@@ -386,7 +391,7 @@ public class EditarEmprestimo extends Activity {
 		atualizarData();
 		etContato.setText("");
 		rbEmprestar.setSelected(true);
-		
+
 	}
 
 	@Override
@@ -455,21 +460,17 @@ public class EditarEmprestimo extends Activity {
 				emp.setContato(null);
 			}
 
-			EmprestimoDAO.open(getApplicationContext());
-
 			if (mRowId == null) {
 
-				long id = EmprestimoDAO.inserirEmprestimo(emp);
+				long id = ec.inserirEmprestimo(emp);
 				if (id > 0) {
 					mRowId = id;
 				}
 			} else {
 				emp.setIdEmprestimo(mRowId);
-				EmprestimoDAO.atualizarEmprestimo(emp);
+				ec.atualizarEmprestimo(emp);
 
 			}
-			EmprestimoDAO.close();
-
 		}
 	}
 

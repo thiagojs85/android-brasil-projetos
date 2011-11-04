@@ -43,6 +43,7 @@ public class EmprestimoUI extends ListActivity {
 		registerForContextMenu(getListView());
 	}
 
+	@SuppressWarnings("static-access")
 	private void fillData() {
 
 		setListAdapter(ec.getEmprestimoAdapter(ec.TODOS));
