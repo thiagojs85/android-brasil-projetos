@@ -11,7 +11,6 @@ import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -22,7 +21,6 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 
 public class CategoriaUI extends ListActivity {
@@ -54,7 +52,7 @@ public class CategoriaUI extends ListActivity {
 		if(cc == null){
 			cc = new CategoriaController(this);
 		}
-		setListAdapter(cc.getCategoriaAdapter(cc.TODOS));
+		setListAdapter(cc.getCategoriaAdapter(CategoriaController.TODOS));
 	}
 
 	@Override

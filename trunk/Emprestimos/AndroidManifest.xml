@@ -5,7 +5,7 @@
  	
  	package="org.android.brasil.projetos.gui">
  	<uses-sdk android:minSdkVersion="7"/>
-    <application android:icon="@drawable/icon">
+    <application android:icon="@drawable/icon" android:debuggable="true">
         <activity android:label="@string/app_name" android:name=".EmprestimoUI">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
