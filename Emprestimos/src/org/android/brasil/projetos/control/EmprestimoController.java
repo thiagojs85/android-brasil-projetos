@@ -10,7 +10,7 @@ import android.widget.SimpleCursorAdapter;
 
 public class EmprestimoController {
 
-	public static final int TODOS = -1;
+	public static final int TODOS = 2;
 	private Cursor cursorEmprestimos;
 	private Activity act;
 

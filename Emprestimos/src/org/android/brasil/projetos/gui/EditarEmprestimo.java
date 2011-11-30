@@ -35,12 +35,15 @@ import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.app.TimePickerDialog.OnTimeSetListener;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Adapter;
@@ -84,6 +87,7 @@ public class EditarEmprestimo extends Activity {
 	
 	private static final int DATE_DIALOG_ID_DATE = 0;
 	private static final int DATE_DIALOG_ID_TIME = 1;
+	private static final int INSERT_ID = Menu.FIRST;
 
 	private DatePickerDialog.OnDateSetListener dataListener = new DatePickerDialog.OnDateSetListener() {
 		public void onDateSet(DatePicker view, int year, int monthOfYear,
@@ -131,6 +135,9 @@ public class EditarEmprestimo extends Activity {
 		cc = new CategoriaController(this);
 		ec = new EmprestimoController(this);
 		ctc = new ContatosController(this);
+		
+		NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		nm.cancel(R.string.app_name);
 	
 		spNomes.setAdapter(ctc.getContatoAdapter());
 		
@@ -216,10 +223,9 @@ public class EditarEmprestimo extends Activity {
 	}
 
 	private void carregarCategoria() {
-		if(cc == null){
-			cc = new CategoriaController(this);
-		}
+		
 		SimpleCursorAdapter adapterCategorias = cc.getCategoriaAdapter(CategoriaController.TODOS);
+		
 		if (adapterCategorias != null && adapterCategorias.getCount() > 0) {
 			spCategoria.setEnabled(true);
 		} else {
@@ -264,6 +270,9 @@ public class EditarEmprestimo extends Activity {
 			return false;
 		}
 
+		SimpleDateFormat simpleFormat = new SimpleDateFormat("dd/MM/yyyy");
+		etDataDevolucao.setText(simpleFormat.format(dataDevolucao));
+		
 		String data = etDataDevolucao.getText().toString();
 		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 		Date d = null;
@@ -300,7 +309,6 @@ public class EditarEmprestimo extends Activity {
 		carregarCategoria();
 
 		if (mRowId != null) {
-			//TODO:Passar para o controler!!
 			
 			if (ec.existe(mRowId)) {
 				Emprestimo emprestimo = ec.getEmprestimo(mRowId);
@@ -495,6 +503,13 @@ public class EditarEmprestimo extends Activity {
 					dataDevolucao.getHours(), dataDevolucao.getMinutes(), true);
 		}
 		return null;
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
+		menu.add(0, INSERT_ID, 0, R.string.menu_inserirCategoria);
+		return true;
 	}
 
 }
