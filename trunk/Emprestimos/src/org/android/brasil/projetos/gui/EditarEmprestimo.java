@@ -200,10 +200,14 @@ public class EditarEmprestimo extends Activity {
 					spNomes.setEnabled(false);
 					etContato.setEnabled(true);
 					etContato.setVisibility(View.VISIBLE);
+					spNomes.setEnabled(false);
+					spNomes.setVisibility(View.GONE);
 				} else {
 					spNomes.setEnabled(true);
 					etContato.setEnabled(false);
 					etContato.setVisibility(View.GONE);
+					spNomes.setEnabled(true);
+					spNomes.setVisibility(View.VISIBLE);
 				}
 
 			}
