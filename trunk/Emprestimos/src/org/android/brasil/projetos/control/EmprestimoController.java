@@ -68,6 +68,13 @@ public class EmprestimoController {
 		return emprestimo;
 	}
 	
+	public void atualizaNotification(long id) {
+		EmprestimoDAO.open(act);
+		EmprestimoDAO.atualizarAlarme(id);
+		EmprestimoDAO.close();		
+			
+	}
+	
 	public boolean existe(long id) {
 		EmprestimoDAO.open(act);
 	 	boolean isValido = EmprestimoDAO.existe(id);

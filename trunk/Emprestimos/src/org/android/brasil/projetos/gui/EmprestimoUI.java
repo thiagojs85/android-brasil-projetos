@@ -77,7 +77,7 @@ public class EmprestimoUI extends ListActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
-		menu.add(0, INSERT_ID, 0, R.string.menu_inserir);
+		menu.add(0, INSERT_ID, 0, R.string.menu_inserir).setIcon(R.drawable.adicionar);;
 		return true;
 	}
 
@@ -114,6 +114,7 @@ public class EmprestimoUI extends ListActivity {
 
 	private void editarEmprestimo() {
 		Intent i = new Intent(this, EditarEmprestimo.class);
+		i.putExtra(EmprestimoDAO.COLUNA_ATIVAR_ALARME, false);
 		startActivityForResult(i, ACTIVITY_CREATE);
 	}
 

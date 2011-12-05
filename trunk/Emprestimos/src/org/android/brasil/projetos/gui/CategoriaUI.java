@@ -58,7 +58,7 @@ public class CategoriaUI extends ListActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
-		menu.add(0, INSERT_ID, 0, R.string.menu_inserirCategoria);
+		menu.add(0, INSERT_ID, 0, R.string.menu_inserirCategoria).setIcon(R.drawable.adicionar);
 		return true;
 	}
 

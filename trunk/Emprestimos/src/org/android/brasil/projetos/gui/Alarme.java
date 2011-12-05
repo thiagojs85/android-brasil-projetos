@@ -31,6 +31,7 @@ public class Alarme extends BroadcastReceiver {
 	    final Notification notification = new Notification(icon, context.getString(R.string.app_name), when);
 	    final Intent notificationIntent = new Intent(context.getApplicationContext(),   EditarEmprestimo.class);
 	    notificationIntent.putExtras(i.getExtras());
+	    notificationIntent.putExtra(EmprestimoDAO.COLUNA_ATIVAR_ALARME, true);
 	    notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
 	    final PendingIntent contentIntent = PendingIntent.getActivity(

@@ -141,6 +141,15 @@ public class EmprestimoDAO extends BasicoDAO {
 				new String[] { EmprestimoDAO.COLUNA_ID_EMPRESTIMO },
 				new String[] { String.valueOf(emp.getIdEmprestimo()) });
 	}
+	
+	public static void atualizarAlarme(long id) {
+		ContentValues values = new ContentValues();
+		values.put(COLUNA_ATIVAR_ALARME,1);
+		atualizar(TABELA_EMPRESTIMOS, values,
+				new String[] { EmprestimoDAO.COLUNA_ID_EMPRESTIMO },
+				new String[] { String.valueOf(id) });
+		
+	}
 
 	public static List<Emprestimo> listarEmprestimoPorCategoria(long idCategoria) {
 		List<Emprestimo> lista = new ArrayList<Emprestimo>();
