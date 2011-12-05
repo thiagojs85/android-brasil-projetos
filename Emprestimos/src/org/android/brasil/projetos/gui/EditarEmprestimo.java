@@ -43,7 +43,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Adapter;
@@ -67,6 +66,7 @@ public class EditarEmprestimo extends Activity {
 	private EditText etDescricao;
 	private Long mRowId;
 	private TextView tvContato;
+	boolean notificacao = false;
 
 	private Spinner spNomes;
 	private Spinner spCategoria;
@@ -84,11 +84,10 @@ public class EditarEmprestimo extends Activity {
 	private CategoriaController cc;
 	private EmprestimoController ec;
 	private ContatosController ctc;
-	
+
 	private static final int DATE_DIALOG_ID_DATE = 0;
 	private static final int DATE_DIALOG_ID_TIME = 1;
-	private static final int INSERT_ID = Menu.FIRST;
-
+	
 	private DatePickerDialog.OnDateSetListener dataListener = new DatePickerDialog.OnDateSetListener() {
 		public void onDateSet(DatePicker view, int year, int monthOfYear,
 				int dayOfMonth) {
@@ -135,12 +134,12 @@ public class EditarEmprestimo extends Activity {
 		cc = new CategoriaController(this);
 		ec = new EmprestimoController(this);
 		ctc = new ContatosController(this);
-		
+
 		NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		nm.cancel(R.string.app_name);
-	
+
 		spNomes.setAdapter(ctc.getContatoAdapter());
-		
+
 		dataDevolucao = Calendar.getInstance().getTime();
 		atualizarData();
 
@@ -221,15 +220,27 @@ public class EditarEmprestimo extends Activity {
 			Bundle extras = getIntent().getExtras();
 			mRowId = extras != null ? extras
 					.getLong(EmprestimoDAO.COLUNA_ID_EMPRESTIMO) : null;
+			notificacao = extras != null ? extras
+					.getBoolean(EmprestimoDAO.COLUNA_ATIVAR_ALARME) : null;
+
+			if (notificacao) {
+				ec.atualizaNotification(mRowId);
+			}
+			
+			if (mRowId == 0) {
+				mRowId = null;
+			}
 		}
 
 		populateFields();
+
 	}
 
 	private void carregarCategoria() {
-		
-		SimpleCursorAdapter adapterCategorias = cc.getCategoriaAdapter(CategoriaController.TODOS);
-		
+
+		SimpleCursorAdapter adapterCategorias = cc
+				.getCategoriaAdapter(CategoriaController.TODOS);
+
 		if (adapterCategorias != null && adapterCategorias.getCount() > 0) {
 			spCategoria.setEnabled(true);
 		} else {
@@ -260,9 +271,9 @@ public class EditarEmprestimo extends Activity {
 
 	private boolean validarCampos() {
 		String item = etItem.getText().toString();
-		
+
 		Categoria cat = cc.getCategoria(spCategoria.getSelectedItemId());
-		
+
 		if (cat.getNomeCategoria().equals(CategoriaDAO.OUTRA)) {
 			return false;
 		}
@@ -276,7 +287,7 @@ public class EditarEmprestimo extends Activity {
 
 		SimpleDateFormat simpleFormat = new SimpleDateFormat("dd/MM/yyyy");
 		etDataDevolucao.setText(simpleFormat.format(dataDevolucao));
-		
+
 		String data = etDataDevolucao.getText().toString();
 		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
 		Date d = null;
@@ -284,25 +295,28 @@ public class EditarEmprestimo extends Activity {
 		d1.setHours(0);
 		d1.setMinutes(0);
 		d1.setSeconds(0);
-		
+
 		try {
 			d = formatter.parse(data);// catch exception
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-				
-		if (Util.dataDiff(d,d1) > 0) {
-			
+
+		if (Util.dataDiff(d, d1) > 0) {
+
 			Calendar c = Calendar.getInstance();
-			
-	        int ano = c.get(Calendar.YEAR);
-	        int mes = c.get(Calendar.MONTH)+1;
-	        int dia = c.get(Calendar.DAY_OF_MONTH);
-			
-			Toast.makeText(EditarEmprestimo.this, "Data deve ser maior ou igual a " + dia + "/" + mes + "/" + ano ,
-					Toast.LENGTH_SHORT).show();
+
+			int ano = c.get(Calendar.YEAR);
+			int mes = c.get(Calendar.MONTH) + 1;
+			int dia = c.get(Calendar.DAY_OF_MONTH);
+
+			Toast.makeText(
+					EditarEmprestimo.this,
+					"Data deve ser maior ou igual a " + dia + "/" + mes + "/"
+							+ ano, Toast.LENGTH_SHORT).show();
 			return false;
+
 		}
 
 		return true;
@@ -313,7 +327,7 @@ public class EditarEmprestimo extends Activity {
 		carregarCategoria();
 
 		if (mRowId != null) {
-			
+
 			if (ec.existe(mRowId)) {
 				Emprestimo emprestimo = ec.getEmprestimo(mRowId);
 
@@ -507,13 +521,6 @@ public class EditarEmprestimo extends Activity {
 					dataDevolucao.getHours(), dataDevolucao.getMinutes(), true);
 		}
 		return null;
-	}
-	
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		super.onCreateOptionsMenu(menu);
-		menu.add(0, INSERT_ID, 0, R.string.menu_inserirCategoria);
-		return true;
 	}
 
 }
