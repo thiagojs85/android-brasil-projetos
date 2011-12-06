@@ -237,6 +237,10 @@ public class EditarEmprestimo extends Activity {
 	}
 
 	private void carregarCategoria() {
+		
+		if(cc == null) {
+			cc = new CategoriaController(this);
+		}
 
 		SimpleCursorAdapter adapterCategorias = cc
 				.getCategoriaAdapter(CategoriaController.TODOS);

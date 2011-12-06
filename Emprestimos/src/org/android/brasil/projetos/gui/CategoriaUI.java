@@ -1,8 +1,8 @@
 package org.android.brasil.projetos.gui;
 
 import org.android.brasil.projetos.control.CategoriaController;
+import org.android.brasil.projetos.control.EmprestimoController;
 import org.android.brasil.projetos.dao.CategoriaDAO;
-import org.android.brasil.projetos.dao.EmprestimoDAO;
 import org.android.brasil.projetos.model.Categoria;
 import org.android.brasil.projetos.model.TipoCategoria;
 
@@ -36,6 +36,8 @@ public class CategoriaUI extends ListActivity {
 	private Button btnCancelar;
 
 	private CategoriaController cc;
+	private EmprestimoController ec;
+
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -43,13 +45,14 @@ public class CategoriaUI extends ListActivity {
 		setContentView(R.layout.lista_categoria);
 		setTitle(R.string.ListaCategoria);
 		cc = new CategoriaController(this);
+		ec = new EmprestimoController(this);
 		fillData();
 		registerForContextMenu(getListView());
 
 	}
 
 	private void fillData() {
-		if(cc == null){
+		if (cc == null) {
 			cc = new CategoriaController(this);
 		}
 		setListAdapter(cc.getCategoriaAdapter(CategoriaController.TODOS));
@@ -58,7 +61,8 @@ public class CategoriaUI extends ListActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
-		menu.add(0, INSERT_ID, 0, R.string.menu_inserirCategoria).setIcon(R.drawable.adicionar);
+		menu.add(0, INSERT_ID, 0, R.string.menu_inserirCategoria).setIcon(
+				R.drawable.adicionar);
 		return true;
 	}
 
@@ -104,12 +108,7 @@ public class CategoriaUI extends ListActivity {
 						Toast.LENGTH_SHORT).show();
 				return false;
 			}
-
-			//TODO: Remover todos os acessos diretos a banco e passa-los para a classe de controle;
-			EmprestimoDAO.open(getApplicationContext());
-			long qtde = EmprestimoDAO
-					.consultarQtdeEmprestimosPorCategoria(info.id);
-			EmprestimoDAO.close();
+			long qtde = ec.consultarQtdeEmprestimosPorCategoria(info.id);
 
 			if (qtde > 0) {
 				AlertDialog.Builder alerta = new AlertDialog.Builder(
@@ -123,16 +122,9 @@ public class CategoriaUI extends ListActivity {
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog,
 									int whichButton) {
-								//TODO: Remover todos os acessos diretos a banco e passa-los para a classe de controle;
-								CategoriaDAO.open(getApplicationContext());
-								CategoriaDAO.deleteCategoria(idCategoria);
-								CategoriaDAO.close();
-
-								EmprestimoDAO.open(getApplicationContext());
-								EmprestimoDAO
-										.deleteEmprestimoPorCategoria(idCategoria);
-								EmprestimoDAO.close();
-
+								cc.deleteCategoria(idCategoria);
+								ec.deleteEmprestimoPorCategoria(idCategoria);
+							
 								fillData();
 								Toast.makeText(CategoriaUI.this,
 										"Excluído com sucesso!",
@@ -152,10 +144,7 @@ public class CategoriaUI extends ListActivity {
 
 				return super.onContextItemSelected(item);
 			}
-			//TODO: Remover todos os acessos diretos a banco e passa-los para a classe de controle;
-			CategoriaDAO.open(getApplicationContext());
-			CategoriaDAO.deleteCategoria(idCategoria);
-			CategoriaDAO.close();
+			cc.deleteCategoria(idCategoria);
 			fillData();
 			Toast.makeText(CategoriaUI.this, "Excluído com sucesso!",
 					Toast.LENGTH_SHORT).show();
@@ -167,12 +156,8 @@ public class CategoriaUI extends ListActivity {
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
 
-		CategoriaDAO.open(getApplicationContext());
-		Categoria cat = CategoriaDAO.consultar(id);
-		CategoriaDAO.close();
-
+		Categoria cat = cc.getCategoria(id);
 		idCategoria = id;
-
 		dialogEditarCategoria(cat);
 
 	}
@@ -195,12 +180,12 @@ public class CategoriaUI extends ListActivity {
 
 		btnConfirmar.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				
-				if(validarDescricao()) {
+
+				if (validarDescricao()) {
 					saveState();
 					dialog.dismiss();
 				}
-				
+
 			}
 		});
 
@@ -221,16 +206,12 @@ public class CategoriaUI extends ListActivity {
 	}
 
 	private void saveState() {
-		//TODO: Remover todos os acessos diretos a banco e passa-los para a classe de controle;
-		//Essa logica deve ficar no Controller tb.
-		CategoriaDAO.open(getApplicationContext());
 		Categoria cat = new Categoria();
-
 		cat.setNomeCategoria(etDescricao.getText().toString().trim());
 
 		if (idCategoria == null) {
 
-			long id = CategoriaDAO.inserir(cat);
+			long id = cc.inserir(cat);
 
 			if (id > 0) {
 				idCategoria = id;
@@ -238,7 +219,7 @@ public class CategoriaUI extends ListActivity {
 
 		} else {
 			cat.setId(idCategoria);
-			CategoriaDAO.atualizar(cat);
+			cc.atualizar(cat);
 		}
 		CategoriaDAO.close();
 
