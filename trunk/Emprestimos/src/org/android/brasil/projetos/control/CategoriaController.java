@@ -27,34 +27,53 @@ public class CategoriaController {
 		CategoriaDAO.open(act);
 		if (id == TODOS) {
 			cursorCategoria = CategoriaDAO.consultarTodasCategorias();
-		}else{
+		} else {
 			cursorCategoria = CategoriaDAO.consultarCategoria(id);
 		}
-		
+
 		CategoriaDAO.close();
-		
+
 		act.startManagingCursor(cursorCategoria);
-		
+
 		SimpleCursorAdapter adapter = new SimpleCursorAdapter(act,
 				R.layout.linha_spinner, cursorCategoria,
-				new String[] { CategoriaDAO.COLUNA_DESCRICAO }, 
+				new String[] { CategoriaDAO.COLUNA_DESCRICAO },
 				new int[] { R.id.text1 });
-		
+
 		return adapter;
 	}
-	
+
 	public Categoria getCategoria(long id) {
 		CategoriaDAO.open(act);
 		Categoria cat = CategoriaDAO.consultar(id);
 		CategoriaDAO.close();
-		
+
 		return cat;
 	}
-	
 
 	public void close() {
 		cursorCategoria.close();
-		
+
 	}
-	
+
+	public void deleteCategoria(Long idCategoria) {
+		CategoriaDAO.open(act);
+		CategoriaDAO.deleteCategoria(idCategoria);
+		CategoriaDAO.close();
+	}
+
+	public void atualizar(Categoria cat) {
+		CategoriaDAO.open(act);
+		CategoriaDAO.atualizar(cat);
+		CategoriaDAO.close();
+
+	}
+
+	public long inserir(Categoria cat) {
+		CategoriaDAO.open(act);
+		long id = CategoriaDAO.inserir(cat);
+		CategoriaDAO.close();
+		return id;
+	}
+
 }

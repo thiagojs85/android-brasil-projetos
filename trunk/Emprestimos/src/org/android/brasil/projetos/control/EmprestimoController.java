@@ -100,4 +100,20 @@ public class EmprestimoController {
 		cursorEmprestimos.close();
 		
 	}
+	
+	public long consultarQtdeEmprestimosPorCategoria(long idCategoria) {
+		EmprestimoDAO.open(act);
+		long qtde = EmprestimoDAO
+				.consultarQtdeEmprestimosPorCategoria(idCategoria);
+		EmprestimoDAO.close();
+		
+		return qtde;
+	}
+
+	public void deleteEmprestimoPorCategoria(Long idCategoria) {
+		EmprestimoDAO.open(act);
+		EmprestimoDAO.deleteEmprestimoPorCategoria(idCategoria);
+		EmprestimoDAO.close();
+		
+	}
 }
