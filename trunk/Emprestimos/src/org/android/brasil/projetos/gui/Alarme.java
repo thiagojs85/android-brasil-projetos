@@ -18,7 +18,6 @@ public class Alarme extends BroadcastReceiver {
 		// positivo, mostrar a notificação, caso negativo não fazer nada.
 		if(mRowid > 0){
 			notificationStatus(context, intent );
-			//TODO: Desativar o alarme no banco aqui!
 		}
 	}
 	
