@@ -107,6 +107,7 @@ public class CategoriaUI extends ListActivity {
 			idCategoria = info.id;
 
 			//TODO: Passar isso para o controller de categoria..
+			//Algo como cc.podeExcluirCategoria(idCategoria)
 			if (idCategoria == TipoCategoria.OUTRA.getId()
 					|| idCategoria == TipoCategoria.TODOS.getId()) {
 				Toast.makeText(this, "Esta categoria não pode ser excluída!",
