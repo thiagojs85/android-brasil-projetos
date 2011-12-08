@@ -29,8 +29,9 @@ public class EmprestimoController {
 		EmprestimoDAO.open(act);
 		if (id == TODOS) {
 			cursorEmprestimos = EmprestimoDAO.consultarTodos();
-		}else{
-			cursorEmprestimos = EmprestimoDAO.consultarEmprestimoPorCategoria(id);
+		} else {
+			cursorEmprestimos = EmprestimoDAO
+					.consultarEmprestimoPorCategoria(id);
 		}
 		EmprestimoDAO.close();
 
@@ -51,62 +52,64 @@ public class EmprestimoController {
 		return adapter;
 	}
 
-	public boolean deletarEmprestimo(long id){
+	public boolean deletarEmprestimo(long id) {
 		EmprestimoDAO.open(act);
 		boolean resp = EmprestimoDAO.deleteEmprestimo(id);
 		EmprestimoDAO.close();
-		
+
 		return resp;
 	}
-	
 
-	public Emprestimo getEmprestimo(long id){
+	public Emprestimo getEmprestimo(long id) {
 		EmprestimoDAO.open(act);
 		Emprestimo emprestimo = EmprestimoDAO.consultar(id);
 		EmprestimoDAO.close();
-		
+
 		return emprestimo;
 	}
-	
-	public void atualizaNotification(long id) {
+
+	public void atualizaNotificacao(long id) {
 		EmprestimoDAO.open(act);
 		EmprestimoDAO.atualizarAlarme(id);
-		EmprestimoDAO.close();		
-			
+		EmprestimoDAO.close();
+
 	}
-	
+
 	public boolean existe(long id) {
 		EmprestimoDAO.open(act);
-	 	boolean isValido = EmprestimoDAO.existe(id);
-	 	EmprestimoDAO.close();
-	 	
-	 	return isValido;
+		boolean isValido = EmprestimoDAO.existe(id);
+		EmprestimoDAO.close();
+
+		return isValido;
 	}
-	
+
 	public void atualizarEmprestimo(Emprestimo emp) {
 		EmprestimoDAO.open(act);
 		EmprestimoDAO.atualizarEmprestimo(emp);
 		EmprestimoDAO.close();
 	}
-	
+
 	public long inserirEmprestimo(Emprestimo emp) {
 		EmprestimoDAO.open(act);
-		long id =	EmprestimoDAO.inserirEmprestimo(emp);
+		long id = EmprestimoDAO.inserirEmprestimo(emp);
 		EmprestimoDAO.close();
 		return id;
-	}	
-	
-	public void close() {
-		cursorEmprestimos.close();
-		
 	}
-	
+
+	public void close() {
+		if (cursorEmprestimos != null) {
+			act.stopManagingCursor(cursorEmprestimos);
+			cursorEmprestimos.close();
+		}
+
+	}
+
 	public long consultarQtdeEmprestimosPorCategoria(long idCategoria) {
 		EmprestimoDAO.open(act);
 		long qtde = EmprestimoDAO
 				.consultarQtdeEmprestimosPorCategoria(idCategoria);
 		EmprestimoDAO.close();
-		
+
 		return qtde;
 	}
 
@@ -114,6 +117,6 @@ public class EmprestimoController {
 		EmprestimoDAO.open(act);
 		EmprestimoDAO.deleteEmprestimoPorCategoria(idCategoria);
 		EmprestimoDAO.close();
-		
+
 	}
 }

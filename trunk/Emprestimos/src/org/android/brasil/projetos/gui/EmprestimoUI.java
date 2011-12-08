@@ -43,10 +43,9 @@ public class EmprestimoUI extends ListActivity {
 		registerForContextMenu(getListView());
 	}
 
-	@SuppressWarnings("static-access")
 	private void fillData() {
 
-		setListAdapter(ec.getEmprestimoAdapter(ec.TODOS));
+		setListAdapter(ec.getEmprestimoAdapter(EmprestimoController.TODOS));
 
 		spCategoria
 				.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -60,7 +59,7 @@ public class EmprestimoUI extends ListActivity {
 					}
 				});
 
-		SimpleCursorAdapter categoriaAdapter = cc.getCategoriaAdapter(cc.TODOS);
+		SimpleCursorAdapter categoriaAdapter = cc.getCategoriaAdapter(CategoriaController.TODOS);
 		if (categoriaAdapter != null && categoriaAdapter.getCount() > 0) {
 			spCategoria.setEnabled(true);
 		} else {

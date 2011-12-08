@@ -13,9 +13,10 @@ import android.widget.Toast;
 public class EditarCategoria extends Activity  {
 	
 	private EditText etDescricao;
-	private Long mRowId;
+	private Long idCategoria;
 	
 
+	//TODO: Essa classe não é mais utilizada, certo? Que tal apagarmos ela? Se concordar, apaga ai.
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.editar_categoria);
@@ -38,22 +39,22 @@ public class EditarCategoria extends Activity  {
 			}
 		});
 		
-		mRowId = (savedInstanceState == null) ? null : (Long) savedInstanceState
+		idCategoria = (savedInstanceState == null) ? null : (Long) savedInstanceState
 				.getSerializable(CategoriaDAO.COLUNA_ID);
 
-		if (mRowId == null) {
+		if (idCategoria == null) {
 			Bundle extras = getIntent().getExtras();
-			mRowId = extras != null ? extras.getLong(CategoriaDAO.COLUNA_ID) : null;
+			idCategoria = extras != null ? extras.getLong(CategoriaDAO.COLUNA_ID) : null;
 		}
 		
 		populateFields();
 	}
 	
 	private void populateFields() {
-		if (mRowId != null) {
+		if (idCategoria != null) {
 
 			CategoriaDAO.open(getApplicationContext());
-			Categoria cat = CategoriaDAO.consultar(mRowId);
+			Categoria cat = CategoriaDAO.consultar(idCategoria);
 			CategoriaDAO.close();
 			
 			etDescricao.setText(cat.getNomeCategoria());
@@ -67,16 +68,16 @@ public class EditarCategoria extends Activity  {
 		
 		cat.setNomeCategoria(etDescricao.getText().toString().trim());
 		
-		if (mRowId == null) {
+		if (idCategoria == null) {
 			
 			long id = CategoriaDAO.inserir(cat);
 			
 			if(id >0) {
-				mRowId = id;
+				idCategoria = id;
 			}
 			
 		} else {
-			cat.setId(mRowId);
+			cat.setId(idCategoria);
 			CategoriaDAO.atualizar(cat);
 		}	
 		CategoriaDAO.close();

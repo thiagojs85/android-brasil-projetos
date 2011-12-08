@@ -47,7 +47,7 @@ public class EmprestimoDAO extends BasicoDAO {
 	}
 
 	private static Emprestimo deCursorParaEmprestimo(Cursor c) {
-		if(c == null || (c != null && c.getCount() == 0)){
+		if (c == null || (c != null && c.getCount() == 0)) {
 			return null;
 		}
 		Emprestimo emp = new Emprestimo();
@@ -116,21 +116,21 @@ public class EmprestimoDAO extends BasicoDAO {
 		return emp;
 
 	}
-	
+
 	public static boolean existe(long idEmprestimo) {
 		boolean existe;
-		
+
 		Cursor mCursor = consultar(TABELA_EMPRESTIMOS, COLUNA_ID_EMPRESTIMO,
 				String.valueOf(idEmprestimo));
-				
-		if(mCursor.getCount() > 0 ) {
+
+		if (mCursor.getCount() > 0) {
 			existe = true;
 		} else {
 			existe = false;
 		}
-		
+
 		mCursor.close();
-		
+
 		return existe;
 
 	}
@@ -141,14 +141,14 @@ public class EmprestimoDAO extends BasicoDAO {
 				new String[] { EmprestimoDAO.COLUNA_ID_EMPRESTIMO },
 				new String[] { String.valueOf(emp.getIdEmprestimo()) });
 	}
-	
+
 	public static void atualizarAlarme(long id) {
 		ContentValues values = new ContentValues();
-		values.put(COLUNA_ATIVAR_ALARME,1);
+		values.put(COLUNA_ATIVAR_ALARME, 1);
 		atualizar(TABELA_EMPRESTIMOS, values,
 				new String[] { EmprestimoDAO.COLUNA_ID_EMPRESTIMO },
 				new String[] { String.valueOf(id) });
-		
+
 	}
 
 	public static List<Emprestimo> listarEmprestimoPorCategoria(long idCategoria) {
@@ -180,7 +180,7 @@ public class EmprestimoDAO extends BasicoDAO {
 				String.valueOf(idCategoria));
 		long qtde = mCursor.getCount();
 		mCursor.close();
-		
+
 		return qtde;
 	}
 

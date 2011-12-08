@@ -38,8 +38,17 @@ public class ContatosController {
 				R.layout.linha_spinner, cursorContato,
 				from,to);
 		
-		act.stopManagingCursor(cursorContato);
+
 
 		return adapter;
 	}
+	
+	public void close(){
+		if(cursorContato != null){
+			act.stopManagingCursor(cursorContato);
+			cursorContato.close();
+		}
+
+	}
+
 }
