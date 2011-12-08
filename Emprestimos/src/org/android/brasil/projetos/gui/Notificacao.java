@@ -10,6 +10,8 @@ import android.os.Bundle;
 
 public class Notificacao extends Activity {
 
+	//TODO: Essa classe está sendo usada? Se não estiver, podemos apagar?
+	//É uma boa manter o projeto sempre limpo.
 	@Override
 	protected void onCreate(Bundle icicle) {
 		super.onCreate(icicle);

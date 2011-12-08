@@ -43,8 +43,8 @@ public class DbAdapter {
 
 		@Override
 		public void onCreate(SQLiteDatabase db) {
-			System.out.println(EmprestimoDAO.CREATE_TABLE);
-			System.out.println(CategoriaDAO.createTableCategoria());
+			//System.out.println(EmprestimoDAO.CREATE_TABLE);
+			//System.out.println(CategoriaDAO.createTableCategoria());
 			db.execSQL(EmprestimoDAO.CREATE_TABLE);
 			db.execSQL(CategoriaDAO.createTableCategoria());
 			db.execSQL(CategoriaDAO.insertCategoriaDefault());

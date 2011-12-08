@@ -52,7 +52,10 @@ public class CategoriaController {
 	}
 
 	public void close() {
-		cursorCategoria.close();
+		if (cursorCategoria != null) {
+			act.stopManagingCursor(cursorCategoria);
+			cursorCategoria.close();
+		}
 
 	}
 

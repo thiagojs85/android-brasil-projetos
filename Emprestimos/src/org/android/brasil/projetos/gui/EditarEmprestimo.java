@@ -42,7 +42,6 @@ import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Adapter;
@@ -64,7 +63,7 @@ public class EditarEmprestimo extends Activity {
 
 	private EditText etItem;
 	private EditText etDescricao;
-	private Long mRowId;
+	private Long idEmprestimo;
 	private TextView tvContato;
 	boolean notificacao = false;
 
@@ -87,6 +86,15 @@ public class EditarEmprestimo extends Activity {
 
 	private static final int DATE_DIALOG_ID_DATE = 0;
 	private static final int DATE_DIALOG_ID_TIME = 1;
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		cc.close();
+		ec.close();
+		//TODO: Tem que fechar os cursores..cade o método close desse cara?
+		//ctc.close();
+	}
 	
 	private DatePickerDialog.OnDateSetListener dataListener = new DatePickerDialog.OnDateSetListener() {
 		public void onDateSet(DatePicker view, int year, int monthOfYear,
@@ -184,7 +192,7 @@ public class EditarEmprestimo extends Activity {
 			public void onClick(View view) {
 				if (validarCampos()) {
 					saveState();
-					Log.w("EditarEmprestimo", "Fim da edição");
+					// Log.w("EditarEmprestimo", "Fim da edição");
 					setResult(RESULT_OK);
 					finish();
 				}
@@ -212,23 +220,26 @@ public class EditarEmprestimo extends Activity {
 			}
 		});
 
-		mRowId = (savedInstanceState == null) ? null
+		idEmprestimo = (savedInstanceState == null) ? null
 				: (Long) savedInstanceState
 						.getSerializable(EmprestimoDAO.COLUNA_ID_EMPRESTIMO);
 
-		if (mRowId == null) {
+		if (idEmprestimo == null) {
 			Bundle extras = getIntent().getExtras();
-			mRowId = extras != null ? extras
+			idEmprestimo = extras != null ? extras
 					.getLong(EmprestimoDAO.COLUNA_ID_EMPRESTIMO) : null;
+			
+			//TODO: Desativar o alarme em Alarme.java, crie um EmprestimosController lá.
+			//Assim tentamos misturar menos a logica..
 			notificacao = extras != null ? extras
 					.getBoolean(EmprestimoDAO.COLUNA_ATIVAR_ALARME) : null;
 
 			if (notificacao) {
-				ec.atualizaNotification(mRowId);
+				ec.atualizaNotificacao(idEmprestimo);
 			}
-			
-			if (mRowId == 0) {
-				mRowId = null;
+
+			if (idEmprestimo == 0) {
+				idEmprestimo = null;
 			}
 		}
 
@@ -237,8 +248,8 @@ public class EditarEmprestimo extends Activity {
 	}
 
 	private void carregarCategoria() {
-		
-		if(cc == null) {
+
+		if (cc == null) {
 			cc = new CategoriaController(this);
 		}
 
@@ -289,6 +300,10 @@ public class EditarEmprestimo extends Activity {
 			return false;
 		}
 
+		
+		//TODO: O que o trecho abaixo está fazendo? Não entendi o motivo disso...
+		//Temos um método que atualiza o EditText de Data e Hora..acho que isso não deveria estar aqui..
+		//INICIO
 		SimpleDateFormat simpleFormat = new SimpleDateFormat("dd/MM/yyyy");
 		etDataDevolucao.setText(simpleFormat.format(dataDevolucao));
 
@@ -307,6 +322,13 @@ public class EditarEmprestimo extends Activity {
 			e.printStackTrace();
 		}
 
+		// TODO: Para verificar qual Date é mais novo você pode usar o método Date.getTime()
+		//..que o maior será o objeto Date com data mais "no futuro"
+		//Ou seja, para verificar se a data de devolução não está setada para um valor no passado:
+		if (dataDevolucao.getTime()< Calendar.getInstance().getTime().getTime()){
+			//Valor inválido! Mudar a data!
+		}
+		
 		if (Util.dataDiff(d, d1) > 0) {
 
 			Calendar c = Calendar.getInstance();
@@ -322,6 +344,7 @@ public class EditarEmprestimo extends Activity {
 			return false;
 
 		}
+		//FIM
 
 		return true;
 	}
@@ -330,10 +353,10 @@ public class EditarEmprestimo extends Activity {
 
 		carregarCategoria();
 
-		if (mRowId != null) {
+		if (idEmprestimo != null) {
 
-			if (ec.existe(mRowId)) {
-				Emprestimo emprestimo = ec.getEmprestimo(mRowId);
+			if (ec.existe(idEmprestimo)) {
+				Emprestimo emprestimo = ec.getEmprestimo(idEmprestimo);
 
 				long status = emprestimo.getStatus();
 				if (status == Emprestimo.STATUS_EMPRESTAR) {
@@ -428,7 +451,8 @@ public class EditarEmprestimo extends Activity {
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 		saveState();
-		outState.putSerializable(EmprestimoDAO.COLUNA_ID_EMPRESTIMO, mRowId);
+		outState.putSerializable(EmprestimoDAO.COLUNA_ID_EMPRESTIMO,
+				idEmprestimo);
 	}
 
 	@Override
@@ -463,7 +487,8 @@ public class EditarEmprestimo extends Activity {
 				alarme = Emprestimo.ATIVAR_ALARME;
 
 				Intent intent = new Intent(EditarEmprestimo.this, Alarme.class);
-				intent.putExtra(EmprestimoDAO.COLUNA_ID_EMPRESTIMO, mRowId);
+				intent.putExtra(EmprestimoDAO.COLUNA_ID_EMPRESTIMO,
+						idEmprestimo);
 				PendingIntent sender = PendingIntent.getBroadcast(
 						EditarEmprestimo.this, 0, intent,
 						PendingIntent.FLAG_UPDATE_CURRENT);
@@ -490,14 +515,14 @@ public class EditarEmprestimo extends Activity {
 				emp.setContato(null);
 			}
 
-			if (mRowId == null) {
+			if (idEmprestimo == null) {
 
 				long id = ec.inserirEmprestimo(emp);
 				if (id > 0) {
-					mRowId = id;
+					idEmprestimo = id;
 				}
 			} else {
-				emp.setIdEmprestimo(mRowId);
+				emp.setIdEmprestimo(idEmprestimo);
 				ec.atualizarEmprestimo(emp);
 
 			}

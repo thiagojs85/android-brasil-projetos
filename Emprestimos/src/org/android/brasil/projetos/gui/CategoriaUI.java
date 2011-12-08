@@ -2,7 +2,6 @@ package org.android.brasil.projetos.gui;
 
 import org.android.brasil.projetos.control.CategoriaController;
 import org.android.brasil.projetos.control.EmprestimoController;
-import org.android.brasil.projetos.dao.CategoriaDAO;
 import org.android.brasil.projetos.model.Categoria;
 import org.android.brasil.projetos.model.TipoCategoria;
 
@@ -24,8 +23,6 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 public class CategoriaUI extends ListActivity {
-	// private static final int ACTIVITY_CREATE = 0;
-	// private static final int ACTIVITY_EDIT = 1;
 
 	private static final int INSERT_ID = Menu.FIRST;
 	private static final int DELETE_ID = Menu.FIRST + 1;
@@ -38,13 +35,20 @@ public class CategoriaUI extends ListActivity {
 	private CategoriaController cc;
 	private EmprestimoController ec;
 
+	@Override
+	protected void onPause() {
+		super.onPause();
+		cc.close();
+		ec.close();
+	}
+
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.lista_categoria);
 		setTitle(R.string.ListaCategoria);
-		cc = new CategoriaController(this);
+
 		ec = new EmprestimoController(this);
 		fillData();
 		registerForContextMenu(getListView());
@@ -77,7 +81,7 @@ public class CategoriaUI extends ListActivity {
 				etDescricao.setText("");
 			}
 
-			dialogEditarCategoria(null);
+			dialogEditarCategoria(new Categoria());
 			return true;
 		}
 
@@ -102,12 +106,14 @@ public class CategoriaUI extends ListActivity {
 
 			idCategoria = info.id;
 
+			//TODO: Passar isso para o controller de categoria..
 			if (idCategoria == TipoCategoria.OUTRA.getId()
 					|| idCategoria == TipoCategoria.TODOS.getId()) {
 				Toast.makeText(this, "Esta categoria não pode ser excluída!",
 						Toast.LENGTH_SHORT).show();
 				return false;
 			}
+
 			long qtde = ec.consultarQtdeEmprestimosPorCategoria(info.id);
 
 			if (qtde > 0) {
@@ -124,7 +130,7 @@ public class CategoriaUI extends ListActivity {
 									int whichButton) {
 								cc.deleteCategoria(idCategoria);
 								ec.deleteEmprestimoPorCategoria(idCategoria);
-							
+
 								fillData();
 								Toast.makeText(CategoriaUI.this,
 										"Excluído com sucesso!",
@@ -209,6 +215,9 @@ public class CategoriaUI extends ListActivity {
 		Categoria cat = new Categoria();
 		cat.setNomeCategoria(etDescricao.getText().toString().trim());
 
+		// TODO: Todo o trecho daqui para baixo pode ser passado para o
+		// controller de categoria em um método inserirOuAtualizar
+		// O quanto menos a interface souber da parte de banco, melhor.
 		if (idCategoria == null) {
 
 			long id = cc.inserir(cat);
@@ -221,10 +230,8 @@ public class CategoriaUI extends ListActivity {
 			cat.setId(idCategoria);
 			cc.atualizar(cat);
 		}
-		CategoriaDAO.close();
 
 		fillData();
-
 	}
 
 	private boolean validarDescricao() {

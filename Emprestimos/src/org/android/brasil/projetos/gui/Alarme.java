@@ -14,8 +14,11 @@ public class Alarme extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		mRowid = intent.getLongExtra(EmprestimoDAO.COLUNA_ID_EMPRESTIMO, 0);
+		//TODO: Verificar no banco se o emprestimo com esse ID está com o status do alarme ativo, caso 
+		// positivo, mostrar a notificação, caso negativo não fazer nada.
 		if(mRowid > 0){
 			notificationStatus(context, intent );
+			//TODO: Desativar o alarme no banco aqui!
 		}
 	}
 	
@@ -28,8 +31,9 @@ public class Alarme extends BroadcastReceiver {
 	    final CharSequence tickerText = context.getString(R.string.app_name);
 	    final long when = System.currentTimeMillis();
 
-	    final Notification notification = new Notification(icon, context.getString(R.string.app_name), when);
-	    final Intent notificationIntent = new Intent(context.getApplicationContext(),   EditarEmprestimo.class);
+	    final Notification notification = new Notification(icon, tickerText, when);
+	    final Intent notificationIntent = new Intent(context,   EditarEmprestimo.class);
+	    
 	    notificationIntent.putExtras(i.getExtras());
 	    notificationIntent.putExtra(EmprestimoDAO.COLUNA_ATIVAR_ALARME, true);
 	    notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -43,7 +47,4 @@ public class Alarme extends BroadcastReceiver {
 	    mNotificationManager.notify(R.string.app_name, notification);
 
 	}
-
-	
-	
 }
