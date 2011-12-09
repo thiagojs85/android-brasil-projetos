@@ -92,10 +92,10 @@ public class EditarEmprestimo extends Activity {
 		super.onPause();
 		cc.close();
 		ec.close();
-		//TODO: Tem que fechar os cursores..cade o método close desse cara?
-		//ctc.close();
+		// TODO: Tem que fechar os cursores..cade o método close desse cara?
+		// ctc.close();
 	}
-	
+
 	private DatePickerDialog.OnDateSetListener dataListener = new DatePickerDialog.OnDateSetListener() {
 		public void onDateSet(DatePicker view, int year, int monthOfYear,
 				int dayOfMonth) {
@@ -228,9 +228,10 @@ public class EditarEmprestimo extends Activity {
 			Bundle extras = getIntent().getExtras();
 			idEmprestimo = extras != null ? extras
 					.getLong(EmprestimoDAO.COLUNA_ID_EMPRESTIMO) : null;
-			
-			//TODO: Desativar o alarme em Alarme.java, crie um EmprestimosController lá.
-			//Assim tentamos misturar menos a logica..
+
+			// TODO: Desativar o alarme em Alarme.java, crie um
+			// EmprestimosController lá.
+			// Assim tentamos misturar menos a logica..
 			notificacao = extras != null ? extras
 					.getBoolean(EmprestimoDAO.COLUNA_ATIVAR_ALARME) : null;
 
@@ -300,10 +301,11 @@ public class EditarEmprestimo extends Activity {
 			return false;
 		}
 
-		
-		//TODO: O que o trecho abaixo está fazendo? Não entendi o motivo disso...
-		//Temos um método que atualiza o EditText de Data e Hora..acho que isso não deveria estar aqui..
-		//INICIO
+		// TODO: O que o trecho abaixo está fazendo? Não entendi o motivo
+		// disso...
+		// Temos um método que atualiza o EditText de Data e Hora..acho que isso
+		// não deveria estar aqui..
+		// INICIO
 		SimpleDateFormat simpleFormat = new SimpleDateFormat("dd/MM/yyyy");
 		etDataDevolucao.setText(simpleFormat.format(dataDevolucao));
 
@@ -322,13 +324,16 @@ public class EditarEmprestimo extends Activity {
 			e.printStackTrace();
 		}
 
-		// TODO: Para verificar qual Date é mais novo você pode usar o método Date.getTime()
-		//..que o maior será o objeto Date com data mais "no futuro"
-		//Ou seja, para verificar se a data de devolução não está setada para um valor no passado:
-		if (dataDevolucao.getTime()< Calendar.getInstance().getTime().getTime()){
-			//Valor inválido! Mudar a data!
+		// TODO: Para verificar qual Date é mais novo você pode usar o método
+		// Date.getTime()
+		// ..que o maior será o objeto Date com data mais "no futuro"
+		// Ou seja, para verificar se a data de devolução não está setada para
+		// um valor no passado:
+		if (dataDevolucao.getTime() < Calendar.getInstance().getTime()
+				.getTime()) {
+			// Valor inválido! Mudar a data!
 		}
-		
+
 		if (Util.dataDiff(d, d1) > 0) {
 
 			Calendar c = Calendar.getInstance();
@@ -344,7 +349,7 @@ public class EditarEmprestimo extends Activity {
 			return false;
 
 		}
-		//FIM
+		// FIM
 
 		return true;
 	}
@@ -480,12 +485,13 @@ public class EditarEmprestimo extends Activity {
 				status = Emprestimo.STATUS_PEGAR_EMPRESTADO;
 			}
 
-			long idContato = spNomes.getSelectedItemId();
-
 			int alarme = Emprestimo.DESATIVAR_ALARME;
 			if (cbAlarme.isChecked()) {
 				alarme = Emprestimo.ATIVAR_ALARME;
 
+				//TODO: Que tal criar um controller para Alarme e passar esse trecho para ele?				
+				//TODO: POSSIVEL BUG: Se vc estiver inserindo um emprestimo, idEmprestimo vai estar com que valor?
+				//acho que null neh? Isso tem que ser feito depois que o emprestimo for inserido no banco.
 				Intent intent = new Intent(EditarEmprestimo.this, Alarme.class);
 				intent.putExtra(EmprestimoDAO.COLUNA_ID_EMPRESTIMO,
 						idEmprestimo);
@@ -499,6 +505,7 @@ public class EditarEmprestimo extends Activity {
 			}
 
 			long idCategoria = spCategoria.getSelectedItemId();
+			long idContato = 0L;
 
 			Emprestimo emp = new Emprestimo();
 			emp.setItem(item);
@@ -506,13 +513,16 @@ public class EditarEmprestimo extends Activity {
 			emp.setData(data);
 			emp.setStatus(status);
 			emp.setAtivarAlarme(alarme);
-			emp.setIdContato(idContato);
+
 			emp.setIdCategoria(idCategoria);
 
 			if (cbContato.isChecked()) {
 				emp.setContato(etContato.getText().toString());
+				emp.setIdContato(0);
 			} else {
 				emp.setContato(null);
+				idContato = spNomes.getSelectedItemId();
+				emp.setIdContato(idContato);
 			}
 
 			if (idEmprestimo == null) {
