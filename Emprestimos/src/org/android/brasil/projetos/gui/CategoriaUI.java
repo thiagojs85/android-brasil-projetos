@@ -106,8 +106,8 @@ public class CategoriaUI extends ListActivity {
 
 			idCategoria = info.id;
 
-			//TODO: Passar isso para o controller de categoria..
-			//Algo como cc.podeExcluirCategoria(idCategoria)
+			// TODO: Passar isso para o controller de categoria..
+			// Algo como cc.podeExcluirCategoria(idCategoria)
 			if (idCategoria == TipoCategoria.OUTRA.getId()
 					|| idCategoria == TipoCategoria.TODOS.getId()) {
 				Toast.makeText(this, "Esta categoria não pode ser excluída!",
@@ -175,6 +175,7 @@ public class CategoriaUI extends ListActivity {
 
 		dialog.setContentView(R.layout.custom_dialog);
 
+		//TODO: Usar o strings.xml em todas as mensagens..vamos pensar em internacionalizar essa app ?
 		dialog.setTitle("Categorias");
 
 		btnConfirmar = (Button) dialog.findViewById(R.id.bt_confirmar);
@@ -213,12 +214,11 @@ public class CategoriaUI extends ListActivity {
 	}
 
 	private void saveState() {
+		// TODO: Criar método em cc com o código abaixo..a interface so tem que
+		// mandar salvar o estado..o control que decide o que fazer..
 		Categoria cat = new Categoria();
 		cat.setNomeCategoria(etDescricao.getText().toString().trim());
 
-		// TODO: Todo o trecho daqui para baixo pode ser passado para o
-		// controller de categoria em um método inserirOuAtualizar
-		// O quanto menos a interface souber da parte de banco, melhor.
 		if (idCategoria == null) {
 
 			long id = cc.inserir(cat);
