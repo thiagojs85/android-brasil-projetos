@@ -68,13 +68,6 @@ public class EmprestimoController {
 		return emprestimo;
 	}
 
-	public void atualizaNotificacao(long id) {
-		EmprestimoDAO.open(act);
-		EmprestimoDAO.atualizarAlarme(id);
-		EmprestimoDAO.close();
-
-	}
-
 	public boolean existe(long id) {
 		EmprestimoDAO.open(act);
 		boolean isValido = EmprestimoDAO.existe(id);
@@ -118,5 +111,19 @@ public class EmprestimoController {
 		EmprestimoDAO.deleteEmprestimoPorCategoria(idCategoria);
 		EmprestimoDAO.close();
 
+	}
+	
+	public long inserirAtualizar(Emprestimo emp) {
+		if (emp.getIdEmprestimo() == 0) {
+
+			long id = inserirEmprestimo(emp);
+			if (id > 0) {
+				emp.setIdCategoria(id);
+			}
+		} else {
+			atualizarEmprestimo(emp);
+		}
+		
+		return emp.getIdEmprestimo();
 	}
 }

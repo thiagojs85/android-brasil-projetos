@@ -3,6 +3,7 @@ package org.android.brasil.projetos.control;
 import org.android.brasil.projetos.dao.CategoriaDAO;
 import org.android.brasil.projetos.gui.R;
 import org.android.brasil.projetos.model.Categoria;
+import org.android.brasil.projetos.model.TipoCategoria;
 
 import android.app.Activity;
 import android.database.Cursor;
@@ -77,6 +78,30 @@ public class CategoriaController {
 		long id = CategoriaDAO.inserir(cat);
 		CategoriaDAO.close();
 		return id;
+	}
+	
+	public boolean isCategoriaPadrao(long idCategoria) {
+		if (idCategoria == TipoCategoria.OUTRA.getId()	|| idCategoria == TipoCategoria.TODOS.getId()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public long inserirAtualizar(Categoria cat) {
+		if (cat.getId() == 0) {
+
+			long id = inserir(cat);
+
+			if (id > 0) {
+				cat.setId(id);
+			}
+		
+		} else {
+			atualizar(cat);
+		}
+		
+		return cat.getId();
 	}
 
 }
