@@ -3,7 +3,6 @@ package org.android.brasil.projetos.gui;
 import org.android.brasil.projetos.control.CategoriaController;
 import org.android.brasil.projetos.control.EmprestimoController;
 import org.android.brasil.projetos.model.Categoria;
-import org.android.brasil.projetos.model.TipoCategoria;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -106,11 +105,8 @@ public class CategoriaUI extends ListActivity {
 
 			idCategoria = info.id;
 
-			// TODO: Passar isso para o controller de categoria..
-			// Algo como cc.podeExcluirCategoria(idCategoria)
-			if (idCategoria == TipoCategoria.OUTRA.getId()
-					|| idCategoria == TipoCategoria.TODOS.getId()) {
-				Toast.makeText(this, "Esta categoria nÃ£o pode ser excluÃ­da!",
+			if (cc.isCategoriaPadrao(idCategoria)) {
+				Toast.makeText(this, "Esta categoria não pode ser excluída!",
 						Toast.LENGTH_SHORT).show();
 				return false;
 			}
@@ -121,9 +117,9 @@ public class CategoriaUI extends ListActivity {
 				AlertDialog.Builder alerta = new AlertDialog.Builder(
 						CategoriaUI.this);
 				alerta.setIcon(R.drawable.im_atencao);
-				alerta.setTitle("ExclusÃ£o");
+				alerta.setTitle("Exclusão");
 				alerta.setMessage("Deseja excluir esta categoria e \n " + qtde
-						+ " emprÃ©stimo(s) com esta categoria ?");
+						+ " empréstimo(s) com esta categoria ?");
 
 				alerta.setPositiveButton("Sim",
 						new DialogInterface.OnClickListener() {
@@ -134,12 +130,12 @@ public class CategoriaUI extends ListActivity {
 
 								fillData();
 								Toast.makeText(CategoriaUI.this,
-										"ExcluÃ­do com sucesso!",
+										"Excluído com sucesso!",
 										Toast.LENGTH_SHORT).show();
 							}
 						});
 
-				alerta.setNegativeButton("NÃ£o",
+				alerta.setNegativeButton("Nãoo",
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog,
 									int whichButton) {
@@ -153,7 +149,7 @@ public class CategoriaUI extends ListActivity {
 			}
 			cc.deleteCategoria(idCategoria);
 			fillData();
-			Toast.makeText(CategoriaUI.this, "ExcluÃ­do com sucesso!",
+			Toast.makeText(CategoriaUI.this, "Excluído com sucesso!",
 					Toast.LENGTH_SHORT).show();
 		}
 		return super.onContextItemSelected(item);
@@ -175,7 +171,6 @@ public class CategoriaUI extends ListActivity {
 
 		dialog.setContentView(R.layout.custom_dialog);
 
-		//TODO: Usar o strings.xml em todas as mensagens..vamos pensar em internacionalizar essa app ?
 		dialog.setTitle("Categorias");
 
 		btnConfirmar = (Button) dialog.findViewById(R.id.bt_confirmar);
@@ -214,31 +209,23 @@ public class CategoriaUI extends ListActivity {
 	}
 
 	private void saveState() {
-		// TODO: Criar mÃ©todo em cc com o cÃ³digo abaixo..a interface so tem que
-		// mandar salvar o estado..o control que decide o que fazer..
 		Categoria cat = new Categoria();
 		cat.setNomeCategoria(etDescricao.getText().toString().trim());
 
 		if (idCategoria == null) {
-
-			long id = cc.inserir(cat);
-
-			if (id > 0) {
-				idCategoria = id;
-			}
-
+			cat.setId(0);
 		} else {
 			cat.setId(idCategoria);
-			cc.atualizar(cat);
 		}
-
+		
+		cc.inserirAtualizar(cat);
 		fillData();
 	}
 
 	private boolean validarDescricao() {
 
 		if (etDescricao.getText().toString().equals("")) {
-			Toast.makeText(CategoriaUI.this, "Preencha a descriÃ§Ã£o!",
+			Toast.makeText(CategoriaUI.this, "Preencha a descrição!",
 					Toast.LENGTH_SHORT).show();
 			return false;
 		}
