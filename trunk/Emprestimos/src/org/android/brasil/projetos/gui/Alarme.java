@@ -53,15 +53,18 @@ public class Alarme extends BroadcastReceiver {
 		final PendingIntent contentIntent = PendingIntent.getActivity(
 				context.getApplicationContext(), 0, notificationIntent, 0);
 
-		String  notificacao = context.getString(R.string.notificacao);
-		if(emprestimo.getStatus() == Emprestimo.STATUS_PEGAR_EMPRESTADO){
-			notificacao = "Hora de devolver o "+emprestimo.getItem();
-		}else{
-			notificacao = "Já recebeu o "+emprestimo.getItem()+" de volta?";
+		String notificacao = context.getString(R.string.notificacao);
+		if (emprestimo.getStatus() == Emprestimo.STATUS_PEGAR_EMPRESTADO) {
+			notificacao = context.getString(R.string.hora_de_devolver)
+					+ emprestimo.getItem();
+		} else {
+			notificacao = context.getString(R.string.ja_recebeu_item)
+					+ emprestimo.getItem()
+					+ context.getString(R.string.de_volta);
 		}
-		
-		notification.setLatestEventInfo(context, tickerText,
-				notificacao, contentIntent);
+
+		notification.setLatestEventInfo(context, tickerText, notificacao,
+				contentIntent);
 
 		notification.vibrate = new long[] { 100, 250, 100, 500 };
 		mNotificationManager.notify(R.string.app_name, notification);
