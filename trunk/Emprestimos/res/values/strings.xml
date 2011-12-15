@@ -28,5 +28,29 @@
 	<string name="hora_devolucao">Hora da Devolução</string>
 	
 	<string name="editar_categoria">Editar Categoria</string>
-	<string name="notification">Empréstimo a Receber/Devolver</string>
+	<string name="notificacao">Empréstimo a Receber/Devolver</string>
+	
+	<string name="preencher_descricao">Preencha a descrição!</string>
+	<string name="excluido_com_sucesso">Excluído com sucesso!</string>
+	<string name="nao">Não</string>
+	<string name="sim">Sim</string>
+
+	<string name="emprestimo_com_esta_categoria"> empréstimo(s) com esta categoria ?</string>
+	<string name="deseja_excluir_esta_categoria">Deseja excluir esta categoria e \n </string>
+	<string name="exclusao">Exclusão</string>
+	
+	<string name="esta_categoria_nao_pode_ser_excluida">Esta categoria não pode ser excluída!</string>
+	<string name="nome_do_item_deve_ser_informado">O nome do item deve ser informado!</string>
+	    
+	    <string name="data_hora_devem_ser_informados">Data/Hora devem ser maiores que a data/hora atuais</string>
+	    <!-- 
+	    
+	    
+	    
+	    <string name=""></string>
+	    <string name=""></string-->
+	
+
+	    
+
 </resources>

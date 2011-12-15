@@ -30,16 +30,22 @@ public class EmprestimoUI extends ListActivity {
 	private Spinner spCategoria;
 
 	@Override
+	protected void onResume() {
+		//http://developer.android.com/images/activity_lifecycle.png
+		super.onResume();
+		if (cc == null || cc.isClosed()) {
+			ec = new EmprestimoController(this);
+			cc = new CategoriaController(this);
+		}
+		fillData();
+	}
+
+	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.lista_emprestimo);
 
 		spCategoria = (Spinner) findViewById(R.id.spCategoria);
-
-		ec = new EmprestimoController(this);
-		cc = new CategoriaController(this);
-
-		fillData();
 		registerForContextMenu(getListView());
 	}
 
@@ -59,7 +65,8 @@ public class EmprestimoUI extends ListActivity {
 					}
 				});
 
-		SimpleCursorAdapter categoriaAdapter = cc.getCategoriaAdapter(CategoriaController.TODOS);
+		SimpleCursorAdapter categoriaAdapter = cc
+				.getCategoriaAdapter(CategoriaController.TODOS);
 		if (categoriaAdapter != null && categoriaAdapter.getCount() > 0) {
 			spCategoria.setEnabled(true);
 		} else {
@@ -76,7 +83,9 @@ public class EmprestimoUI extends ListActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
-		menu.add(0, INSERT_ID, 0, R.string.menu_inserir).setIcon(R.drawable.adicionar);;
+		menu.add(0, INSERT_ID, 0, R.string.menu_inserir).setIcon(
+				R.drawable.adicionar);
+		;
 		return true;
 	}
 
@@ -129,6 +138,10 @@ public class EmprestimoUI extends ListActivity {
 	protected void onActivityResult(int requestCode, int resultCode,
 			Intent intent) {
 		super.onActivityResult(requestCode, resultCode, intent);
+		if (cc.isClosed()) {
+			ec = new EmprestimoController(this);
+			cc = new CategoriaController(this);
+		}
 		fillData();
 	}
 

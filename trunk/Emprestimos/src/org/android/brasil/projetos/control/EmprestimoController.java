@@ -113,7 +113,7 @@ public class EmprestimoController {
 
 	}
 	
-	public long inserirAtualizar(Emprestimo emp) {
+	public long inserirOuAtualizar(Emprestimo emp) {
 		if (emp.getIdEmprestimo() == 0) {
 
 			long id = inserirEmprestimo(emp);

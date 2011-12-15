@@ -106,7 +106,7 @@ public class CategoriaUI extends ListActivity {
 			idCategoria = info.id;
 
 			if (cc.isCategoriaPadrao(idCategoria)) {
-				Toast.makeText(this, "Esta categoria não pode ser excluída!",
+				Toast.makeText(this, R.string.esta_categoria_nao_pode_ser_excluida,
 						Toast.LENGTH_SHORT).show();
 				return false;
 			}
@@ -117,11 +117,11 @@ public class CategoriaUI extends ListActivity {
 				AlertDialog.Builder alerta = new AlertDialog.Builder(
 						CategoriaUI.this);
 				alerta.setIcon(R.drawable.im_atencao);
-				alerta.setTitle("Exclusão");
-				alerta.setMessage("Deseja excluir esta categoria e \n " + qtde
-						+ " empréstimo(s) com esta categoria ?");
+				alerta.setTitle(R.string.exclusao);
+				alerta.setMessage(getApplicationContext().getResources().getString(R.string.deseja_excluir_esta_categoria) + qtde
+						+ getApplicationContext().getResources().getString(R.string.emprestimo_com_esta_categoria));
 
-				alerta.setPositiveButton("Sim",
+				alerta.setPositiveButton(R.string.sim,
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog,
 									int whichButton) {
@@ -130,12 +130,12 @@ public class CategoriaUI extends ListActivity {
 
 								fillData();
 								Toast.makeText(CategoriaUI.this,
-										"Excluído com sucesso!",
+										R.string.excluido_com_sucesso,
 										Toast.LENGTH_SHORT).show();
 							}
 						});
 
-				alerta.setNegativeButton("Nãoo",
+				alerta.setNegativeButton(R.string.nao,
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog,
 									int whichButton) {
@@ -149,7 +149,7 @@ public class CategoriaUI extends ListActivity {
 			}
 			cc.deleteCategoria(idCategoria);
 			fillData();
-			Toast.makeText(CategoriaUI.this, "Excluído com sucesso!",
+			Toast.makeText(CategoriaUI.this, R.string.excluido_com_sucesso,
 					Toast.LENGTH_SHORT).show();
 		}
 		return super.onContextItemSelected(item);
@@ -171,7 +171,7 @@ public class CategoriaUI extends ListActivity {
 
 		dialog.setContentView(R.layout.custom_dialog);
 
-		dialog.setTitle("Categorias");
+		dialog.setTitle(R.string.ListaCategoria);
 
 		btnConfirmar = (Button) dialog.findViewById(R.id.bt_confirmar);
 		btnCancelar = (Button) dialog.findViewById(R.id.bt_cancel);
@@ -218,14 +218,14 @@ public class CategoriaUI extends ListActivity {
 			cat.setId(idCategoria);
 		}
 		
-		cc.inserirAtualizar(cat);
+		cc.inserirOuAtualizar(cat);
 		fillData();
 	}
 
 	private boolean validarDescricao() {
 
 		if (etDescricao.getText().toString().equals("")) {
-			Toast.makeText(CategoriaUI.this, "Preencha a descrição!",
+			Toast.makeText(CategoriaUI.this, R.string.preencher_descricao,
 					Toast.LENGTH_SHORT).show();
 			return false;
 		}

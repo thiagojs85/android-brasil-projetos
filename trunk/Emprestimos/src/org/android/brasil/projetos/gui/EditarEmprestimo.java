@@ -280,14 +280,14 @@ public class EditarEmprestimo extends Activity {
 
 		if (item.trim().equals("")) {
 			Toast.makeText(EditarEmprestimo.this,
-					"O nome do item deve ser informado!", Toast.LENGTH_LONG)
+					R.string.nome_do_item_deve_ser_informado, Toast.LENGTH_LONG)
 					.show();
 			return false;
 		}
 
 		if (dataDevolucao.getTime() < Calendar.getInstance().getTime().getTime()){
 						Toast.makeText(
-					EditarEmprestimo.this,"Data/Hora devem ser maiores que a data/hora atuais", Toast.LENGTH_SHORT).show();
+					EditarEmprestimo.this,R.string.data_hora_devem_ser_informados, Toast.LENGTH_SHORT).show();
 			
 			return false;
 		}
@@ -469,7 +469,7 @@ public class EditarEmprestimo extends Activity {
 
 			}
 			
-			ec.inserirAtualizar(emp);
+			ec.inserirOuAtualizar(emp);
 		}
 	}
 

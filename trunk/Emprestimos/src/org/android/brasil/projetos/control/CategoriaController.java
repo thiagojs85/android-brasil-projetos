@@ -13,9 +13,11 @@ public class CategoriaController {
 	public static final int TODOS = -1;
 	private Cursor cursorCategoria;
 	private Activity act;
+	private boolean isClosed;
 
 	public CategoriaController(Activity activity) {
 		act = activity;
+		isClosed = false;
 	}
 
 	public SimpleCursorAdapter getCategoriaAdapter(long id) {
@@ -54,12 +56,16 @@ public class CategoriaController {
 
 	public void close() {
 		if (cursorCategoria != null) {
+			isClosed = true;
 			act.stopManagingCursor(cursorCategoria);
 			cursorCategoria.close();
 		}
 
 	}
 
+	public boolean isClosed(){
+		return isClosed;
+	}
 	public void deleteCategoria(Long idCategoria) {
 		CategoriaDAO.open(act);
 		CategoriaDAO.deleteCategoria(idCategoria);
@@ -79,16 +85,17 @@ public class CategoriaController {
 		CategoriaDAO.close();
 		return id;
 	}
-	
+
 	public boolean isCategoriaPadrao(long idCategoria) {
-		if (idCategoria == TipoCategoria.OUTRA.getId()	|| idCategoria == TipoCategoria.TODOS.getId()) {
+		if (idCategoria == TipoCategoria.OUTRA.getId()
+				|| idCategoria == TipoCategoria.TODOS.getId()) {
 			return true;
 		} else {
 			return false;
 		}
 	}
-	
-	public long inserirAtualizar(Categoria cat) {
+
+	public long inserirOuAtualizar(Categoria cat) {
 		if (cat.getId() == 0) {
 
 			long id = inserir(cat);
@@ -96,11 +103,11 @@ public class CategoriaController {
 			if (id > 0) {
 				cat.setId(id);
 			}
-		
+
 		} else {
 			atualizar(cat);
 		}
-		
+
 		return cat.getId();
 	}
 

@@ -12,22 +12,24 @@ import android.content.Context;
 import android.content.Intent;
 
 public class Alarme extends BroadcastReceiver {
-	private long mRowid;
+	private long idEmprestimo;
 	private AlarmeController ac;
+	private Emprestimo emprestimo;
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		mRowid = intent.getLongExtra(EmprestimoDAO.COLUNA_ID_EMPRESTIMO, 0);
-		if (mRowid > 0) {
+		idEmprestimo = intent.getLongExtra(EmprestimoDAO.COLUNA_ID_EMPRESTIMO,
+				0);
+		if (idEmprestimo > 0) {
 
 			ac = new AlarmeController(context);
 
-			Emprestimo emprestimo = new Emprestimo();
-			emprestimo = ac.getEmprestimo(mRowid);
+			emprestimo = new Emprestimo();
+			emprestimo = ac.getEmprestimo(idEmprestimo);
 
 			if (emprestimo.getAtivarAlarme() == Emprestimo.ATIVAR_ALARME) {
 				notificationStatus(context, intent);
-				ac.atualizaNotificacao(mRowid);
+				ac.atualizaNotificacao(idEmprestimo);
 			}
 		}
 	}
@@ -51,8 +53,15 @@ public class Alarme extends BroadcastReceiver {
 		final PendingIntent contentIntent = PendingIntent.getActivity(
 				context.getApplicationContext(), 0, notificationIntent, 0);
 
+		String  notificacao = context.getString(R.string.notificacao);
+		if(emprestimo.getStatus() == Emprestimo.STATUS_PEGAR_EMPRESTADO){
+			notificacao = "Hora de devolver o "+emprestimo.getItem();
+		}else{
+			notificacao = "Já recebeu o "+emprestimo.getItem()+" de volta?";
+		}
+		
 		notification.setLatestEventInfo(context, tickerText,
-				context.getString(R.string.notification), contentIntent);
+				notificacao, contentIntent);
 
 		notification.vibrate = new long[] { 100, 250, 100, 500 };
 		mNotificationManager.notify(R.string.app_name, notification);
