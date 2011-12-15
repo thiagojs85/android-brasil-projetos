@@ -42,13 +42,16 @@
 	<string name="esta_categoria_nao_pode_ser_excluida">Esta categoria não pode ser excluída!</string>
 	<string name="nome_do_item_deve_ser_informado">O nome do item deve ser informado!</string>
 	    
-	    <string name="data_hora_devem_ser_informados">Data/Hora devem ser maiores que a data/hora atuais</string>
+	<string name="data_hora_devem_ser_informados">Data/Hora devem ser maiores que a data/hora atuais</string>
+	<string name="hora_de_devolver">Hora de devolver o item </string>
+	<string name="ja_recebeu_item">Já recebeu o item </string>
+	<string name="de_volta"> de volta?</string>
 	    <!-- 
-	    
-	    
-	    
+
 	    <string name=""></string>
-	    <string name=""></string-->
+	    <string name=""></string>
+	    <string name=""></string>
+	    <string name=""></string>-->
 	
 
 	    
