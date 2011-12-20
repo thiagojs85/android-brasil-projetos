@@ -368,14 +368,19 @@ public abstract class BasicoDAO {
 	 */
 	protected static long inserir(String table, ContentValues values) {
 		long id = -1;
-		mDb.beginTransaction();
+		if (!mDb.inTransaction()) {
+			mDb.beginTransaction();
+		}
+
 		try {
 			id = mDb.insert(table, null, values);
 			mDb.setTransactionSuccessful();
 		} catch (Exception e) {
 			Log.e(TAG, e.getMessage());
 		} finally {
-			mDb.endTransaction();
+			if (mDb.inTransaction()) {
+				mDb.endTransaction();
+			}
 		}
 		return id;
 	}

@@ -27,16 +27,21 @@ public class EmprestimoDAO extends BasicoDAO {
 
 	private static String defineTable() {
 		TableBuilder tb = new TableBuilder(TABELA_EMPRESTIMOS);
-		tb.setPrimaryKey(COLUNA_ID_EMPRESTIMO, "INTEGER");
-		tb.addColuna(COLUNA_ITEM, "TEXT", true);
-		tb.addColuna(COLUNA_DESCRICAO, "TEXT", true);
-		tb.addColuna(COLUNA_STATUS, "INTEGER", true);
-		tb.addColuna(COLUNA_ATIVAR_ALARME, "INTEGER", true);
-		tb.addColuna(COLUNA_DATA_DEVOLUCAO, "INTEGER", false);
-		tb.addColuna(COLUNA_ID_CONTATO, "INTEGER", true);
-		tb.addColuna(COLUNA_CONTATO, "TEXT", false);
-		tb.addFK(COLUNA_ID_CATEGORIA, "INTEGER", CategoriaDAO.TABELA_CATEGORIA,
-				CategoriaDAO.COLUNA_ID, tb.CASCADE, tb.CASCADE);
+		try {
+			tb.setPrimaryKey(COLUNA_ID_EMPRESTIMO, "INTEGER",true);
+			tb.addColuna(COLUNA_ITEM, "TEXT", true);
+			tb.addColuna(COLUNA_DESCRICAO, "TEXT", true);
+			tb.addColuna(COLUNA_STATUS, "INTEGER", true);
+			tb.addColuna(COLUNA_ATIVAR_ALARME, "INTEGER", true);
+			tb.addColuna(COLUNA_DATA_DEVOLUCAO, "INTEGER", false);
+			tb.addColuna(COLUNA_ID_CONTATO, "INTEGER", true);
+			tb.addColuna(COLUNA_CONTATO, "TEXT", false);
+			tb.addFK(COLUNA_ID_CATEGORIA, "INTEGER", CategoriaDAO.TABELA_CATEGORIA,
+					CategoriaDAO.COLUNA_ID, tb.CASCADE, tb.CASCADE);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return tb.toString();
 	}
 
