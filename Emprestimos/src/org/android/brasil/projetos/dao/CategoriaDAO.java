@@ -19,8 +19,13 @@ public class CategoriaDAO extends BasicoDAO {
 
 	private static String defineTable() {
 		TableBuilder tb = new TableBuilder(TABELA_CATEGORIA);
-		tb.setPrimaryKey(COLUNA_ID, "INTEGER");
-		tb.addColuna(COLUNA_DESCRICAO, "TEXT", true);
+		try {
+			tb.setPrimaryKey(COLUNA_ID, "INTEGER",true);
+			tb.addColuna(COLUNA_DESCRICAO, "TEXT", true);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return tb.toString();
 	}
 

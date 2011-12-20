@@ -1,14 +1,15 @@
 package org.android.brasil.projetos.dao.util;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 
 public class TableBuilder {
+
+	private static boolean PRINT_CREATION = true;
 
 	private static final String[] ACTIONS = { "NO ACTION", "RESTRICT",
 			"SET NULL", "SET DEFAULT", "CASCADE" };
 
-	private static final String VIRGULA = " , ";
+	private static final String VIRGULA = ",";
 
 	public static final int NO_ACTION = 0;
 	public static final int RESTRICT = 1;
@@ -16,46 +17,129 @@ public class TableBuilder {
 	public static final int SET_DEFAULT = 3;
 	public final int CASCADE = 4;
 
-	private String tabela;
-	private List<String> pks;
-	private List<String> colunas;
-	private List<String> fks;
+	public static final String INTEGER = "INTEGER";
+	public static final String REAL = "REAL";
+	public static final String TEXT = "TEXT";
 
+	private String tabela;
+	private HashMap<String, String> pks;
+	private HashMap<String, String> colunas;
+	private HashMap<String, String> fks;
 
 	public TableBuilder(String tabela) {
 		this.tabela = tabela;
-		colunas = new ArrayList<String>();
-		pks = new ArrayList<String>();
-		fks = new ArrayList<String>();
+		colunas = new HashMap<String, String>();
+		pks = new HashMap<String, String>();
+		fks = new HashMap<String, String>();
 	}
 
-	public void setPrimaryKey(String coluna, String tipo) {
+	public void setPrimaryKey(String coluna, String tipo, boolean autoInc)
+			throws Exception {
+		if (autoInc) {
+			coluna = coluna + " AUTOINCREMENT ";
+		}
 		setPrimaryKey(new String[] { coluna }, new String[] { tipo });
 	}
 
-	public void setPrimaryKey(String[] colunas, String[] tipos) {
+	public void setPrimaryKey(String[] colunas, String[] tipos)
+			throws Exception {
 		int parada = colunas.length < tipos.length ? colunas.length
 				: tipos.length;
 		for (int i = 0; i < parada; ++i) {
 
-			this.addColuna(colunas[i], tipos[i], false);
+			if (!pks.containsKey(colunas[i])) {
+				pks.put(colunas[i], tipos[i]);
+			} else {
+				throw new Exception("Colunas repetidas!: " + colunas[i]);
+			}
 
-			pks.add(colunas[i]);
+			// UMA PK pode ser FK
+			this.addColuna(colunas[i].replace(" AUTOINCREMENT ", ""), tipos[i],
+					false, false);
+
 		}
 	}
 
-	public void addColuna(String nome, String tipo, boolean notNull) {
-		colunas.add(nome + " " + tipo + (notNull ? " NOT NULL , " : VIRGULA));
+	private void addColuna(String nome, String tipo, boolean notNull,
+			boolean checkColunas) throws Exception {
+		if (!colunas.containsKey(nome)) {
+			colunas.put(nome, nome + " " + tipo
+					+ (notNull ? " NOT NULL " + VIRGULA : VIRGULA));
+		} else if (checkColunas) {
+			throw new Exception("Colunas repetidas!: " + nome);
+		}
+	}
+
+	public void addColuna(String nome, String tipo, boolean notNull)
+			throws Exception {
+		this.addColuna(nome, tipo, notNull, true);
 	}
 
 	public void addFK(String nome, String tipo, String tabelaRef,
-			String colunaRef, int actionDelete, int actionUpdate) {
+			String colunaRef, int actionDelete, int actionUpdate)
+			throws Exception {
 
-		this.addColuna(nome, tipo, true);
+		// Uma FK pode ser PK
+		this.addColuna(nome, tipo, false, false);
 
-		fks.add("FOREIGN KEY ( " + nome + " )  REFERENCES " + tabelaRef + " ("
-				+ colunaRef + " ) " + "ON DELETE " + ACTIONS[actionDelete]
+		fks.put(nome, "CONSTRAINT FK_" + nome + " FOREIGN KEY (" + nome
+				+ ")  REFERENCES " + tabelaRef + " (" + colunaRef + ") "
+				+ "ON DELETE " + ACTIONS[actionDelete] + " ON UPDATE "
+				+ ACTIONS[actionUpdate] + VIRGULA);
+
+	}
+
+	public void addFK_PKMultiple(String[] nomes, String[] tipos,
+			String tabelaRef, int actionDelete, int actionUpdate)
+			throws Exception {
+		int parada = nomes.length < tipos.length ? nomes.length : tipos.length;
+		String constraintNome = "";
+		String nomesColunas = "";
+
+		for (int i = parada - 1; i > -1; --i) {
+			if (i == parada - 1) {
+				constraintNome = nomes[i] + "__";
+				nomesColunas = nomes[i];
+			} else {
+				constraintNome = nomes[i] + "_" + constraintNome;
+				nomesColunas = nomes[i] + VIRGULA + nomesColunas;
+
+			}
+			this.addColuna(nomes[i], tipos[i], false, false);
+		}
+		fks.put(nomesColunas, "CONSTRAINT FK_" + constraintNome
+				+ " FOREIGN KEY (" + nomesColunas + ")  REFERENCES "
+				+ tabelaRef + " ON DELETE " + ACTIONS[actionDelete]
 				+ " ON UPDATE " + ACTIONS[actionUpdate] + VIRGULA);
+
+	}
+
+	public void addFK(String[] nomes, String[] tipos, String tabelaRef,
+			String[] colunasRef, int actionDelete, int actionUpdate)
+			throws Exception {
+		int parada = nomes.length < tipos.length ? nomes.length : tipos.length;
+		String constraintNome = "";
+		String nomesColunas = "";
+		String nomesColunasRef = "";
+
+		for (int i = 0; i < parada; ++i) {
+			if (i == 0) {
+				constraintNome = nomes[i] + "_";
+				nomesColunas = nomes[i];
+				nomesColunasRef = colunasRef[i];
+			} else {
+				constraintNome = nomes[i] + "_" + constraintNome;
+				nomesColunas = nomes[i] + VIRGULA + nomesColunas;
+				nomesColunasRef = colunasRef[i] + VIRGULA + nomesColunasRef;
+
+			}
+			this.addColuna(nomes[i], tipos[i], false, false);
+		}
+		fks.put(nomesColunas, "CONSTRAINT FK_" + constraintNome
+				+ " FOREIGN KEY (" + nomesColunas + ")  REFERENCES "
+				+ tabelaRef + " (" + nomesColunasRef + ") " + "ON DELETE "
+				+ ACTIONS[actionDelete] + " ON UPDATE " + ACTIONS[actionUpdate]
+				+ VIRGULA);
 
 	}
 
@@ -63,41 +147,52 @@ public class TableBuilder {
 		StringBuffer sb = new StringBuffer();
 		sb.append("CREATE TABLE ");
 		sb.append(tabela);
-		sb.append(" ( ");
+		sb.append(" (");
 
-		for (int i = 0; i < colunas.size(); ++i) {
-			sb.append(colunas.get(i));
+		for (String col : colunas.values()) {
+			sb.append(col);
 		}
 
 		if (pks != null && pks.size() > 0) {
-			sb.append(" PRIMARY KEY ( ");
+			sb.append(" PRIMARY KEY (");
 
-			for (int i = 0; i < pks.size(); ++i) {
-				if (i != pks.size() -1) {
-					sb.append(pks.get(i) + VIRGULA);
+			int sizePk = pks.size();
+			int i = 0;
+			for (String pk : pks.keySet()) {
+				if (i < sizePk - 1) {
+					sb.append(pk + VIRGULA);
 				} else {
-					sb.append(pks.get(i));
+					sb.append(pk);
 				}
+				i = i + 1;
 			}
 
-			sb.append(" ) ");
+			sb.append(") ");
 		}
 
-		for (int i = 0; i < fks.size(); ++i) {
-			sb.append(fks.get(i));
+		for (String fk : fks.values()) {
+			sb.append(fk);
 		}
 
 		String teste = sb.toString();
 
 		if (teste.endsWith(VIRGULA)) {
-			return teste.substring(0, teste.length() - VIRGULA.length())
-					+ " ); ";
+			String t = teste.substring(0, teste.length() - VIRGULA.length())
+					+ "); ";
+			if (PRINT_CREATION) {
+				System.out.println(t);
+			}
+			return t;
 
 		} else {
 
-			sb.append(" ); ");
+			sb.append("); ");
+			if (PRINT_CREATION) {
+				System.out.println(sb.toString());
+			}
 			return sb.toString();
 		}
 
 	}
+
 }
