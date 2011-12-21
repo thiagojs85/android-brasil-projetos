@@ -1,13 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:id="@+id/base"
-	style="@style/FillFill.Layout">
-	<ScrollView 
-		android:fillViewport="true"
-	    style="@style/FillFill.Layout">
-		<LinearLayout
-		    style="@style/FillFill.Layout"
-		    android:orientation="vertical">
+	style="@style/FillFill.Layout"
+	android:orientation="vertical">
 		    <Spinner
 		    	android:id="@+id/spCategoria"
 		    	style="@style/FillWrap.Spinner"/>
@@ -23,6 +18,4 @@
 		  		android:id="@+id/android:empty"
 		        style="@style/FillWrap.TextView"
 		        android:text="@string/sem_emprestimos"/>
-		</LinearLayout>
-	</ScrollView>
 </LinearLayout>

@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
  	android:versionCode="2"
- 	android:versionName="1.0"
- 	
+ 	android:versionName="1.0" 	
  	package="org.android.brasil.projetos.gui">
+ 	    
+    	<uses-permission android:name="android.permission.READ_CONTACTS" />
+    	<uses-permission android:name="android.permission.VIBRATE" />
  	<uses-sdk android:minSdkVersion="7"/>
     <application android:icon="@drawable/icon" android:debuggable="true">
         <activity android:label="@string/app_name" android:name=".EmprestimoUI">
@@ -17,7 +19,6 @@
         <activity android:name=".CategoriaUI" />
         <activity android:name=".Notificacao" />
         <receiver android:name="Alarme"></receiver>
-    </application>
-    	<uses-permission android:name="android.permission.READ_CONTACTS" />
-    	<uses-permission android:name="android.permission.VIBRATE" />
+
+</application>
 </manifest> 

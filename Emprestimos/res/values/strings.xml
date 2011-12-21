@@ -10,7 +10,6 @@
 	<string name="menu_inserir">Adicionar Emprestimo</string>
 	<string name="menu_delete">Deletar Emprestimo</string>
 	<string name="item">Item</string>
-	<string name="descricaoCategoria">Descrição Categoria</string>
 
 	<string name="contato">Emprestar Para:</string>
 	<string name="pegar_emprestado_de">Pegar Emprestado de:</string>
@@ -27,7 +26,6 @@
 	<string name="data_devolucao">Data da Devolução</string>
 	<string name="hora_devolucao">Hora da Devolução</string>
 	
-	<string name="editar_categoria">Editar Categoria</string>
 	<string name="notificacao">Empréstimo a Receber/Devolver</string>
 	
 	<string name="preencher_descricao">Preencha a descrição!</string>
@@ -46,6 +44,10 @@
 	<string name="hora_de_devolver">Hora de devolver o item </string>
 	<string name="ja_recebeu_item">Já recebeu o item </string>
 	<string name="de_volta"> de volta?</string>
+	<string name="ativar_alarme">Ativar alarme</string>
+	<string name="outro_contato">Outro Contato</string>
+	<string name="cancelar">Cancelar</string>
+	
 	    <!-- 
 
 	    <string name=""></string>
