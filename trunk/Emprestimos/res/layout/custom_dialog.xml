@@ -13,9 +13,9 @@
     <Button android:id="@+id/bt_confirmar"
         style="@style/WrapWrap"
         android:layout_below="@+id/inputText"
-        android:text="Confirmar">
+        android:text="@string/confirmar">
     </Button>
-    <Button android:text="Cancelar"  
+    <Button android:text="@string/cancelar"  
         android:id="@+id/bt_cancel" 
         style="@style/WrapWrap"
         android:layout_alignTop="@+id/bt_confirmar" 
