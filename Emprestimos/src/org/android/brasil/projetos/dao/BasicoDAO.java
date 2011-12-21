@@ -391,18 +391,18 @@ public abstract class BasicoDAO {
 	 * 
 	 * @param table
 	 *            Tabela de onde serão consultados os registros.
+	 * @param colunas
+	 *            Colunas a serem exibidas.
 	 * @param keys
 	 *            Vetor com as colunas a serem utilizadas no "LIKE"
 	 * @param values
 	 *            Vetor com os valores a serem utilizados no "LIKE"
-	 * @param colunas
-	 *            Colunas a serem exibidas.
 	 * @return Cursor posicionado no primeiro elemento encontrado.
 	 */
 	protected static Cursor consultarLike(String table, String[] colunas,
 			String[] keys, String[] values) {
 
-		return consultarLikeAnd(table, keys, values, colunas, null, null);
+		return consultarLikeAnd(table, colunas, values, keys, null, null);
 
 	}
 
