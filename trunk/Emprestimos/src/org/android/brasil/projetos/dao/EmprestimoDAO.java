@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.android.brasil.projetos.dao.util.TableBuilder;
 import org.android.brasil.projetos.model.Emprestimo;
+import org.android.brasil.projetos.model.TipoStatus;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -155,6 +156,15 @@ public class EmprestimoDAO extends BasicoDAO {
 				new String[] { String.valueOf(id) });
 
 	}
+	
+	public static void atualizarStatus(long id) {
+		ContentValues values = new ContentValues();
+		values.put(COLUNA_STATUS, TipoStatus.DEVOLVIDO.getId());
+		atualizar(TABELA_EMPRESTIMOS, values,
+				new String[] { EmprestimoDAO.COLUNA_ID_EMPRESTIMO },
+				new String[] { String.valueOf(id) });
+
+	}	
 
 	public static List<Emprestimo> listarEmprestimoPorCategoria(long idCategoria) {
 		List<Emprestimo> lista = new ArrayList<Emprestimo>();

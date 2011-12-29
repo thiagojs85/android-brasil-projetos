@@ -16,7 +16,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -30,7 +33,8 @@ public class CategoriaUI extends ListActivity {
 	private EditText etDescricao;
 	private Button btnConfirmar;
 	private Button btnCancelar;
-
+	private CheckBox cbAtivo;
+    
 	private CategoriaController cc;
 	private EmprestimoController ec;
 
@@ -47,18 +51,31 @@ public class CategoriaUI extends ListActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.lista_categoria);
 		setTitle(R.string.ListaCategoria);
-
+		
 		ec = new EmprestimoController(this);
 		fillData();
 		registerForContextMenu(getListView());
+		
+		cbAtivo.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
+				if (isChecked) {
+					Toast.makeText(CategoriaUI.this, R.string.excluido_com_sucesso,
+							Toast.LENGTH_SHORT).show();
+				} else {
+					Toast.makeText(CategoriaUI.this, R.string.excluido_com_sucesso,
+							Toast.LENGTH_SHORT).show();
+				}
 
+			}
+		});
 	}
 
 	private void fillData() {
 		if (cc == null) {
 			cc = new CategoriaController(this);
 		}
-		setListAdapter(cc.getCategoriaAdapter(CategoriaController.TODOS));
+        setListAdapter(cc.getCategoriaAdapter(CategoriaController.TODOS, true));
 	}
 
 	@Override
@@ -226,6 +243,10 @@ public class CategoriaUI extends ListActivity {
 
 		if (etDescricao.getText().toString().equals("")) {
 			Toast.makeText(CategoriaUI.this, R.string.preencher_descricao,
+					Toast.LENGTH_SHORT).show();
+			return false;
+		} else if(cc.isDescricaoCategoriaJaExiste(etDescricao.getText().toString())) {
+			Toast.makeText(this, R.string.descricao_categoria_ja_existe,
 					Toast.LENGTH_SHORT).show();
 			return false;
 		}

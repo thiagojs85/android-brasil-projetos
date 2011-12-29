@@ -126,4 +126,11 @@ public class EmprestimoController {
 		
 		return emp.getIdEmprestimo();
 	}
+
+	public void devolverOuReceber(Long idEmprestimo) {
+		EmprestimoDAO.open(act);
+		EmprestimoDAO.atualizarStatus(idEmprestimo);
+		EmprestimoDAO.close();
+		
+	}
 }

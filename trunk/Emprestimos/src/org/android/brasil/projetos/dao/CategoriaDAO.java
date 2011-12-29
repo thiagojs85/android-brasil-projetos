@@ -114,4 +114,16 @@ public class CategoriaDAO extends BasicoDAO {
 		return remover(id);
 	}
 
+	public static boolean isDescricaoCategoriaJaExiste(String descricao) {
+		Cursor mCursor = consultar(TABELA_CATEGORIA, COLUNA_DESCRICAO, descricao);
+		
+		boolean jaExiste = false;
+		
+		if (mCursor.getCount() > 0) {
+			jaExiste =true;
+		}
+		
+		return jaExiste;
+	}
+
 }
