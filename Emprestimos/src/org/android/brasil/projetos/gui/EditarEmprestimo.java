@@ -28,6 +28,7 @@ import org.android.brasil.projetos.dao.EmprestimoDAO;
 import org.android.brasil.projetos.model.Categoria;
 import org.android.brasil.projetos.model.Emprestimo;
 import org.android.brasil.projetos.model.TipoCategoria;
+import org.android.brasil.projetos.model.TipoStatus;
 
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -40,6 +41,8 @@ import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Adapter;
@@ -81,6 +84,7 @@ public class EditarEmprestimo extends Activity {
 	private CategoriaController cc;
 	private EmprestimoController ec;
 	private ContatosController ctc;
+	private int status;
 
 	private static final int DATE_DIALOG_ID_DATE = 0;
 	private static final int DATE_DIALOG_ID_TIME = 1;
@@ -92,7 +96,7 @@ public class EditarEmprestimo extends Activity {
 		ec.close();
 		ctc.close();
 	}
-	
+
 	private DatePickerDialog.OnDateSetListener dataListener = new DatePickerDialog.OnDateSetListener() {
 		public void onDateSet(DatePicker view, int year, int monthOfYear,
 				int dayOfMonth) {
@@ -228,7 +232,7 @@ public class EditarEmprestimo extends Activity {
 
 		}
 
-		populateFields();
+		// populateFields();
 
 	}
 
@@ -239,7 +243,7 @@ public class EditarEmprestimo extends Activity {
 		}
 
 		SimpleCursorAdapter adapterCategorias = cc
-				.getCategoriaAdapter(CategoriaController.TODOS);
+				.getCategoriaAdapter(CategoriaController.TODOS, false);
 
 		if (adapterCategorias != null && adapterCategorias.getCount() > 0) {
 			spCategoria.setEnabled(true);
@@ -285,10 +289,12 @@ public class EditarEmprestimo extends Activity {
 			return false;
 		}
 
-		if (dataDevolucao.getTime() < Calendar.getInstance().getTime().getTime()){
-						Toast.makeText(
-					EditarEmprestimo.this,R.string.data_hora_devem_ser_informados, Toast.LENGTH_SHORT).show();
-			
+		if (dataDevolucao.getTime() < Calendar.getInstance().getTime()
+				.getTime()) {
+			Toast.makeText(EditarEmprestimo.this,
+					R.string.data_hora_devem_ser_informados, Toast.LENGTH_SHORT)
+					.show();
+
 			return false;
 		}
 
@@ -357,20 +363,20 @@ public class EditarEmprestimo extends Activity {
 							break;
 						}
 					}
+				}
+				dataDevolucao = emprestimo.getData();
+				status = emprestimo.getStatus();
 
-					dataDevolucao = emprestimo.getData();
+				atualizarData();
 
-					atualizarData();
+				ad = spCategoria.getAdapter();
+				long idCat = emprestimo.getIdCategoria();
 
-					ad = spCategoria.getAdapter();
-					long idCat = emprestimo.getIdCategoria();
+				for (int i = 0; i < ad.getCount(); ++i) {
 
-					for (int i = 0; i < ad.getCount(); ++i) {
-
-						if (ad.getItemId(i) == idCat) {
-							spCategoria.setSelection(i);
-							break;
-						}
+					if (ad.getItemId(i) == idCat) {
+						spCategoria.setSelection(i);
+						break;
 					}
 				}
 			} else {
@@ -435,7 +441,7 @@ public class EditarEmprestimo extends Activity {
 				Intent intent = new Intent(EditarEmprestimo.this, Alarme.class);
 				intent.putExtra(EmprestimoDAO.COLUNA_ID_EMPRESTIMO,
 						idEmprestimo);
-				
+
 				PendingIntent sender = PendingIntent.getBroadcast(
 						EditarEmprestimo.this, 0, intent,
 						PendingIntent.FLAG_UPDATE_CURRENT);
@@ -468,7 +474,7 @@ public class EditarEmprestimo extends Activity {
 				emp.setIdEmprestimo(idEmprestimo);
 
 			}
-			
+
 			ec.inserirOuAtualizar(emp);
 		}
 	}
@@ -495,5 +501,39 @@ public class EditarEmprestimo extends Activity {
 		}
 		return null;
 	}
+
+	@Override
+	public boolean onMenuItemSelected(int featureId, MenuItem item) {
+		devolverReceber();
+		item.setEnabled(false);
+		
+		
+		return super.onMenuItemSelected(featureId, item);
+	}
+
+	private void devolverReceber() {
+		ec.devolverOuReceber(idEmprestimo);
+	//	Toast.makeText(EditarEmprestimo.this, "Sucesso", Toast.LENGTH_SHORT).show();
+		
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
+		
+		if(status == TipoStatus.EMPRESTADO.getId()) {
+			menu.add(0, Menu.FIRST, 0, R.string.menu_devolver).setIcon(R.drawable.devolver);
+			status = TipoStatus.DEVOLVIDO.getId();
+			menu.add(0, Menu.FIRST+1, 0, "Estornar").setIcon(R.drawable.devolver).setEnabled(false);
+		}
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		item.setEnabled(true);
+		return super.onOptionsItemSelected(item);
+	}
+
 
 }

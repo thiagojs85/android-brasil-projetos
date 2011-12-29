@@ -66,7 +66,7 @@ public class EmprestimoUI extends ListActivity {
 				});
 
 		SimpleCursorAdapter categoriaAdapter = cc
-				.getCategoriaAdapter(CategoriaController.TODOS);
+				.getCategoriaAdapter(CategoriaController.TODOS, false);
 		if (categoriaAdapter != null && categoriaAdapter.getCount() > 0) {
 			spCategoria.setEnabled(true);
 		} else {

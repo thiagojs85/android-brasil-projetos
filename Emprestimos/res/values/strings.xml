@@ -6,6 +6,7 @@
 	
 	<string name="emprestar">Emprestar</string>
 	<string name="pegar_emprestado">Pegar Emprestado</string>
+	<string name="menu_devolver">Devolver/Receber</string>
 
 	<string name="menu_inserir">Adicionar Emprestimo</string>
 	<string name="menu_delete">Deletar Emprestimo</string>
@@ -47,6 +48,7 @@
 	<string name="ativar_alarme">Ativar alarme</string>
 	<string name="outro_contato">Outro Contato</string>
 	<string name="cancelar">Cancelar</string>
+	<string name="descricao_categoria_ja_existe">Já existe uma categoria com esta descrição</string>
 	
 	    <!-- 
 
