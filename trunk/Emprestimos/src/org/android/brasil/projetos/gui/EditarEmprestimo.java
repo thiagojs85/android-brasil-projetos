@@ -30,17 +30,19 @@ import org.android.brasil.projetos.model.Emprestimo;
 import org.android.brasil.projetos.model.TipoCategoria;
 import org.android.brasil.projetos.model.TipoStatus;
 
-import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TimePickerDialog;
-import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
+import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -60,7 +62,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-public class EditarEmprestimo extends Activity {
+public class EditarEmprestimo extends FragmentActivity {
 
 	private EditText etItem;
 	private EditText etDescricao;
@@ -86,8 +88,10 @@ public class EditarEmprestimo extends Activity {
 	private ContatosController ctc;
 	private int status;
 
-	private static final int DATE_DIALOG_ID_DATE = 0;
-	private static final int DATE_DIALOG_ID_TIME = 1;
+	/*
+	 * private static final int DATE_DIALOG_ID_DATE = 0; private static final
+	 * int DATE_DIALOG_ID_TIME = 1;
+	 */
 
 	@Override
 	protected void onStop() {
@@ -97,24 +101,45 @@ public class EditarEmprestimo extends Activity {
 		ctc.close();
 	}
 
-	private DatePickerDialog.OnDateSetListener dataListener = new DatePickerDialog.OnDateSetListener() {
+	private class DatePickerFragment extends DialogFragment implements
+			DatePickerDialog.OnDateSetListener {
+
+		@Override
+		public Dialog onCreateDialog(Bundle savedInstanceState) {
+			return new DatePickerDialog(getActivity(), this,
+					dataDevolucao.get(Calendar.YEAR),
+					dataDevolucao.get(Calendar.MONTH),
+					dataDevolucao.get(Calendar.DAY_OF_MONTH));
+		}
+
 		public void onDateSet(DatePicker view, int year, int monthOfYear,
 				int dayOfMonth) {
-			dataDevolucao.set(Calendar.YEAR, year - 1900);
+			Log.w("",year+"  "+monthOfYear+"  "+dayOfMonth);
+			dataDevolucao.set(Calendar.YEAR, year);
 			dataDevolucao.set(Calendar.MONTH, monthOfYear);
 			dataDevolucao.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 			atualizarData();
 		}
-	};
-	private OnTimeSetListener horaListener = new OnTimeSetListener() {
+	}
 
-		public void onTimeSet(TimePicker arg0, int hora, int minuto) {
-			dataDevolucao.set(Calendar.HOUR_OF_DAY, hora);
-			dataDevolucao.set(Calendar.MINUTE, minuto);
-			atualizarData();
+	private class TimePickerFragment extends DialogFragment implements
+			TimePickerDialog.OnTimeSetListener {
 
+		@Override
+		public Dialog onCreateDialog(Bundle savedInstanceState) {
+
+			int hour = dataDevolucao.get(Calendar.HOUR_OF_DAY);
+			int minute = dataDevolucao.get(Calendar.MINUTE);
+			return new TimePickerDialog(getActivity(), this, hour, minute,
+					true);
 		}
-	};
+
+		public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+			dataDevolucao.set(Calendar.HOUR_OF_DAY, hourOfDay);
+			dataDevolucao.set(Calendar.MINUTE, minute);
+			atualizarData();
+		}
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -182,14 +207,16 @@ public class EditarEmprestimo extends Activity {
 		etDataDevolucao.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View arg0) {
-				showDialog(DATE_DIALOG_ID_DATE);
+				DialogFragment newFragment = new DatePickerFragment();
+				newFragment.show(getSupportFragmentManager(), "DatePicker");
 			}
 		});
 
 		etHoraDevolucao.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View arg0) {
-				showDialog(DATE_DIALOG_ID_TIME);
+				DialogFragment newFragment = new TimePickerFragment();
+				newFragment.show(getSupportFragmentManager(), "TimePicker");
 			}
 		});
 
@@ -294,8 +321,8 @@ public class EditarEmprestimo extends Activity {
 			return false;
 		}
 
-		if (dataDevolucao.getTime().getTime() < Calendar.getInstance().getTime()
-				.getTime()) {
+		if (dataDevolucao.getTime().getTime() < Calendar.getInstance()
+				.getTime().getTime()) {
 			Toast.makeText(EditarEmprestimo.this,
 					R.string.data_hora_devem_ser_informados, Toast.LENGTH_SHORT)
 					.show();
@@ -427,7 +454,7 @@ public class EditarEmprestimo extends Activity {
 		if (validarCampos()) {
 			String item = etItem.getText().toString();
 			String descricao = etDescricao.getText().toString();
-			dataDevolucao.set(Calendar.SECOND,0);
+			dataDevolucao.set(Calendar.SECOND, 0);
 			Date data = dataDevolucao.getTime();
 
 			int status = 0;
@@ -487,26 +514,24 @@ public class EditarEmprestimo extends Activity {
 	private void atualizarData() {
 
 		SimpleDateFormat simpleFormat = new SimpleDateFormat("dd/MM/yyyy");
-		etDataDevolucao.setText(simpleFormat.format(dataDevolucao));
+		etDataDevolucao.setText(simpleFormat.format(dataDevolucao.getTime()));
+
 		simpleFormat = new SimpleDateFormat("HH:mm");
-		etHoraDevolucao.setText(simpleFormat.format(dataDevolucao));
+		etHoraDevolucao.setText(simpleFormat.format(dataDevolucao.getTime()));
 	}
 
-	@Override
-	protected Dialog onCreateDialog(int id) {
-		switch (id) {
-		case DATE_DIALOG_ID_DATE:
-
-			return new DatePickerDialog(this, dataListener,
-					dataDevolucao.get(Calendar.YEAR) + 1900, dataDevolucao.get(Calendar.MONTH),
-					dataDevolucao.get(Calendar.DAY_OF_MONTH));
-		case DATE_DIALOG_ID_TIME:
-			return new TimePickerDialog(EditarEmprestimo.this, horaListener,
-					dataDevolucao.get(Calendar.HOUR_OF_DAY), dataDevolucao.get(Calendar.MINUTE), true);
-		}
-		return null;
-	}
-
+	/*
+	 * @Override protected Dialog onCreateDialog(int id) { switch (id) { case
+	 * DATE_DIALOG_ID_DATE:
+	 * 
+	 * return new DatePickerDialog(this, dataListener,
+	 * dataDevolucao.get(Calendar.YEAR) + 1900,
+	 * dataDevolucao.get(Calendar.MONTH),
+	 * dataDevolucao.get(Calendar.DAY_OF_MONTH)); case DATE_DIALOG_ID_TIME:
+	 * return new TimePickerDialog(EditarEmprestimo.this, horaListener,
+	 * dataDevolucao.get(Calendar.HOUR_OF_DAY),
+	 * dataDevolucao.get(Calendar.MINUTE), true); } return null; }
+	 */
 	@Override
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
 		devolverReceber();
