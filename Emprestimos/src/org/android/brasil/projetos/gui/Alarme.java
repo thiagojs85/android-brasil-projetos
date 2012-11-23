@@ -1,15 +1,19 @@
 package org.android.brasil.projetos.gui;
 
+import java.util.Calendar;
+
 import org.android.brasil.projetos.control.AlarmeController;
 import org.android.brasil.projetos.dao.EmprestimoDAO;
 import org.android.brasil.projetos.model.Emprestimo;
 
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationCompat.Builder;
 
 public class Alarme extends BroadcastReceiver {
 	private long idEmprestimo;
@@ -26,7 +30,6 @@ public class Alarme extends BroadcastReceiver {
 
 			emprestimo = new Emprestimo();
 			emprestimo = ac.getEmprestimo(idEmprestimo);
-
 			if (emprestimo.getAtivarAlarme() == Emprestimo.ATIVAR_ALARME) {
 				notificationStatus(context, intent);
 				ac.atualizaNotificacao(idEmprestimo);
@@ -40,10 +43,13 @@ public class Alarme extends BroadcastReceiver {
 
 		final int icon = R.drawable.icon;
 		final CharSequence tickerText = context.getString(R.string.app_name);
-		final long when = System.currentTimeMillis();
+		final long when = Calendar.getInstance().getTimeInMillis();
 
-		final Notification notification = new Notification(icon, tickerText,
-				when);
+		Builder notification = new NotificationCompat.Builder(context)
+				.setSmallIcon(icon)
+				.setLargeIcon(
+						BitmapFactory.decodeResource(context.getResources(),
+								icon)).setTicker(tickerText).setWhen(when);
 		final Intent notificationIntent = new Intent(context,
 				EditarEmprestimo.class);
 
@@ -59,15 +65,14 @@ public class Alarme extends BroadcastReceiver {
 					+ emprestimo.getItem();
 		} else {
 			notificacao = context.getString(R.string.ja_recebeu_item)
-					+ emprestimo.getItem()
+					+" "+ emprestimo.getItem()+" "
 					+ context.getString(R.string.de_volta);
 		}
+		notification.setContentText(notificacao);
+		notification.setContentIntent(contentIntent);
 
-		notification.setLatestEventInfo(context, tickerText, notificacao,
-				contentIntent);
-
-		notification.vibrate = new long[] { 100, 250, 100, 500 };
-		mNotificationManager.notify(R.string.app_name, notification);
+		notification.setVibrate(new long[] { 100, 250, 100, 500 });
+		mNotificationManager.notify(R.string.app_name, notification.build());
 
 	}
 }

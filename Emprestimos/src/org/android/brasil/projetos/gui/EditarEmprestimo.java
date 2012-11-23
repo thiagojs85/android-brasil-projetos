@@ -30,6 +30,7 @@ import org.android.brasil.projetos.model.Emprestimo;
 import org.android.brasil.projetos.model.TipoCategoria;
 import org.android.brasil.projetos.model.TipoStatus;
 
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -41,7 +42,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
-import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -62,6 +62,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+@SuppressLint("ValidFragment")
 public class EditarEmprestimo extends FragmentActivity {
 
 	private EditText etItem;
@@ -520,18 +521,6 @@ public class EditarEmprestimo extends FragmentActivity {
 		etHoraDevolucao.setText(simpleFormat.format(dataDevolucao.getTime()));
 	}
 
-	/*
-	 * @Override protected Dialog onCreateDialog(int id) { switch (id) { case
-	 * DATE_DIALOG_ID_DATE:
-	 * 
-	 * return new DatePickerDialog(this, dataListener,
-	 * dataDevolucao.get(Calendar.YEAR) + 1900,
-	 * dataDevolucao.get(Calendar.MONTH),
-	 * dataDevolucao.get(Calendar.DAY_OF_MONTH)); case DATE_DIALOG_ID_TIME:
-	 * return new TimePickerDialog(EditarEmprestimo.this, horaListener,
-	 * dataDevolucao.get(Calendar.HOUR_OF_DAY),
-	 * dataDevolucao.get(Calendar.MINUTE), true); } return null; }
-	 */
 	@Override
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
 		devolverReceber();

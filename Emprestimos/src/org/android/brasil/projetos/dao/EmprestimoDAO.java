@@ -150,7 +150,7 @@ public class EmprestimoDAO extends BasicoDAO {
 
 	public static void atualizarAlarme(long id) {
 		ContentValues values = new ContentValues();
-		values.put(COLUNA_ATIVAR_ALARME, 1);
+		values.put(COLUNA_ATIVAR_ALARME, Emprestimo.DESATIVAR_ALARME);
 		atualizar(TABELA_EMPRESTIMOS, values,
 				new String[] { EmprestimoDAO.COLUNA_ID_EMPRESTIMO },
 				new String[] { String.valueOf(id) });
