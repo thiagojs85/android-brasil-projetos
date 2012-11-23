@@ -31,7 +31,7 @@ public class EmprestimoUI extends ListActivity {
 
 	@Override
 	protected void onResume() {
-		//http://developer.android.com/images/activity_lifecycle.png
+		// http://developer.android.com/images/activity_lifecycle.png
 		super.onResume();
 		if (cc == null || cc.isClosed()) {
 			ec = new EmprestimoController(this);
@@ -65,8 +65,8 @@ public class EmprestimoUI extends ListActivity {
 					}
 				});
 
-		SimpleCursorAdapter categoriaAdapter = cc
-				.getCategoriaAdapter(CategoriaController.TODOS, false);
+		SimpleCursorAdapter categoriaAdapter = cc.getCategoriaAdapter(
+				CategoriaController.TODOS, false);
 		if (categoriaAdapter != null && categoriaAdapter.getCount() > 0) {
 			spCategoria.setEnabled(true);
 		} else {
@@ -138,7 +138,7 @@ public class EmprestimoUI extends ListActivity {
 	protected void onActivityResult(int requestCode, int resultCode,
 			Intent intent) {
 		super.onActivityResult(requestCode, resultCode, intent);
-		if (cc.isClosed()) {
+		if (cc == null || cc.isClosed()) {
 			ec = new EmprestimoController(this);
 			cc = new CategoriaController(this);
 		}
