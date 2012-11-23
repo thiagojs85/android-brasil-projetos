@@ -13,9 +13,11 @@ public class EmprestimoController {
 	public static final int TODOS = 2;
 	private Cursor cursorEmprestimos;
 	private Activity act;
+	private boolean isClosed;
 
 	public EmprestimoController(Activity activity) {
 		act = activity;
+		isClosed = false;
 	}
 
 	public SimpleCursorAdapter getEmprestimoAdapter(long id) {
@@ -91,10 +93,14 @@ public class EmprestimoController {
 
 	public void close() {
 		if (cursorEmprestimos != null) {
+			isClosed = true;
 			act.stopManagingCursor(cursorEmprestimos);
 			cursorEmprestimos.close();
 		}
 
+	}
+	public boolean isClosed() {
+		return isClosed;
 	}
 
 	public long consultarQtdeEmprestimosPorCategoria(long idCategoria) {
@@ -112,7 +118,7 @@ public class EmprestimoController {
 		EmprestimoDAO.close();
 
 	}
-	
+
 	public long inserirOuAtualizar(Emprestimo emp) {
 		if (emp.getIdEmprestimo() == 0) {
 
@@ -123,7 +129,7 @@ public class EmprestimoController {
 		} else {
 			atualizarEmprestimo(emp);
 		}
-		
+
 		return emp.getIdEmprestimo();
 	}
 
@@ -131,6 +137,6 @@ public class EmprestimoController {
 		EmprestimoDAO.open(act);
 		EmprestimoDAO.atualizarStatus(idEmprestimo);
 		EmprestimoDAO.close();
-		
+
 	}
 }

@@ -19,7 +19,7 @@ public class CategoriaController {
 		act = activity;
 		isClosed = false;
 	}
-
+	
 	public SimpleCursorAdapter getCategoriaAdapter(long id, boolean checkbox) {
 		// Fix para Android 3.0 ou superiores
 		if (cursorCategoria != null && !cursorCategoria.isClosed()) {

@@ -33,14 +33,13 @@ public class CategoriaUI extends ListActivity {
 	private EditText etDescricao;
 	private Button btnConfirmar;
 	private Button btnCancelar;
-	private CheckBox cbAtivo;
-    
+
 	private CategoriaController cc;
 	private EmprestimoController ec;
 
 	@Override
-	protected void onPause() {
-		super.onPause();
+	protected void onStop() {
+		super.onStop();
 		cc.close();
 		ec.close();
 	}
@@ -51,31 +50,18 @@ public class CategoriaUI extends ListActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.lista_categoria);
 		setTitle(R.string.ListaCategoria);
-		
+
 		ec = new EmprestimoController(this);
 		fillData();
 		registerForContextMenu(getListView());
-		
-		cbAtivo.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-			public void onCheckedChanged(CompoundButton buttonView,
-					boolean isChecked) {
-				if (isChecked) {
-					Toast.makeText(CategoriaUI.this, R.string.excluido_com_sucesso,
-							Toast.LENGTH_SHORT).show();
-				} else {
-					Toast.makeText(CategoriaUI.this, R.string.excluido_com_sucesso,
-							Toast.LENGTH_SHORT).show();
-				}
-
-			}
-		});
+		getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 	}
 
 	private void fillData() {
 		if (cc == null) {
 			cc = new CategoriaController(this);
 		}
-        setListAdapter(cc.getCategoriaAdapter(CategoriaController.TODOS, true));
+		setListAdapter(cc.getCategoriaAdapter(CategoriaController.TODOS, false));
 	}
 
 	@Override
@@ -123,7 +109,8 @@ public class CategoriaUI extends ListActivity {
 			idCategoria = info.id;
 
 			if (cc.isCategoriaPadrao(idCategoria)) {
-				Toast.makeText(this, R.string.esta_categoria_nao_pode_ser_excluida,
+				Toast.makeText(this,
+						R.string.esta_categoria_nao_pode_ser_excluida,
 						Toast.LENGTH_SHORT).show();
 				return false;
 			}
@@ -135,8 +122,11 @@ public class CategoriaUI extends ListActivity {
 						CategoriaUI.this);
 				alerta.setIcon(R.drawable.im_atencao);
 				alerta.setTitle(R.string.exclusao);
-				alerta.setMessage(getApplicationContext().getResources().getString(R.string.deseja_excluir_esta_categoria) + qtde
-						+ getApplicationContext().getResources().getString(R.string.emprestimo_com_esta_categoria));
+				alerta.setMessage(getApplicationContext().getResources()
+						.getString(R.string.deseja_excluir_esta_categoria)
+						+ qtde
+						+ getApplicationContext().getResources().getString(
+								R.string.emprestimo_com_esta_categoria));
 
 				alerta.setPositiveButton(R.string.sim,
 						new DialogInterface.OnClickListener() {
@@ -234,7 +224,7 @@ public class CategoriaUI extends ListActivity {
 		} else {
 			cat.setId(idCategoria);
 		}
-		
+
 		cc.inserirOuAtualizar(cat);
 		fillData();
 	}
@@ -245,7 +235,8 @@ public class CategoriaUI extends ListActivity {
 			Toast.makeText(CategoriaUI.this, R.string.preencher_descricao,
 					Toast.LENGTH_SHORT).show();
 			return false;
-		} else if(cc.isDescricaoCategoriaJaExiste(etDescricao.getText().toString())) {
+		} else if (cc.isDescricaoCategoriaJaExiste(etDescricao.getText()
+				.toString())) {
 			Toast.makeText(this, R.string.descricao_categoria_ja_existe,
 					Toast.LENGTH_SHORT).show();
 			return false;

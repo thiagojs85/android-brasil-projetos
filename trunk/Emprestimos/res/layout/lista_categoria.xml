@@ -5,8 +5,7 @@
     android:orientation="horizontal">
     <ListView
 		android:id="@+id/android:list"
-        android:layout_width="fill_parent"
-       	android:layout_height="wrap_content"/>
+        style="@style/FillWrap"/>
   	<TextView
   		android:id="@+id/android:empty"
         style="@style/FillWrap.TextView"

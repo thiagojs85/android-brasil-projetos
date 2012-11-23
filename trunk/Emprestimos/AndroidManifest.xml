@@ -15,9 +15,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".EditarEmprestimo" />
-        <activity android:name=".EditarCategoria" />
         <activity android:name=".CategoriaUI" />
-        <activity android:name=".Notificacao" />
         <receiver android:name="Alarme"></receiver>
 
 </application>

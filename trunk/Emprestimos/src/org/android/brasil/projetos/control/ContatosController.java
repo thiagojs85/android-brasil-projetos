@@ -11,9 +11,11 @@ import android.widget.SimpleCursorAdapter;
 public class ContatosController {
 	private Activity act;
 	private Cursor cursorContato;
-
+	private boolean isClosed;
+	
 	public ContatosController(Activity activity) {
 		act = activity;
+		isClosed = false;
 	}
 	
 	
@@ -37,14 +39,16 @@ public class ContatosController {
 		SimpleCursorAdapter adapter = new SimpleCursorAdapter(act,
 				R.layout.linha_spinner, cursorContato,
 				from,to);
-		
-
 
 		return adapter;
+	}
+	public boolean isClosed() {
+		return isClosed;
 	}
 	
 	public void close(){
 		if(cursorContato != null){
+			isClosed = true;
 			act.stopManagingCursor(cursorContato);
 			cursorContato.close();
 		}

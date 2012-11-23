@@ -77,7 +77,7 @@ public class EditarEmprestimo extends Activity {
 	private RadioButton rbEmprestar;
 	private RadioButton rbPegarEmprestado;
 
-	private Date dataDevolucao;
+	private Calendar dataDevolucao;
 	private EditText etDataDevolucao;
 	private EditText etHoraDevolucao;
 	private EditText etContato;
@@ -90,8 +90,8 @@ public class EditarEmprestimo extends Activity {
 	private static final int DATE_DIALOG_ID_TIME = 1;
 
 	@Override
-	protected void onPause() {
-		super.onPause();
+	protected void onStop() {
+		super.onStop();
 		cc.close();
 		ec.close();
 		ctc.close();
@@ -100,17 +100,17 @@ public class EditarEmprestimo extends Activity {
 	private DatePickerDialog.OnDateSetListener dataListener = new DatePickerDialog.OnDateSetListener() {
 		public void onDateSet(DatePicker view, int year, int monthOfYear,
 				int dayOfMonth) {
-			dataDevolucao.setYear(year - 1900);
-			dataDevolucao.setMonth(monthOfYear);
-			dataDevolucao.setDate(dayOfMonth);
+			dataDevolucao.set(Calendar.YEAR, year - 1900);
+			dataDevolucao.set(Calendar.MONTH, monthOfYear);
+			dataDevolucao.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 			atualizarData();
 		}
 	};
 	private OnTimeSetListener horaListener = new OnTimeSetListener() {
 
 		public void onTimeSet(TimePicker arg0, int hora, int minuto) {
-			dataDevolucao.setHours(hora);
-			dataDevolucao.setMinutes(minuto);
+			dataDevolucao.set(Calendar.HOUR_OF_DAY, hora);
+			dataDevolucao.set(Calendar.MINUTE, minuto);
 			atualizarData();
 
 		}
@@ -139,17 +139,22 @@ public class EditarEmprestimo extends Activity {
 
 		etContato.setEnabled(false);
 		etContato.setVisibility(View.GONE);
-
-		cc = new CategoriaController(this);
-		ec = new EmprestimoController(this);
-		ctc = new ContatosController(this);
+		if (cc == null || cc.isClosed()) {
+			cc = new CategoriaController(this);
+		}
+		if (ec == null || ec.isClosed()) {
+			ec = new EmprestimoController(this);
+		}
+		if (ctc == null || ctc.isClosed()) {
+			ctc = new ContatosController(this);
+		}
 
 		NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		nm.cancel(R.string.app_name);
 
 		spNomes.setAdapter(ctc.getContatoAdapter());
 
-		dataDevolucao = Calendar.getInstance().getTime();
+		dataDevolucao = Calendar.getInstance();
 		atualizarData();
 
 		rbEmprestar.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -242,8 +247,8 @@ public class EditarEmprestimo extends Activity {
 			cc = new CategoriaController(this);
 		}
 
-		SimpleCursorAdapter adapterCategorias = cc
-				.getCategoriaAdapter(CategoriaController.TODOS, false);
+		SimpleCursorAdapter adapterCategorias = cc.getCategoriaAdapter(
+				CategoriaController.TODOS, false);
 
 		if (adapterCategorias != null && adapterCategorias.getCount() > 0) {
 			spCategoria.setEnabled(true);
@@ -289,7 +294,7 @@ public class EditarEmprestimo extends Activity {
 			return false;
 		}
 
-		if (dataDevolucao.getTime() < Calendar.getInstance().getTime()
+		if (dataDevolucao.getTime().getTime() < Calendar.getInstance().getTime()
 				.getTime()) {
 			Toast.makeText(EditarEmprestimo.this,
 					R.string.data_hora_devem_ser_informados, Toast.LENGTH_SHORT)
@@ -364,7 +369,7 @@ public class EditarEmprestimo extends Activity {
 						}
 					}
 				}
-				dataDevolucao = emprestimo.getData();
+				dataDevolucao.setTime(emprestimo.getData());
 				status = emprestimo.getStatus();
 
 				atualizarData();
@@ -422,8 +427,8 @@ public class EditarEmprestimo extends Activity {
 		if (validarCampos()) {
 			String item = etItem.getText().toString();
 			String descricao = etDescricao.getText().toString();
-			Date data = dataDevolucao;
-			data.setSeconds(0);
+			dataDevolucao.set(Calendar.SECOND,0);
+			Date data = dataDevolucao.getTime();
 
 			int status = 0;
 			if (rbEmprestar.isChecked()) {
@@ -493,11 +498,11 @@ public class EditarEmprestimo extends Activity {
 		case DATE_DIALOG_ID_DATE:
 
 			return new DatePickerDialog(this, dataListener,
-					dataDevolucao.getYear() + 1900, dataDevolucao.getMonth(),
-					dataDevolucao.getDate());
+					dataDevolucao.get(Calendar.YEAR) + 1900, dataDevolucao.get(Calendar.MONTH),
+					dataDevolucao.get(Calendar.DAY_OF_MONTH));
 		case DATE_DIALOG_ID_TIME:
 			return new TimePickerDialog(EditarEmprestimo.this, horaListener,
-					dataDevolucao.getHours(), dataDevolucao.getMinutes(), true);
+					dataDevolucao.get(Calendar.HOUR_OF_DAY), dataDevolucao.get(Calendar.MINUTE), true);
 		}
 		return null;
 	}
@@ -506,25 +511,27 @@ public class EditarEmprestimo extends Activity {
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
 		devolverReceber();
 		item.setEnabled(false);
-		
-		
+
 		return super.onMenuItemSelected(featureId, item);
 	}
 
 	private void devolverReceber() {
 		ec.devolverOuReceber(idEmprestimo);
-	//	Toast.makeText(EditarEmprestimo.this, "Sucesso", Toast.LENGTH_SHORT).show();
-		
+		// Toast.makeText(EditarEmprestimo.this, "Sucesso",
+		// Toast.LENGTH_SHORT).show();
+
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);
-		
-		if(status == TipoStatus.EMPRESTADO.getId()) {
-			menu.add(0, Menu.FIRST, 0, R.string.menu_devolver).setIcon(R.drawable.devolver);
+
+		if (status == TipoStatus.EMPRESTADO.getId()) {
+			menu.add(0, Menu.FIRST, 0, R.string.menu_devolver).setIcon(
+					R.drawable.devolver);
 			status = TipoStatus.DEVOLVIDO.getId();
-			menu.add(0, Menu.FIRST+1, 0, "Estornar").setIcon(R.drawable.devolver).setEnabled(false);
+			menu.add(0, Menu.FIRST + 1, 0, "Estornar")
+					.setIcon(R.drawable.devolver).setEnabled(false);
 		}
 		return true;
 	}
@@ -534,6 +541,5 @@ public class EditarEmprestimo extends Activity {
 		item.setEnabled(true);
 		return super.onOptionsItemSelected(item);
 	}
-
 
 }
