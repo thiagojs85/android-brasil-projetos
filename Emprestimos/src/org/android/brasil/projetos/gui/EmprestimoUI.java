@@ -130,7 +130,7 @@ public class EmprestimoUI extends ListActivity {
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		super.onListItemClick(l, v, position, id);
 		Intent i = new Intent(this, EditarEmprestimo.class);
-		i.putExtra(EmprestimoDAO.COLUNA_ID_EMPRESTIMO, id);
+		i.putExtra(EmprestimoDAO.TABELA_EMPRESTIMOS, id);
 		startActivityForResult(i, ACTIVITY_EDIT);
 	}
 
@@ -146,8 +146,8 @@ public class EmprestimoUI extends ListActivity {
 	}
 
 	@Override
-	protected void onPause() {
-		super.onPause();
+	protected void onDestroy() {
+		super.onDestroy();
 		cc.close();
 		ec.close();
 	}

@@ -20,7 +20,7 @@ public class CategoriaDAO extends BasicoDAO {
 	private static String defineTable() {
 		TableBuilder tb = new TableBuilder(TABELA_CATEGORIA);
 		try {
-			tb.setPrimaryKey(COLUNA_ID, "INTEGER",true);
+			tb.setPrimaryKey(COLUNA_ID, "INTEGER", true);
 			tb.addColuna(COLUNA_DESCRICAO, "TEXT", true);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -60,47 +60,47 @@ public class CategoriaDAO extends BasicoDAO {
 		return categoriaDefault;
 	}
 
-	public static long inserir(Categoria cat) {
+	public long inserir(Categoria cat) {
 		ContentValues values = deCategoriaParaContentValues(cat);
 		return inserir(TABELA_CATEGORIA, values);
 	}
 
-	public static long atualizar(Categoria cat) {
+	public long atualizar(Categoria cat) {
 		ContentValues values = deCategoriaParaContentValues(cat);
 		return atualizar(TABELA_CATEGORIA, values, COLUNA_ID,
 				String.valueOf(cat.getId()));
 	}
 
-	public static boolean remover(long idCategoria) {
+	public boolean remover(long idCategoria) {
 		return remover(TABELA_CATEGORIA, COLUNA_ID, idCategoria);
 	}
 
-	private static ContentValues deCategoriaParaContentValues(Categoria cat) {
+	private ContentValues deCategoriaParaContentValues(Categoria cat) {
 		ContentValues values = new ContentValues();
 		values.put(COLUNA_DESCRICAO, cat.getNomeCategoria());
 		return values;
 	}
 
-	public static Cursor consultarTodos(String[] colunas) {
+	public Cursor consultarTodos(String[] colunas) {
 		return consultarTodos(TABELA_CATEGORIA, colunas);
 	}
 
-	public static Cursor consultarTodos() {
+	public Cursor consultarTodos() {
 		return consultarTodos(TABELA_CATEGORIA);
 	}
 
-	public static Cursor consultarTodasCategorias() {
+	public Cursor consultarTodasCategorias() {
 		return consultarTodos(TABELA_CATEGORIA);
 	}
 
-	public static Cursor consultarCategoria(long idCategoria) {
+	public Cursor consultarCategoria(long idCategoria) {
 		Cursor mCursor = consultar(TABELA_CATEGORIA, COLUNA_ID,
 				String.valueOf(idCategoria));
 		return mCursor;
 
 	}
 
-	public static Categoria consultar(long idCategoria) {
+	public Categoria consultar(long idCategoria) {
 		Cursor mCursor = consultar(TABELA_CATEGORIA, COLUNA_ID,
 				String.valueOf(idCategoria));
 		Categoria cat = deCursorParaCategoria(mCursor);
@@ -109,20 +109,21 @@ public class CategoriaDAO extends BasicoDAO {
 
 	}
 
-	public static boolean deleteCategoria(long id) {
+	public boolean deleteCategoria(long id) {
 
 		return remover(id);
 	}
 
-	public static boolean isDescricaoCategoriaJaExiste(String descricao) {
-		Cursor mCursor = consultar(TABELA_CATEGORIA, COLUNA_DESCRICAO, descricao);
-		
+	public boolean isDescricaoCategoriaJaExiste(String descricao) {
+		Cursor mCursor = consultar(TABELA_CATEGORIA, COLUNA_DESCRICAO,
+				descricao);
+
 		boolean jaExiste = false;
-		
+
 		if (mCursor.getCount() > 0) {
-			jaExiste =true;
+			jaExiste = true;
 		}
-		
+
 		return jaExiste;
 	}
 
