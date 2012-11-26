@@ -30,7 +30,6 @@ import org.android.brasil.projetos.model.Emprestimo;
 import org.android.brasil.projetos.model.TipoCategoria;
 import org.android.brasil.projetos.model.TipoStatus;
 
-import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
@@ -39,10 +38,10 @@ import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -62,7 +61,6 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-@SuppressLint("ValidFragment")
 public class EditarEmprestimo extends FragmentActivity {
 
 	private EditText etItem;
@@ -89,11 +87,6 @@ public class EditarEmprestimo extends FragmentActivity {
 	private ContatosController ctc;
 	private int status;
 
-	/*
-	 * private static final int DATE_DIALOG_ID_DATE = 0; private static final
-	 * int DATE_DIALOG_ID_TIME = 1;
-	 */
-
 	@Override
 	protected void onStop() {
 		super.onStop();
@@ -115,7 +108,6 @@ public class EditarEmprestimo extends FragmentActivity {
 
 		public void onDateSet(DatePicker view, int year, int monthOfYear,
 				int dayOfMonth) {
-			Log.w("",year+"  "+monthOfYear+"  "+dayOfMonth);
 			dataDevolucao.set(Calendar.YEAR, year);
 			dataDevolucao.set(Calendar.MONTH, monthOfYear);
 			dataDevolucao.set(Calendar.DAY_OF_MONTH, dayOfMonth);
@@ -131,8 +123,7 @@ public class EditarEmprestimo extends FragmentActivity {
 
 			int hour = dataDevolucao.get(Calendar.HOUR_OF_DAY);
 			int minute = dataDevolucao.get(Calendar.MINUTE);
-			return new TimePickerDialog(getActivity(), this, hour, minute,
-					true);
+			return new TimePickerDialog(getActivity(), this, hour, minute, true);
 		}
 
 		public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
@@ -174,15 +165,42 @@ public class EditarEmprestimo extends FragmentActivity {
 		if (ctc == null || ctc.isClosed()) {
 			ctc = new ContatosController(this);
 		}
-
-		NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		nm.cancel(R.string.app_name);
-
+		if (getIntent() != null
+				&& getIntent().getExtras().getBoolean(
+						Alarme.CANCEL_NOTIFICATION, false)) {
+			int idEmp = (int) getIntent().getExtras().getLong(
+					EmprestimoDAO.TABELA_EMPRESTIMOS, -1);
+			if (idEmp > -1) {
+				NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+				nm.cancel(getApplicationContext().getText(R.string.app_name)
+						+ "", idEmp);
+			} else {
+				Toast.makeText(getApplicationContext(),
+						"ID invalido para cancelar notificação",
+						Toast.LENGTH_LONG).show();
+			}
+		}
 		spNomes.setAdapter(ctc.getContatoAdapter());
 
 		dataDevolucao = Calendar.getInstance();
 		atualizarData();
 
+		spCategoria
+				.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+					public void onItemSelected(AdapterView<?> parent,
+							View view, int position, long id) {
+
+						if (id == TipoCategoria.OUTRA.getId()) {
+							Intent i = new Intent(EditarEmprestimo.this,
+									CategoriaUI.class);
+							startActivityForResult(i, 0);
+						}
+					}
+
+					public void onNothingSelected(AdapterView<?> arg0) {
+
+					}
+				});
 		rbEmprestar.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
 			public void onCheckedChanged(CompoundButton arg0, boolean arg1) {
@@ -225,8 +243,7 @@ public class EditarEmprestimo extends FragmentActivity {
 
 			public void onClick(View view) {
 				if (validarCampos()) {
-					saveState();
-					// Log.w("EditarEmprestimo", "Fim da edição");
+					saveData();
 					setResult(RESULT_OK);
 					finish();
 				}
@@ -256,21 +273,25 @@ public class EditarEmprestimo extends FragmentActivity {
 
 		idEmprestimo = (savedInstanceState == null) ? null
 				: (Long) savedInstanceState
-						.getSerializable(EmprestimoDAO.COLUNA_ID_EMPRESTIMO);
+						.getSerializable(EmprestimoDAO.TABELA_EMPRESTIMOS);
 
 		if (idEmprestimo == null) {
 			Bundle extras = getIntent().getExtras();
 			idEmprestimo = extras != null ? extras
-					.getLong(EmprestimoDAO.COLUNA_ID_EMPRESTIMO) : null;
-
+					.getLong(EmprestimoDAO.TABELA_EMPRESTIMOS) : null;
 		}
-
-		// populateFields();
-
+		if (idEmprestimo != null) {
+			populateFields(ec.getEmprestimo(idEmprestimo));
+		}
 	}
 
-	private void carregarCategoria() {
+	@Override
+	protected void onActivityResult(int arg0, int arg1, Intent arg2) {
+		super.onActivityResult(arg0, arg1, arg2);
+		populateFields(null);
+	}
 
+	private void carregarSpinnerCategoria(long idSelected) {
 		if (cc == null) {
 			cc = new CategoriaController(this);
 		}
@@ -285,159 +306,139 @@ public class EditarEmprestimo extends FragmentActivity {
 		}
 
 		spCategoria.setAdapter(adapterCategorias);
-
 		spCategoria.setSelection(1, true);
-
-		spCategoria
-				.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-					public void onItemSelected(AdapterView<?> parent,
-							View view, int position, long id) {
-
-						if (id == TipoCategoria.OUTRA.getId()) {
-							Intent i = new Intent(EditarEmprestimo.this,
-									CategoriaUI.class);
-							startActivityForResult(i, 0);
-						}
-					}
-
-					public void onNothingSelected(AdapterView<?> arg0) {
-
-					}
-				});
+		for (int i = 0; i < adapterCategorias.getCount(); ++i) {
+			if (adapterCategorias.getItemId(i) == idSelected) {
+				spCategoria.setSelection(i, true);
+				break;
+			}
+		}
 	}
 
 	private boolean validarCampos() {
 		String item = etItem.getText().toString();
-
-		Categoria cat = cc.getCategoria(spCategoria.getSelectedItemId());
-
+		Categoria cat = CategoriaDAO.deCursorParaCategoria((Cursor) spCategoria
+				.getSelectedItem());
 		if (cat.getNomeCategoria().equals(CategoriaDAO.OUTRA)) {
 			return false;
 		}
-
 		if (item.trim().equals("")) {
 			Toast.makeText(EditarEmprestimo.this,
 					R.string.nome_do_item_deve_ser_informado, Toast.LENGTH_LONG)
 					.show();
 			return false;
 		}
-
-		if (dataDevolucao.getTime().getTime() < Calendar.getInstance()
-				.getTime().getTime()) {
-			Toast.makeText(EditarEmprestimo.this,
-					R.string.data_hora_devem_ser_informados, Toast.LENGTH_SHORT)
-					.show();
-
-			return false;
+		if (cbAlarme.isChecked()) {
+			if (dataDevolucao.getTime().getTime() < Calendar.getInstance()
+					.getTime().getTime()) {
+				Toast.makeText(EditarEmprestimo.this,
+						R.string.data_hora_devem_ser_informados,
+						Toast.LENGTH_SHORT).show();
+				return false;
+			}
 		}
-
 		return true;
 	}
 
-	private void populateFields() {
+	private void populateFields(Emprestimo emprestimo) {
+		if (emprestimo != null) {
+			carregarSpinnerCategoria(emprestimo.getIdCategoria());
+			long status = emprestimo.getStatus();
+			if (status == Emprestimo.STATUS_EMPRESTAR) {
+				rbPegarEmprestado.setChecked(false);
+				rbEmprestar.setChecked(true);
+			}
 
-		carregarCategoria();
+			if (status == Emprestimo.STATUS_PEGAR_EMPRESTADO) {
+				rbEmprestar.setChecked(false);
+				rbPegarEmprestado.setChecked(true);
+			}
 
-		if (idEmprestimo != null) {
+			long alarme = emprestimo.getAtivarAlarme();
+			if (alarme == Emprestimo.ATIVAR_ALARME) {
+				cbAlarme.setChecked(true);
+			}
 
-			if (ec.existe(idEmprestimo)) {
-				Emprestimo emprestimo = ec.getEmprestimo(idEmprestimo);
+			if (alarme == Emprestimo.DESATIVAR_ALARME) {
+				cbAlarme.setChecked(false);
+			}
 
-				long status = emprestimo.getStatus();
-				if (status == Emprestimo.STATUS_EMPRESTAR) {
-					rbPegarEmprestado.setChecked(false);
-					rbEmprestar.setChecked(true);
+			etItem.setText(emprestimo.getItem());
+			etDescricao.setText(emprestimo.getDescricao());
 
-				}
+			String contato = emprestimo.getContato();
+			Adapter ad = spNomes.getAdapter();
 
-				if (status == Emprestimo.STATUS_PEGAR_EMPRESTADO) {
-					rbEmprestar.setChecked(false);
-					rbPegarEmprestado.setChecked(true);
-				}
+			if (contato != null) {
 
-				long alarme = emprestimo.getAtivarAlarme();
-				if (alarme == Emprestimo.ATIVAR_ALARME) {
-					cbAlarme.setChecked(true);
-				}
+				etContato.setEnabled(true);
+				etContato.setVisibility(View.VISIBLE);
+				spNomes.setEnabled(false);
 
-				if (alarme == Emprestimo.DESATIVAR_ALARME) {
-					cbAlarme.setChecked(false);
-				}
+				etContato.setText(contato);
+				cbContato.setChecked(true);
 
-				etItem.setText(emprestimo.getItem());
+			} else {
 
-				etDescricao.setText(emprestimo.getDescricao());
+				etContato.setEnabled(false);
+				etContato.setVisibility(View.GONE);
+				spNomes.setEnabled(true);
+				cbContato.setChecked(false);
 
-				String contato = emprestimo.getContato();
-				Adapter ad = spNomes.getAdapter();
-
-				if (contato != null) {
-
-					etContato.setEnabled(true);
-					etContato.setVisibility(View.VISIBLE);
-					spNomes.setEnabled(false);
-
-					etContato.setText(contato);
-					cbContato.setChecked(true);
-
-				} else {
-
-					etContato.setEnabled(false);
-					etContato.setVisibility(View.GONE);
-					spNomes.setEnabled(true);
-					cbContato.setChecked(false);
-
-					long id = emprestimo.getIdContato();
-
-					for (int i = 0; i < ad.getCount(); ++i) {
-
-						if (ad.getItemId(i) == id) {
-							spNomes.setSelection(i);
-							break;
-						}
-					}
-				}
-				dataDevolucao.setTime(emprestimo.getData());
-				status = emprestimo.getStatus();
-
-				atualizarData();
-
-				ad = spCategoria.getAdapter();
-				long idCat = emprestimo.getIdCategoria();
+				long id = emprestimo.getIdContato();
 
 				for (int i = 0; i < ad.getCount(); ++i) {
 
-					if (ad.getItemId(i) == idCat) {
-						spCategoria.setSelection(i);
+					if (ad.getItemId(i) == id) {
+						spNomes.setSelection(i);
 						break;
 					}
 				}
-			} else {
-				limparCamposTela();
 			}
+			dataDevolucao.setTime(emprestimo.getData());
+			status = emprestimo.getStatus();
+
+			atualizarData();
+
+			ad = spCategoria.getAdapter();
+			long idCat = emprestimo.getIdCategoria();
+
+			for (int i = 0; i < ad.getCount(); ++i) {
+
+				if (ad.getItemId(i) == idCat) {
+					spCategoria.setSelection(i);
+					break;
+				}
+			}
+		} else {
+			carregarSpinnerCategoria(-1);
 		}
 	}
 
-	private void limparCamposTela() {
-		etItem.setText("");
-		etDescricao.setText("");
-		spNomes.setSelection(0);
-		spCategoria.setSelection(1, true);
-		cbAlarme.setChecked(false);
-		cbContato.setChecked(false);
-		etContato.setVisibility(View.GONE);
-		atualizarData();
-		etContato.setText("");
-		rbEmprestar.setSelected(true);
-
-	}
-
+	/*
+	 * private void limparCamposTela() { etItem.setText("");
+	 * etDescricao.setText(""); spNomes.setSelection(0);
+	 * spCategoria.setSelection(1, true); cbAlarme.setChecked(false);
+	 * cbContato.setChecked(false); etContato.setVisibility(View.GONE);
+	 * atualizarData(); etContato.setText(""); rbEmprestar.setSelected(true);
+	 * 
+	 * }
+	 */
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		saveState();
-		outState.putSerializable(EmprestimoDAO.COLUNA_ID_EMPRESTIMO,
-				idEmprestimo);
+		outState.putSerializable(EmprestimoDAO.TABELA_EMPRESTIMOS,
+				getEmprestimoFromInterface());
+		outState.putSerializable(EmprestimoDAO.TABELA_EMPRESTIMOS, idEmprestimo);
+	}
+
+	public void onRestoreInstanceState(Bundle savedInstanceState) {
+		super.onRestoreInstanceState(savedInstanceState);
+		Emprestimo emp = (Emprestimo) savedInstanceState
+				.getSerializable(EmprestimoDAO.TABELA_EMPRESTIMOS);
+		idEmprestimo = (Long) savedInstanceState
+				.getSerializable(EmprestimoDAO.TABELA_EMPRESTIMOS);
+		populateFields(emp);
 	}
 
 	@Override
@@ -445,70 +446,68 @@ public class EditarEmprestimo extends FragmentActivity {
 		super.onDestroy();
 	}
 
-	@Override
-	protected void onResume() {
-		super.onResume();
-		populateFields();
+	private Emprestimo getEmprestimoFromInterface() {
+		String item = etItem.getText().toString();
+		String descricao = etDescricao.getText().toString();
+		dataDevolucao.set(Calendar.SECOND, 0);
+		Date data = dataDevolucao.getTime();
+
+		int status = 0;
+		if (rbEmprestar.isChecked()) {
+			status = Emprestimo.STATUS_EMPRESTAR;
+		} else if (rbPegarEmprestado.isChecked()) {
+			status = Emprestimo.STATUS_PEGAR_EMPRESTADO;
+		}
+
+		long idContato = spNomes.getSelectedItemId();
+
+		int alarme = Emprestimo.DESATIVAR_ALARME;
+		if (cbAlarme.isChecked()) {
+			alarme = Emprestimo.ATIVAR_ALARME;
+		}
+
+		long idCategoria = spCategoria.getSelectedItemId();
+
+		Emprestimo emp = new Emprestimo();
+		emp.setItem(item);
+		emp.setDescricao(descricao);
+		emp.setData(data);
+		emp.setStatus(status);
+		emp.setAtivarAlarme(alarme);
+		emp.setIdContato(idContato);
+		emp.setIdCategoria(idCategoria);
+
+		if (cbContato.isChecked()) {
+			emp.setContato(etContato.getText().toString());
+		} else {
+			emp.setContato(null);
+		}
+
+		if (idEmprestimo == null) {
+			emp.setIdEmprestimo(-1);
+		} else {
+			emp.setIdEmprestimo(idEmprestimo);
+
+		}
+		return emp;
 	}
 
-	private void saveState() {
+	private void saveData() {
 		if (validarCampos()) {
-			String item = etItem.getText().toString();
-			String descricao = etDescricao.getText().toString();
-			dataDevolucao.set(Calendar.SECOND, 0);
-			Date data = dataDevolucao.getTime();
-
-			int status = 0;
-			if (rbEmprestar.isChecked()) {
-				status = Emprestimo.STATUS_EMPRESTAR;
-			} else if (rbPegarEmprestado.isChecked()) {
-				status = Emprestimo.STATUS_PEGAR_EMPRESTADO;
-			}
-
-			long idContato = spNomes.getSelectedItemId();
-
-			int alarme = Emprestimo.DESATIVAR_ALARME;
+			Emprestimo emp = getEmprestimoFromInterface();
+			idEmprestimo = ec.inserirOuAtualizar(emp);
 			if (cbAlarme.isChecked()) {
-				alarme = Emprestimo.ATIVAR_ALARME;
-
 				Intent intent = new Intent(EditarEmprestimo.this, Alarme.class);
-				intent.putExtra(EmprestimoDAO.COLUNA_ID_EMPRESTIMO,
-						idEmprestimo);
-
+				intent.putExtra(EmprestimoDAO.TABELA_EMPRESTIMOS, idEmprestimo);
 				PendingIntent sender = PendingIntent.getBroadcast(
 						EditarEmprestimo.this, 0, intent,
 						PendingIntent.FLAG_UPDATE_CURRENT);
 
 				AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
-				am.set(AlarmManager.RTC_WAKEUP, data.getTime(), sender);
+				am.set(AlarmManager.RTC_WAKEUP, emp.getData().getTime(), sender);
 
 			}
 
-			long idCategoria = spCategoria.getSelectedItemId();
-
-			Emprestimo emp = new Emprestimo();
-			emp.setItem(item);
-			emp.setDescricao(descricao);
-			emp.setData(data);
-			emp.setStatus(status);
-			emp.setAtivarAlarme(alarme);
-			emp.setIdContato(idContato);
-			emp.setIdCategoria(idCategoria);
-
-			if (cbContato.isChecked()) {
-				emp.setContato(etContato.getText().toString());
-			} else {
-				emp.setContato(null);
-			}
-
-			if (idEmprestimo == null) {
-				emp.setIdEmprestimo(0);
-			} else {
-				emp.setIdEmprestimo(idEmprestimo);
-
-			}
-
-			ec.inserirOuAtualizar(emp);
 		}
 	}
 
@@ -523,17 +522,9 @@ public class EditarEmprestimo extends FragmentActivity {
 
 	@Override
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
-		devolverReceber();
-		item.setEnabled(false);
-
-		return super.onMenuItemSelected(featureId, item);
-	}
-
-	private void devolverReceber() {
 		ec.devolverOuReceber(idEmprestimo);
-		// Toast.makeText(EditarEmprestimo.this, "Sucesso",
-		// Toast.LENGTH_SHORT).show();
-
+		item.setEnabled(false);
+		return super.onMenuItemSelected(featureId, item);
 	}
 
 	@Override

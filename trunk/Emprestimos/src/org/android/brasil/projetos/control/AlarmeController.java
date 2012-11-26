@@ -13,17 +13,12 @@ public class AlarmeController {
 	}
 	
 	public Emprestimo getEmprestimo(long id) {
-		EmprestimoDAO.open(ctx);
-		Emprestimo emprestimo = EmprestimoDAO.consultar(id);
-		EmprestimoDAO.close();
-
+		Emprestimo emprestimo = new EmprestimoDAO(ctx).consultar(id);
 		return emprestimo;
 	}
 
 	public void atualizaNotificacao(long id) {
-		EmprestimoDAO.open(ctx);
-		EmprestimoDAO.atualizarAlarme(id);
-		EmprestimoDAO.close();
+		new EmprestimoDAO(ctx).atualizarAlarme(id);
 	}
 
 }

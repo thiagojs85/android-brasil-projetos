@@ -12,24 +12,27 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationCompat.Builder;
 
 public class Alarme extends BroadcastReceiver {
+	public static final String CANCEL_NOTIFICATION = "CANCEL_NOTIFICATION";
 	private long idEmprestimo;
 	private AlarmeController ac;
 	private Emprestimo emprestimo;
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		idEmprestimo = intent.getLongExtra(EmprestimoDAO.COLUNA_ID_EMPRESTIMO,
-				0);
-		if (idEmprestimo > 0) {
+		idEmprestimo = intent
+				.getLongExtra(EmprestimoDAO.TABELA_EMPRESTIMOS, -1);
+		if (idEmprestimo >= 0) {
 
 			ac = new AlarmeController(context);
 
 			emprestimo = new Emprestimo();
 			emprestimo = ac.getEmprestimo(idEmprestimo);
+
 			if (emprestimo.getAtivarAlarme() == Emprestimo.ATIVAR_ALARME) {
 				notificationStatus(context, intent);
 				ac.atualizaNotificacao(idEmprestimo);
@@ -53,26 +56,35 @@ public class Alarme extends BroadcastReceiver {
 		final Intent notificationIntent = new Intent(context,
 				EditarEmprestimo.class);
 
-		notificationIntent.putExtras(i.getExtras());
-		notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		notificationIntent.putExtras(new Bundle());
+		notificationIntent.putExtra(CANCEL_NOTIFICATION, true);
+		notificationIntent.putExtra(EmprestimoDAO.TABELA_EMPRESTIMOS,
+				idEmprestimo);
+		notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+				| Intent.FLAG_ACTIVITY_CLEAR_TASK);
 
 		final PendingIntent contentIntent = PendingIntent.getActivity(
-				context.getApplicationContext(), 0, notificationIntent, 0);
+				context.getApplicationContext(), 0, notificationIntent,
+				PendingIntent.FLAG_UPDATE_CURRENT);
 
 		String notificacao = context.getString(R.string.notificacao);
 		if (emprestimo.getStatus() == Emprestimo.STATUS_PEGAR_EMPRESTADO) {
 			notificacao = context.getString(R.string.hora_de_devolver)
 					+ emprestimo.getItem();
 		} else {
-			notificacao = context.getString(R.string.ja_recebeu_item)
-					+" "+ emprestimo.getItem()+" "
+			notificacao = context.getString(R.string.ja_recebeu_item) + " "
+					+ emprestimo.getItem() + " "
 					+ context.getString(R.string.de_volta);
 		}
+
 		notification.setContentText(notificacao);
 		notification.setContentIntent(contentIntent);
 
 		notification.setVibrate(new long[] { 100, 250, 100, 500 });
-		mNotificationManager.notify(R.string.app_name, notification.build());
+		mNotificationManager.cancel(context.getText(R.string.app_name) + "",
+				(int) emprestimo.getIdEmprestimo());
+		mNotificationManager.notify(context.getText(R.string.app_name) + "",
+				(int) emprestimo.getIdEmprestimo(), notification.build());
 
 	}
 }

@@ -1,8 +1,13 @@
 package org.android.brasil.projetos.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Emprestimo {
+public class Emprestimo implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 831389733846366170L;
 	private long idEmprestimo;
 	private String item;
 	private String descricao;

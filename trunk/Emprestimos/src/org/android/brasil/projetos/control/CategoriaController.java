@@ -27,14 +27,14 @@ public class CategoriaController {
 			cursorCategoria.close();
 		}
 
-		CategoriaDAO.open(act);
+		
 		if (id == TODOS) {
-			cursorCategoria = CategoriaDAO.consultarTodasCategorias();
+			cursorCategoria = new CategoriaDAO(act).consultarTodasCategorias();
 		} else {
-			cursorCategoria = CategoriaDAO.consultarCategoria(id);
+			cursorCategoria = new CategoriaDAO(act).consultarCategoria(id);
 		}
 
-		CategoriaDAO.close();
+		
 
 		act.startManagingCursor(cursorCategoria);
 
@@ -42,7 +42,7 @@ public class CategoriaController {
 
 			SimpleCursorAdapter adapter = new SimpleCursorAdapter(act,
 					R.layout.simplerow, cursorCategoria,
-					new String[] { CategoriaDAO.COLUNA_DESCRICAO },
+					new String[] { new CategoriaDAO(act).COLUNA_DESCRICAO },
 					new int[] { R.id.rowTextView });
 
 			return adapter;
@@ -50,7 +50,7 @@ public class CategoriaController {
 		} else {
 			SimpleCursorAdapter adapter = new SimpleCursorAdapter(act,
 					R.layout.linha_listview, cursorCategoria,
-					new String[] { CategoriaDAO.COLUNA_DESCRICAO },
+					new String[] { new CategoriaDAO(act).COLUNA_DESCRICAO },
 					new int[] { R.id.text1 });
 
 			return adapter;
@@ -59,10 +59,7 @@ public class CategoriaController {
 	}
 
 	public Categoria getCategoria(long id) {
-		CategoriaDAO.open(act);
-		Categoria cat = CategoriaDAO.consultar(id);
-		CategoriaDAO.close();
-
+		Categoria cat = new CategoriaDAO(act).consultar(id);
 		return cat;
 	}
 
@@ -80,22 +77,22 @@ public class CategoriaController {
 	}
 
 	public void deleteCategoria(Long idCategoria) {
-		CategoriaDAO.open(act);
-		CategoriaDAO.deleteCategoria(idCategoria);
-		CategoriaDAO.close();
+		
+		new CategoriaDAO(act).deleteCategoria(idCategoria);
+		
 	}
 
 	public void atualizar(Categoria cat) {
-		CategoriaDAO.open(act);
-		CategoriaDAO.atualizar(cat);
-		CategoriaDAO.close();
+		
+		new CategoriaDAO(act).atualizar(cat);
+		
 
 	}
 
 	public long inserir(Categoria cat) {
-		CategoriaDAO.open(act);
-		long id = CategoriaDAO.inserir(cat);
-		CategoriaDAO.close();
+		
+		long id = new CategoriaDAO(act).inserir(cat);
+		
 		return id;
 	}
 
@@ -109,9 +106,9 @@ public class CategoriaController {
 	}
 
 	public boolean isDescricaoCategoriaJaExiste(String descricao) {
-		CategoriaDAO.open(act);
-		boolean existe = CategoriaDAO.isDescricaoCategoriaJaExiste(descricao);
-		CategoriaDAO.close();
+		
+		boolean existe = new CategoriaDAO(act).isDescricaoCategoriaJaExiste(descricao);
+		
 
 		return existe;
 	}

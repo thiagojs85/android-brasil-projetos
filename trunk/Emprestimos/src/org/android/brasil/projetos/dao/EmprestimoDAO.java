@@ -87,34 +87,34 @@ public class EmprestimoDAO extends BasicoDAO {
 		return values;
 	}
 
-	public static long inserirEmprestimo(Emprestimo emp) {
+	public long inserirEmprestimo(Emprestimo emp) {
 		ContentValues values = deEmprestimoParaContentValues(emp);
 		return inserir(TABELA_EMPRESTIMOS, values);
 	}
 
-	public static boolean deleteEmprestimo(long id) {
+	public boolean deleteEmprestimo(long id) {
 
 		return remover(TABELA_EMPRESTIMOS, COLUNA_ID_EMPRESTIMO, id);
 	}
 
-	public static boolean deleteEmprestimoPorCategoria(long idCategoria) {
+	public boolean deleteEmprestimoPorCategoria(long idCategoria) {
 
 		return remover(TABELA_EMPRESTIMOS, COLUNA_ID_CATEGORIA, idCategoria);
 	}
 
-	public static Cursor consultarTodos() {
+	public Cursor consultarTodos() {
 
 		return consultarTodos(TABELA_EMPRESTIMOS);
 	}
 
-	public static Cursor consultarEmprestimo(long idEmprestimo) {
+	public Cursor consultarEmprestimo(long idEmprestimo) {
 		Cursor mCursor = consultar(TABELA_EMPRESTIMOS, COLUNA_ID_EMPRESTIMO,
 				String.valueOf(idEmprestimo));
 		return mCursor;
 
 	}
 
-	public static Emprestimo consultar(long idEmprestimo) {
+	public Emprestimo consultar(long idEmprestimo) {
 		Cursor mCursor = consultar(TABELA_EMPRESTIMOS, COLUNA_ID_EMPRESTIMO,
 				String.valueOf(idEmprestimo));
 		Emprestimo emp = deCursorParaEmprestimo(mCursor);
@@ -123,7 +123,7 @@ public class EmprestimoDAO extends BasicoDAO {
 
 	}
 
-	public static boolean existe(long idEmprestimo) {
+	public boolean existe(long idEmprestimo) {
 		boolean existe;
 
 		Cursor mCursor = consultar(TABELA_EMPRESTIMOS, COLUNA_ID_EMPRESTIMO,
@@ -141,14 +141,14 @@ public class EmprestimoDAO extends BasicoDAO {
 
 	}
 
-	public static long atualizarEmprestimo(Emprestimo emp) {
+	public long atualizarEmprestimo(Emprestimo emp) {
 		ContentValues values = deEmprestimoParaContentValues(emp);
 		return atualizar(TABELA_EMPRESTIMOS, values,
 				new String[] { EmprestimoDAO.COLUNA_ID_EMPRESTIMO },
 				new String[] { String.valueOf(emp.getIdEmprestimo()) });
 	}
 
-	public static void atualizarAlarme(long id) {
+	public void atualizarAlarme(long id) {
 		ContentValues values = new ContentValues();
 		values.put(COLUNA_ATIVAR_ALARME, Emprestimo.DESATIVAR_ALARME);
 		atualizar(TABELA_EMPRESTIMOS, values,
@@ -157,7 +157,7 @@ public class EmprestimoDAO extends BasicoDAO {
 
 	}
 	
-	public static void atualizarStatus(long id) {
+	public void atualizarStatus(long id) {
 		ContentValues values = new ContentValues();
 		values.put(COLUNA_STATUS, TipoStatus.DEVOLVIDO.getId());
 		atualizar(TABELA_EMPRESTIMOS, values,
@@ -166,7 +166,7 @@ public class EmprestimoDAO extends BasicoDAO {
 
 	}	
 
-	public static List<Emprestimo> listarEmprestimoPorCategoria(long idCategoria) {
+	public List<Emprestimo> listarEmprestimoPorCategoria(long idCategoria) {
 		List<Emprestimo> lista = new ArrayList<Emprestimo>();
 		Cursor cursor = consultar(TABELA_EMPRESTIMOS, COLUNA_ID_CATEGORIA,
 				String.valueOf(idCategoria));
@@ -181,7 +181,7 @@ public class EmprestimoDAO extends BasicoDAO {
 		return lista;
 	}
 
-	public static Cursor consultarEmprestimoPorCategoria(long idCategoria)
+	public Cursor consultarEmprestimoPorCategoria(long idCategoria)
 			throws SQLException {
 		Cursor mCursor = consultar(TABELA_EMPRESTIMOS, COLUNA_ID_CATEGORIA,
 				String.valueOf(idCategoria));
@@ -189,7 +189,7 @@ public class EmprestimoDAO extends BasicoDAO {
 		return mCursor;
 	}
 
-	public static long consultarQtdeEmprestimosPorCategoria(long idCategoria)
+	public long consultarQtdeEmprestimosPorCategoria(long idCategoria)
 			throws SQLException {
 		Cursor mCursor = consultar(TABELA_EMPRESTIMOS, COLUNA_ID_CATEGORIA,
 				String.valueOf(idCategoria));

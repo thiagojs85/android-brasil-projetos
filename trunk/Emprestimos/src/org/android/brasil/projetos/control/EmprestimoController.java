@@ -28,20 +28,18 @@ public class EmprestimoController {
 			cursorEmprestimos.close();
 		}
 
-		EmprestimoDAO.open(act);
 		if (id == TODOS) {
-			cursorEmprestimos = EmprestimoDAO.consultarTodos();
+			cursorEmprestimos = new EmprestimoDAO(act).consultarTodos();
 		} else {
-			cursorEmprestimos = EmprestimoDAO
+			cursorEmprestimos = new EmprestimoDAO(act)
 					.consultarEmprestimoPorCategoria(id);
 		}
-		EmprestimoDAO.close();
 
 		act.startManagingCursor(cursorEmprestimos);
 
 		// Create an array to specify the fields we want to display in the list
 		// (only TITLE)
-		String[] from = new String[] { EmprestimoDAO.COLUNA_ITEM };
+		String[] from = new String[] { new EmprestimoDAO(act).COLUNA_ITEM };
 
 		// and an array of the fields we want to bind those fields to (in this
 		// case just text1)
@@ -55,39 +53,26 @@ public class EmprestimoController {
 	}
 
 	public boolean deletarEmprestimo(long id) {
-		EmprestimoDAO.open(act);
-		boolean resp = EmprestimoDAO.deleteEmprestimo(id);
-		EmprestimoDAO.close();
-
+		boolean resp = new EmprestimoDAO(act).deleteEmprestimo(id);
 		return resp;
 	}
 
 	public Emprestimo getEmprestimo(long id) {
-		EmprestimoDAO.open(act);
-		Emprestimo emprestimo = EmprestimoDAO.consultar(id);
-		EmprestimoDAO.close();
-
+		Emprestimo emprestimo = new EmprestimoDAO(act).consultar(id);
 		return emprestimo;
 	}
 
 	public boolean existe(long id) {
-		EmprestimoDAO.open(act);
-		boolean isValido = EmprestimoDAO.existe(id);
-		EmprestimoDAO.close();
-
+		boolean isValido = new EmprestimoDAO(act).existe(id);
 		return isValido;
 	}
 
 	public void atualizarEmprestimo(Emprestimo emp) {
-		EmprestimoDAO.open(act);
-		EmprestimoDAO.atualizarEmprestimo(emp);
-		EmprestimoDAO.close();
+		new EmprestimoDAO(act).atualizarEmprestimo(emp);
 	}
 
 	public long inserirEmprestimo(Emprestimo emp) {
-		EmprestimoDAO.open(act);
-		long id = EmprestimoDAO.inserirEmprestimo(emp);
-		EmprestimoDAO.close();
+		long id = new EmprestimoDAO(act).inserirEmprestimo(emp);
 		return id;
 	}
 
@@ -97,46 +82,32 @@ public class EmprestimoController {
 			act.stopManagingCursor(cursorEmprestimos);
 			cursorEmprestimos.close();
 		}
-
 	}
+
 	public boolean isClosed() {
 		return isClosed;
 	}
 
 	public long consultarQtdeEmprestimosPorCategoria(long idCategoria) {
-		EmprestimoDAO.open(act);
-		long qtde = EmprestimoDAO
+		long qtde = new EmprestimoDAO(act)
 				.consultarQtdeEmprestimosPorCategoria(idCategoria);
-		EmprestimoDAO.close();
-
 		return qtde;
 	}
 
 	public void deleteEmprestimoPorCategoria(Long idCategoria) {
-		EmprestimoDAO.open(act);
-		EmprestimoDAO.deleteEmprestimoPorCategoria(idCategoria);
-		EmprestimoDAO.close();
-
+		new EmprestimoDAO(act).deleteEmprestimoPorCategoria(idCategoria);
 	}
 
 	public long inserirOuAtualizar(Emprestimo emp) {
-		if (emp.getIdEmprestimo() == 0) {
-
-			long id = inserirEmprestimo(emp);
-			if (id > 0) {
-				emp.setIdCategoria(id);
-			}
+		if (emp.getIdEmprestimo() <= 0) {
+			return inserirEmprestimo(emp);
 		} else {
 			atualizarEmprestimo(emp);
 		}
-
 		return emp.getIdEmprestimo();
 	}
 
 	public void devolverOuReceber(Long idEmprestimo) {
-		EmprestimoDAO.open(act);
-		EmprestimoDAO.atualizarStatus(idEmprestimo);
-		EmprestimoDAO.close();
-
+		new EmprestimoDAO(act).atualizarStatus(idEmprestimo);
 	}
 }

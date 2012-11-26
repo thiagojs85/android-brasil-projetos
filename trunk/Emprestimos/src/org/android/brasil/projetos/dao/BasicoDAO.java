@@ -4,53 +4,11 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
+import android.net.Uri;
 
 public abstract class BasicoDAO {
-	protected static SQLiteDatabase mDb;
+
 	protected static Context mCtx;
-	private static String TAG = "DB";
-	private static int contador;
-
-	private synchronized static int numeroConexoes(int i) {
-		contador = contador + i;
-		return contador;
-	}
-
-	/**
-	 * Utiliza ctx para instânciar uma base de dados.
-	 * 
-	 * @param ctx
-	 *            Necessário ser chamado antes de chamar qualquer método
-	 *            estático!
-	 */
-	public synchronized static void open(Context ctx) {
-		if (mDb == null || (mDb != null && !mDb.isOpen())) {
-
-			mDb = DbAdapter.open(ctx);
-		}
-		mCtx = ctx;
-
-		if (numeroConexoes(0) >= 0) {
-			numeroConexoes(+1);
-		}
-	}
-
-	/**
-	 * Fecha o acesso a uma base de dados. Deve ser chamado sempre que tiver
-	 * utilizado algum método estático!
-	 */
-	public synchronized static void close() {
-		if (mDb != null && mDb.isOpen() && (numeroConexoes(0) == 1)) {
-			DbAdapter.close();
-			mDb.close();
-		}
-		if (numeroConexoes(0) > 0) {
-			numeroConexoes(-1);
-		}
-
-	}
-
 	/**
 	 * Construtor básico
 	 * 
@@ -163,8 +121,10 @@ public abstract class BasicoDAO {
 	 */
 	private static Cursor consultaBasica(String table, String[] colunas,
 			String condicao, String orderBy) {
-		Cursor mCursor = mDb.query(false, table, colunas, condicao, null, null,
-				null, orderBy, null);
+		Uri uri = DBContentProvider.BASE_CONTENT_URI.buildUpon().appendPath(table).build();
+
+		Cursor mCursor = mCtx.getContentResolver().query(uri, colunas,
+				condicao, null, orderBy);
 
 		if (mCursor != null) {
 			mCursor.moveToFirst();
@@ -281,17 +241,9 @@ public abstract class BasicoDAO {
 	protected static long atualizar(String table, ContentValues cvalues,
 			String[] keys, String[] values) {
 		long id = -1;
-		mDb.beginTransaction();
-		try {
-			id = mDb.update(table, cvalues, condicaoANDBuilder(keys, values),
-					null);
-			mDb.setTransactionSuccessful();
-		} catch (Exception e) {
-			Log.e(TAG, e.getMessage());
-		} finally {
-			mDb.endTransaction();
-		}
-
+		Uri uri = DBContentProvider.BASE_CONTENT_URI.buildUpon().appendPath(table).build();
+		id = mCtx.getContentResolver().update(uri, cvalues,
+				condicaoANDBuilder(keys, values), null);
 		return id;
 	}
 
@@ -342,7 +294,8 @@ public abstract class BasicoDAO {
 		if (coluna != null) {
 			coluna = coluna + " = " + id;
 		}
-		return mDb.delete(table, coluna, null) > 0;
+		Uri uri = DBContentProvider.BASE_CONTENT_URI.buildUpon().appendPath(table).build();
+		return mCtx.getContentResolver().delete(uri, coluna, null) > 0;
 	}
 
 	/**
@@ -368,20 +321,10 @@ public abstract class BasicoDAO {
 	 */
 	protected static long inserir(String table, ContentValues values) {
 		long id = -1;
-		if (!mDb.inTransaction()) {
-			mDb.beginTransaction();
-		}
 
-		try {
-			id = mDb.insert(table, null, values);
-			mDb.setTransactionSuccessful();
-		} catch (Exception e) {
-			Log.e(TAG, e.getMessage());
-		} finally {
-			if (mDb.inTransaction()) {
-				mDb.endTransaction();
-			}
-		}
+		Uri uri = DBContentProvider.BASE_CONTENT_URI.buildUpon().appendPath(table).build();
+		Uri newUri = mCtx.getContentResolver().insert(uri, values);
+		id = Integer.parseInt(newUri.getLastPathSegment());
 		return id;
 	}
 
