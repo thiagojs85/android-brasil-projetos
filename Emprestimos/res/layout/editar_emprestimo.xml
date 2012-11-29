@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/EditItemView"
 	android:fillViewport="true"
 	style="@style/FillFill.Layout">
 	<LinearLayout
@@ -35,7 +36,7 @@
 			android:textColor="@android:color/black"
 			android:text="@string/item" />
 		<EditText
-			android:id="@+id/item" 
+			android:id="@+id/et_item" 
 		 	style="@style/FillWrap.EditText"
 			android:singleLine="true" />
 	
@@ -45,7 +46,7 @@
 			android:text="@string/descricao" />
 			
 		<EditText
-			android:id="@+id/descricao"
+			android:id="@+id/et_descricao"
 			style="@style/FillWrap.EditText"
 			android:scrollbars="vertical" />
 		
@@ -56,17 +57,17 @@
 		
 		<Spinner
 			style="@style/FillWrap.Spinner"
-			android:id="@+id/txt_auto_nome"
+			android:id="@+id/sp_auto_nome"
 			android:inputType="text"/>
 			
 		<EditText
-			android:id="@+id/etContato"
+			android:id="@+id/et_contato"
 			style="@style/FillWrap.EditText"
 			android:scrollbars="vertical" />
 	
 		<CheckBox android:text="@string/outro_contato" 
 			style="@style/WrapWrap.CheckBox"
-			android:id="@+id/cbContato" />
+			android:id="@+id/cb_contato" />
 
 		<TextView 
 			android:id="@+id/tv_categoria"
@@ -87,7 +88,7 @@
 			android:text="@string/data_devolucao" />
 			
 	   	<EditText 
-			android:id="@+id/data"
+			android:id="@+id/et_data"
 			android:gravity="center_horizontal"
 			style="@style/FillWrap.EditText.NoFocus"/>
 	
@@ -96,12 +97,12 @@
 			android:text="@string/hora_devolucao" />
 			
 	   	<EditText 
-			android:id="@+id/hora"
+			android:id="@+id/et_hora"
 			android:gravity="center_horizontal"
 			style="@style/FillWrap.EditText.NoFocus"/>
 	
 		<Button
-			android:id="@+id/confirmar" 
+			android:id="@+id/btn_confirmar" 
 		  	android:text="@string/confirmar"
 			style="@style/WrapWrap"/>
 	

@@ -5,10 +5,13 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 
 public abstract class BasicoDAO {
 
 	protected static Context mCtx;
+
 	/**
 	 * Construtor básico
 	 * 
@@ -121,7 +124,8 @@ public abstract class BasicoDAO {
 	 */
 	private static Cursor consultaBasica(String table, String[] colunas,
 			String condicao, String orderBy) {
-		Uri uri = DBContentProvider.BASE_CONTENT_URI.buildUpon().appendPath(table).build();
+		Uri uri = DBContentProvider.BASE_CONTENT_URI.buildUpon()
+				.appendPath(table).build();
 
 		Cursor mCursor = mCtx.getContentResolver().query(uri, colunas,
 				condicao, null, orderBy);
@@ -226,10 +230,10 @@ public abstract class BasicoDAO {
 	}
 
 	/**
-	 * Método genérico para atualizar entradas nas tabelas baseado na igualdade
-	 * entre as colunas (key) passadas e seus valores (values) fornecidos.
-	 * Exemplo: UPPER(keys[0]) = UPPER('values[0]') AND UPPER(keys[1]) =
-	 * UPPER('values[1]')...
+	 * Método genérico para atualizar entradas nas tabelas baseado na
+	 * igualdade entre as colunas (key) passadas e seus valores (values)
+	 * fornecidos. Exemplo: UPPER(keys[0]) = UPPER('values[0]') AND
+	 * UPPER(keys[1]) = UPPER('values[1]')...
 	 * 
 	 * @param table
 	 *            Tabela onde será executada a deleção.
@@ -241,7 +245,8 @@ public abstract class BasicoDAO {
 	protected static long atualizar(String table, ContentValues cvalues,
 			String[] keys, String[] values) {
 		long id = -1;
-		Uri uri = DBContentProvider.BASE_CONTENT_URI.buildUpon().appendPath(table).build();
+		Uri uri = DBContentProvider.BASE_CONTENT_URI.buildUpon()
+				.appendPath(table).build();
 		id = mCtx.getContentResolver().update(uri, cvalues,
 				condicaoANDBuilder(keys, values), null);
 		return id;
@@ -287,14 +292,15 @@ public abstract class BasicoDAO {
 	 *            Tabela onde será executada a deleção.
 	 * @param id
 	 *            Chave da linha a ser deletada.
-	 * @return <b>True</b> se a operação foi bem-sucedida; <b>false</b> em caso
-	 *         de erro.
+	 * @return <b>True</b> se a operação foi bem-sucedida; <b>false</b> em
+	 *         caso de erro.
 	 */
 	protected static boolean remover(String table, String coluna, long id) {
 		if (coluna != null) {
 			coluna = coluna + " = " + id;
 		}
-		Uri uri = DBContentProvider.BASE_CONTENT_URI.buildUpon().appendPath(table).build();
+		Uri uri = DBContentProvider.BASE_CONTENT_URI.buildUpon()
+				.appendPath(table).build();
 		return mCtx.getContentResolver().delete(uri, coluna, null) > 0;
 	}
 
@@ -303,8 +309,8 @@ public abstract class BasicoDAO {
 	 * 
 	 * @param table
 	 *            Tabela onde será executada a deleção.
-	 * @return <b>True</b> se a operação foi bem-sucedida; <b>false</b> em caso
-	 *         de erro.
+	 * @return <b>True</b> se a operação foi bem-sucedida; <b>false</b> em
+	 *         caso de erro.
 	 */
 	protected static boolean removerTodos(String table) {
 		return remover(table, null, 0);
@@ -322,7 +328,8 @@ public abstract class BasicoDAO {
 	protected static long inserir(String table, ContentValues values) {
 		long id = -1;
 
-		Uri uri = DBContentProvider.BASE_CONTENT_URI.buildUpon().appendPath(table).build();
+		Uri uri = DBContentProvider.BASE_CONTENT_URI.buildUpon()
+				.appendPath(table).build();
 		Uri newUri = mCtx.getContentResolver().insert(uri, values);
 		id = Integer.parseInt(newUri.getLastPathSegment());
 		return id;
@@ -467,5 +474,24 @@ public abstract class BasicoDAO {
 			String[] andValues) {
 		return consultarLikeAnd(table, colunas, new String[] { likeKey },
 				new String[] { likeValue }, andKeys, andValues);
+	}
+
+	protected Loader<Cursor> getLoader(String table) {
+		Uri uri = DBContentProvider.BASE_CONTENT_URI.buildUpon()
+				.appendPath(table).build();
+		return new CursorLoader(mCtx, uri, null, null, null, null);
+	}
+
+	protected Loader<Cursor> getLoader(String table, String column, String value) {
+
+		return getLoader(table, new String[] { column }, new String[] { value });
+	}
+
+	protected Loader<Cursor> getLoader(String table, String[] columns,
+			String[] values) {
+		Uri uri = DBContentProvider.BASE_CONTENT_URI.buildUpon()
+				.appendPath(table).build();
+		return new CursorLoader(mCtx, uri, null, condicaoANDBuilder(columns,
+				values), null, null);
 	}
 }

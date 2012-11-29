@@ -6,12 +6,12 @@ import java.util.List;
 
 import org.android.brasil.projetos.dao.util.TableBuilder;
 import org.android.brasil.projetos.model.Emprestimo;
-import org.android.brasil.projetos.model.TipoStatus;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
+import android.support.v4.content.Loader;
 
 public class EmprestimoDAO extends BasicoDAO {
 	public static final String COLUNA_ID_EMPRESTIMO = "_id";
@@ -24,6 +24,7 @@ public class EmprestimoDAO extends BasicoDAO {
 	public static final String COLUNA_ID_CATEGORIA = "id_categoria";
 	public static final String COLUNA_CONTATO = "contato";
 
+	public static final int STATUS_DEVOLVIDO = 1;
 	public static final String TABELA_EMPRESTIMOS = "emprestimos";
 
 	private static String defineTable() {
@@ -46,7 +47,7 @@ public class EmprestimoDAO extends BasicoDAO {
 		return tb.toString();
 	}
 
-	public static final String CREATE_TABLE = defineTable();
+	public static final String CREATE_TABELA_EMPRESTIMO = defineTable();
 
 	public EmprestimoDAO(Context ctx) {
 		super(ctx);
@@ -159,7 +160,7 @@ public class EmprestimoDAO extends BasicoDAO {
 	
 	public void atualizarStatus(long id) {
 		ContentValues values = new ContentValues();
-		values.put(COLUNA_STATUS, TipoStatus.DEVOLVIDO.getId());
+		values.put(COLUNA_STATUS, STATUS_DEVOLVIDO);
 		atualizar(TABELA_EMPRESTIMOS, values,
 				new String[] { EmprestimoDAO.COLUNA_ID_EMPRESTIMO },
 				new String[] { String.valueOf(id) });
@@ -198,5 +199,17 @@ public class EmprestimoDAO extends BasicoDAO {
 
 		return qtde;
 	}
+
+	public Loader<Cursor> getLoaderAllContents() {
+		return getLoader(TABELA_EMPRESTIMOS);
+	}
+
+	public Loader<Cursor> getLoaderContents(long idCat) {
+		return getLoader(TABELA_EMPRESTIMOS,EmprestimoDAO.COLUNA_ID_CATEGORIA,String.valueOf(idCat));
+	}
+
+
+	
+	
 
 }

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ListItemView"
+    style="@style/FillFill.Layout"
+    android:orientation="vertical" >
+
+    <Spinner
+        android:id="@+id/spCategoria"
+        style="@style/FillWrap.Spinner" />
+
+    <ListView
+        android:id="@+id/android:list"
+        style="@style/FillWrap"
+        android:dividerHeight="2sp" />
+
+    <TextView
+        android:id="@+id/android:empty"
+        style="@style/FillWrap.TextView"
+        android:text="@string/sem_emprestimos" />
+
+</LinearLayout>

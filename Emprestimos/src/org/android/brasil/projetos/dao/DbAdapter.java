@@ -43,15 +43,13 @@ public class DbAdapter {
 
 		@Override
 		public void onCreate(SQLiteDatabase db) {
-			//System.out.println(EmprestimoDAO.CREATE_TABLE);
-			//System.out.println(CategoriaDAO.createTableCategoria());
-			db.execSQL(EmprestimoDAO.CREATE_TABLE);
-			db.execSQL(CategoriaDAO.createTableCategoria());
-			db.execSQL(CategoriaDAO.insertCategoriaDefault());
-			db.execSQL(CategoriaDAO.categoriaDefaultTodos);
+			db.execSQL(EmprestimoDAO.CREATE_TABELA_EMPRESTIMO);
+			db.execSQL(CategoriaDAO.CRIAR_TABELA_CATEGORIA);
+			db.execSQL(CategoriaDAO.categoriaTodas);
 			db.execSQL(CategoriaDAO.categoriaDefaultCD);
 			db.execSQL(CategoriaDAO.categoriaDefaultDVD);
 			db.execSQL(CategoriaDAO.categoriaDefaultLivro);
+			db.execSQL(CategoriaDAO.categoriaDefaultOutra);
 		}
 
 		@Override
