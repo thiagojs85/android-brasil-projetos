@@ -27,8 +27,6 @@ import org.android.brasil.projetos.dao.CategoriaDAO;
 import org.android.brasil.projetos.dao.EmprestimoDAO;
 import org.android.brasil.projetos.model.Categoria;
 import org.android.brasil.projetos.model.Emprestimo;
-import org.android.brasil.projetos.model.TipoCategoria;
-import org.android.brasil.projetos.model.TipoStatus;
 
 import android.app.AlarmManager;
 import android.app.DatePickerDialog;
@@ -41,11 +39,13 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentActivity;
-import android.view.Menu;
+import android.support.v4.app.Fragment;
+import android.support.v4.widget.SimpleCursorAdapter;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -55,20 +55,18 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
-import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-public class EditarEmprestimo extends FragmentActivity {
+public class EditarEmprestimoFragment extends Fragment {
 
 	private EditText etItem;
 	private EditText etDescricao;
-	private Long idEmprestimo;
 	private TextView tvContato;
 	boolean notificacao = false;
-
+	private Long idEmprestimo;
 	private Spinner spNomes;
 	private Spinner spCategoria;
 
@@ -78,6 +76,8 @@ public class EditarEmprestimo extends FragmentActivity {
 	private RadioButton rbEmprestar;
 	private RadioButton rbPegarEmprestado;
 
+	private Button confirmButton;
+
 	private Calendar dataDevolucao;
 	private EditText etDataDevolucao;
 	private EditText etHoraDevolucao;
@@ -85,13 +85,10 @@ public class EditarEmprestimo extends FragmentActivity {
 	private CategoriaController cc;
 	private EmprestimoController ec;
 	private ContatosController ctc;
-	private int status;
 
 	@Override
-	protected void onStop() {
+	public void onStop() {
 		super.onStop();
-		cc.close();
-		ec.close();
 		ctc.close();
 	}
 
@@ -134,52 +131,47 @@ public class EditarEmprestimo extends FragmentActivity {
 	}
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		idEmprestimo = -1L;
+		// If activity recreated (such as from screen rotate), restore
+		// the previous article selection set by onSaveInstanceState().
+		// This is primarily necessary when in the two-pane layout.
+		if (savedInstanceState != null) {
+			idEmprestimo = savedInstanceState.getLong(
+					EmprestimoDAO.TABELA_EMPRESTIMOS, -1);
+		}
+		View view = inflater.inflate(R.layout.editar_emprestimo, container,
+				false);
 
-		setContentView(R.layout.editar_emprestimo);
-		setTitle(R.string.editar_emprestimo);
+		etItem = (EditText) view.findViewById(R.id.et_item);
+		etDescricao = (EditText) view.findViewById(R.id.et_descricao);
+		etDataDevolucao = (EditText) view.findViewById(R.id.et_data);
+		etHoraDevolucao = (EditText) view.findViewById(R.id.et_hora);
+		spNomes = (Spinner) view.findViewById(R.id.sp_auto_nome);
+		cbAlarme = (CheckBox) view.findViewById(R.id.cb_alarme);
+		rbEmprestar = (RadioButton) view.findViewById(R.id.rb_emprestar);
+		rbPegarEmprestado = (RadioButton) view
+				.findViewById(R.id.rb_pegar_emprestado);
+		tvContato = (TextView) view.findViewById(R.id.tv_contato);
+		confirmButton = (Button) view.findViewById(R.id.btn_confirmar);
+		spCategoria = (Spinner) view.findViewById(R.id.sp_categoria);
 
-		etItem = (EditText) findViewById(R.id.item);
-		etDescricao = (EditText) findViewById(R.id.descricao);
-		etDataDevolucao = (EditText) findViewById(R.id.data);
-		etHoraDevolucao = (EditText) findViewById(R.id.hora);
-		spNomes = (Spinner) findViewById(R.id.txt_auto_nome);
-		cbAlarme = (CheckBox) findViewById(R.id.cb_alarme);
-		rbEmprestar = (RadioButton) findViewById(R.id.rb_emprestar);
-		rbPegarEmprestado = (RadioButton) findViewById(R.id.rb_pegar_emprestado);
-		tvContato = (TextView) findViewById(R.id.tv_contato);
-		Button confirmButton = (Button) findViewById(R.id.confirmar);
-		spCategoria = (Spinner) findViewById(R.id.sp_categoria);
-		cbContato = (CheckBox) findViewById(R.id.cbContato);
-		etContato = (EditText) findViewById(R.id.etContato);
+		cbContato = (CheckBox) view.findViewById(R.id.cb_contato);
+		etContato = (EditText) view.findViewById(R.id.et_contato);
 
 		etContato.setEnabled(false);
 		etContato.setVisibility(View.GONE);
-		if (cc == null || cc.isClosed()) {
-			cc = new CategoriaController(this);
+		if (cc == null) {
+			cc = new CategoriaController(this.getActivity());
 		}
-		if (ec == null || ec.isClosed()) {
-			ec = new EmprestimoController(this);
+		if (ec == null) {
+			ec = new EmprestimoController(this.getActivity());
 		}
 		if (ctc == null || ctc.isClosed()) {
-			ctc = new ContatosController(this);
+			ctc = new ContatosController(this.getActivity());
 		}
-		if (getIntent() != null
-				&& getIntent().getExtras().getBoolean(
-						Alarme.CANCEL_NOTIFICATION, false)) {
-			int idEmp = (int) getIntent().getExtras().getLong(
-					EmprestimoDAO.TABELA_EMPRESTIMOS, -1);
-			if (idEmp > -1) {
-				NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-				nm.cancel(getApplicationContext().getText(R.string.app_name)
-						+ "", idEmp);
-			} else {
-				Toast.makeText(getApplicationContext(),
-						"ID invalido para cancelar notificação",
-						Toast.LENGTH_LONG).show();
-			}
-		}
+
 		spNomes.setAdapter(ctc.getContatoAdapter());
 
 		dataDevolucao = Calendar.getInstance();
@@ -190,9 +182,9 @@ public class EditarEmprestimo extends FragmentActivity {
 					public void onItemSelected(AdapterView<?> parent,
 							View view, int position, long id) {
 
-						if (id == TipoCategoria.OUTRA.getId()) {
-							Intent i = new Intent(EditarEmprestimo.this,
-									CategoriaUI.class);
+						if (id == CategoriaDAO.OUTRA_ID) {
+							Intent i = new Intent(EditarEmprestimoFragment.this
+									.getActivity(), CategoriaActivity.class);
 							startActivityForResult(i, 0);
 						}
 					}
@@ -227,7 +219,8 @@ public class EditarEmprestimo extends FragmentActivity {
 
 			public void onClick(View arg0) {
 				DialogFragment newFragment = new DatePickerFragment();
-				newFragment.show(getSupportFragmentManager(), "DatePicker");
+				newFragment.show(getActivity().getSupportFragmentManager(),
+						"DatePicker");
 			}
 		});
 
@@ -235,7 +228,8 @@ public class EditarEmprestimo extends FragmentActivity {
 
 			public void onClick(View arg0) {
 				DialogFragment newFragment = new TimePickerFragment();
-				newFragment.show(getSupportFragmentManager(), "TimePicker");
+				newFragment.show(getActivity().getSupportFragmentManager(),
+						"TimePicker");
 			}
 		});
 
@@ -244,8 +238,15 @@ public class EditarEmprestimo extends FragmentActivity {
 			public void onClick(View view) {
 				if (validarCampos()) {
 					saveData();
-					setResult(RESULT_OK);
-					finish();
+					// Capture the article fragment from the activity layout
+					EmprestimoFragment emprestimoFragment = (EmprestimoFragment) getActivity()
+							.getSupportFragmentManager().findFragmentById(
+									R.id.ListItensFragment);
+
+					if (emprestimoFragment == null) {
+						getActivity().setResult(getActivity().RESULT_OK);
+						getActivity().finish();
+					}
 				}
 			}
 
@@ -267,46 +268,98 @@ public class EditarEmprestimo extends FragmentActivity {
 					spNomes.setEnabled(true);
 					spNomes.setVisibility(View.VISIBLE);
 				}
-
 			}
 		});
 
-		idEmprestimo = (savedInstanceState == null) ? null
-				: (Long) savedInstanceState
-						.getSerializable(EmprestimoDAO.TABELA_EMPRESTIMOS);
-
-		if (idEmprestimo == null) {
-			Bundle extras = getIntent().getExtras();
-			idEmprestimo = extras != null ? extras
-					.getLong(EmprestimoDAO.TABELA_EMPRESTIMOS) : null;
+		// During startup, check if there are arguments passed to the fragment.
+		// onStart is a good place to do this because the layout has already
+		// been
+		// applied to the fragment at this point so we can safely call the
+		// method
+		// below that sets the article text.
+		Bundle args = getArguments();
+		if (args != null) {
+			idEmprestimo = args.getLong(EmprestimoDAO.TABELA_EMPRESTIMOS, -1);
 		}
-		if (idEmprestimo != null) {
-			populateFields(ec.getEmprestimo(idEmprestimo));
+
+		// Set article based on saved instance state defined during
+		// onCreateView
+		updateItemView(idEmprestimo);
+
+		// Inflate the layout for this fragment
+		return view;
+		// return super.onCreateView(inflater, container, savedInstanceState);
+	}
+
+	@Override
+	public void onStart() {
+		super.onStart();
+	}
+
+	public void updateItemView(long id) {
+		idEmprestimo = id;
+		if (id > -1) {
+			populateFields(ec.getEmprestimo(id));
+		} else {
+			populateFields(null);
 		}
 	}
 
 	@Override
-	protected void onActivityResult(int arg0, int arg1, Intent arg2) {
+	public void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+
+		// Save the current article selection in case we need to recreate the
+		// fragment
+		outState.putLong(EmprestimoDAO.TABELA_EMPRESTIMOS, idEmprestimo);
+		outState.putSerializable(EmprestimoDAO.TABELA_EMPRESTIMOS,
+				getEmprestimoFromInterface());
+		outState.putSerializable(EmprestimoDAO.TABELA_EMPRESTIMOS, idEmprestimo);
+	}
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		idEmprestimo = (savedInstanceState == null) ? null
+				: (Long) savedInstanceState
+						.getSerializable(EmprestimoDAO.TABELA_EMPRESTIMOS);
+		Bundle args = getArguments();
+		if (args != null && args.getBoolean(Alarme.CANCEL_NOTIFICATION, false)) {
+			int idEmp = (int) args
+					.getLong(EmprestimoDAO.TABELA_EMPRESTIMOS, -1);
+			if (idEmp > -1) {
+				NotificationManager nm = (NotificationManager) getActivity()
+						.getSystemService(Context.NOTIFICATION_SERVICE);
+				nm.cancel(getActivity().getText(R.string.app_name) + "", idEmp);
+			} else {
+				Toast.makeText(getActivity(),
+						"ID invalido para cancelar notificação",
+						Toast.LENGTH_LONG).show();
+			}
+		}
+
+	}
+
+	@Override
+	public void onActivityResult(int arg0, int arg1, Intent arg2) {
 		super.onActivityResult(arg0, arg1, arg2);
 		populateFields(null);
 	}
 
 	private void carregarSpinnerCategoria(long idSelected) {
 		if (cc == null) {
-			cc = new CategoriaController(this);
+			cc = new CategoriaController(this.getActivity());
 		}
 
-		SimpleCursorAdapter adapterCategorias = cc.getCategoriaAdapter(
-				CategoriaController.TODOS, false);
-
-		if (adapterCategorias != null && adapterCategorias.getCount() > 0) {
-			spCategoria.setEnabled(true);
-		} else {
-			spCategoria.setEnabled(false);
-		}
+		SimpleCursorAdapter adapterCategorias = cc
+				.getAdapter(CategoriaDAO.TODAS_ID);
+		/*
+		 * if (adapterCategorias != null && adapterCategorias.getCount() > 0) {
+		 * spCategoria.setEnabled(true); } else { spCategoria.setEnabled(false);
+		 * }
+		 */
 
 		spCategoria.setAdapter(adapterCategorias);
-		spCategoria.setSelection(1, true);
 		for (int i = 0; i < adapterCategorias.getCount(); ++i) {
 			if (adapterCategorias.getItemId(i) == idSelected) {
 				spCategoria.setSelection(i, true);
@@ -319,11 +372,13 @@ public class EditarEmprestimo extends FragmentActivity {
 		String item = etItem.getText().toString();
 		Categoria cat = CategoriaDAO.deCursorParaCategoria((Cursor) spCategoria
 				.getSelectedItem());
-		if (cat.getNomeCategoria().equals(CategoriaDAO.OUTRA)) {
+		if (cat.getId() == CategoriaDAO.TODAS_ID) {
+			Toast.makeText(getActivity(), "Escolha uma categoria!",
+					Toast.LENGTH_LONG).show();
 			return false;
 		}
 		if (item.trim().equals("")) {
-			Toast.makeText(EditarEmprestimo.this,
+			Toast.makeText(EditarEmprestimoFragment.this.getActivity(),
 					R.string.nome_do_item_deve_ser_informado, Toast.LENGTH_LONG)
 					.show();
 			return false;
@@ -331,7 +386,7 @@ public class EditarEmprestimo extends FragmentActivity {
 		if (cbAlarme.isChecked()) {
 			if (dataDevolucao.getTime().getTime() < Calendar.getInstance()
 					.getTime().getTime()) {
-				Toast.makeText(EditarEmprestimo.this,
+				Toast.makeText(EditarEmprestimoFragment.this.getActivity(),
 						R.string.data_hora_devem_ser_informados,
 						Toast.LENGTH_SHORT).show();
 				return false;
@@ -404,14 +459,13 @@ public class EditarEmprestimo extends FragmentActivity {
 			long idCat = emprestimo.getIdCategoria();
 
 			for (int i = 0; i < ad.getCount(); ++i) {
-
 				if (ad.getItemId(i) == idCat) {
 					spCategoria.setSelection(i);
 					break;
 				}
 			}
 		} else {
-			carregarSpinnerCategoria(-1);
+			carregarSpinnerCategoria(CategoriaDAO.TODAS_ID);
 		}
 	}
 
@@ -424,22 +478,15 @@ public class EditarEmprestimo extends FragmentActivity {
 	 * 
 	 * }
 	 */
-	@Override
-	protected void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		outState.putSerializable(EmprestimoDAO.TABELA_EMPRESTIMOS,
-				getEmprestimoFromInterface());
-		outState.putSerializable(EmprestimoDAO.TABELA_EMPRESTIMOS, idEmprestimo);
-	}
 
-	public void onRestoreInstanceState(Bundle savedInstanceState) {
-		super.onRestoreInstanceState(savedInstanceState);
-		Emprestimo emp = (Emprestimo) savedInstanceState
-				.getSerializable(EmprestimoDAO.TABELA_EMPRESTIMOS);
-		idEmprestimo = (Long) savedInstanceState
-				.getSerializable(EmprestimoDAO.TABELA_EMPRESTIMOS);
-		populateFields(emp);
-	}
+	/*
+	 * @Override public void onRestoreInstanceState(Bundle savedInstanceState) {
+	 * super.onRestoreInstanceState(savedInstanceState); Emprestimo emp =
+	 * (Emprestimo) savedInstanceState
+	 * .getSerializable(EmprestimoDAO.TABELA_EMPRESTIMOS); idEmprestimo = (Long)
+	 * savedInstanceState .getSerializable(EmprestimoDAO.TABELA_EMPRESTIMOS);
+	 * populateFields(emp); }
+	 */
 
 	@Override
 	public void onDestroy() {
@@ -483,7 +530,7 @@ public class EditarEmprestimo extends FragmentActivity {
 			emp.setContato(null);
 		}
 
-		if (idEmprestimo == null) {
+		if (idEmprestimo == null || idEmprestimo < 0) {
 			emp.setIdEmprestimo(-1);
 		} else {
 			emp.setIdEmprestimo(idEmprestimo);
@@ -497,13 +544,16 @@ public class EditarEmprestimo extends FragmentActivity {
 			Emprestimo emp = getEmprestimoFromInterface();
 			idEmprestimo = ec.inserirOuAtualizar(emp);
 			if (cbAlarme.isChecked()) {
-				Intent intent = new Intent(EditarEmprestimo.this, Alarme.class);
+				Intent intent = new Intent(
+						EditarEmprestimoFragment.this.getActivity(),
+						Alarme.class);
 				intent.putExtra(EmprestimoDAO.TABELA_EMPRESTIMOS, idEmprestimo);
 				PendingIntent sender = PendingIntent.getBroadcast(
-						EditarEmprestimo.this, 0, intent,
+						EditarEmprestimoFragment.this.getActivity(), 0, intent,
 						PendingIntent.FLAG_UPDATE_CURRENT);
 
-				AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
+				AlarmManager am = (AlarmManager) getActivity()
+						.getSystemService(getActivity().ALARM_SERVICE);
 				am.set(AlarmManager.RTC_WAKEUP, emp.getData().getTime(), sender);
 
 			}
@@ -520,26 +570,19 @@ public class EditarEmprestimo extends FragmentActivity {
 		etHoraDevolucao.setText(simpleFormat.format(dataDevolucao.getTime()));
 	}
 
-	@Override
-	public boolean onMenuItemSelected(int featureId, MenuItem item) {
-		ec.devolverOuReceber(idEmprestimo);
-		item.setEnabled(false);
-		return super.onMenuItemSelected(featureId, item);
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		super.onCreateOptionsMenu(menu);
-
-		if (status == TipoStatus.EMPRESTADO.getId()) {
-			menu.add(0, Menu.FIRST, 0, R.string.menu_devolver).setIcon(
-					R.drawable.devolver);
-			status = TipoStatus.DEVOLVIDO.getId();
-			menu.add(0, Menu.FIRST + 1, 0, "Estornar")
-					.setIcon(R.drawable.devolver).setEnabled(false);
-		}
-		return true;
-	}
+	/*
+	 * @Override public boolean onMenuItemSelected(int featureId, MenuItem item)
+	 * { ec.devolverOuReceber(idEmprestimo); item.setEnabled(false); return
+	 * super.onMenuItemSelected(featureId, item); }
+	 * 
+	 * @Override public boolean onCreateOptionsMenu(Menu menu) {
+	 * super.onCreateOptionsMenu(menu);
+	 * 
+	 * if (status == TipoStatus.EMPRESTADO.getId()) { menu.add(0, Menu.FIRST, 0,
+	 * R.string.menu_devolver).setIcon( R.drawable.devolver); status =
+	 * TipoStatus.DEVOLVIDO.getId(); menu.add(0, Menu.FIRST + 1, 0, "Estornar")
+	 * .setIcon(R.drawable.devolver).setEnabled(false); } return true; }
+	 */
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {

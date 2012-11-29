@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<string name="app_name">Empréstimos</string>
-	<string name="sem_emprestimos">Sem empréstimos ainda.</string>
+	<string name="sem_emprestimos">Sem empréstimos nessa categoria.</string>
 	<string name="sem_categoria">Nenhuma categoria cadastrada.</string>
 	
 	<string name="emprestar">Emprestar</string>
 	<string name="pegar_emprestado">Pegar Emprestado</string>
 	<string name="menu_devolver">Devolver/Receber</string>
 
-	<string name="menu_inserir">Adicionar Emprestimo</string>
-	<string name="menu_delete">Deletar Emprestimo</string>
+	<string name="menu_inserir">Adicionar Empréstimo</string>
+	<string name="menu_delete">Deletar Empréstimo</string>
 	<string name="item">Item</string>
 
 	<string name="contato">Emprestar Para:</string>
@@ -23,7 +23,7 @@
 
 	<string name="descricao">Descrição</string>
 	<string name="confirmar">Confirmar</string>
-	<string name="editar_emprestimo">Editar Emprestimo</string>
+	<string name="editar_emprestimo">Editar Empréstimo</string>
 	<string name="data_devolucao">Data da Devolução</string>
 	<string name="hora_devolucao">Hora da Devolução</string>
 	
@@ -34,7 +34,7 @@
 	<string name="nao">Não</string>
 	<string name="sim">Sim</string>
 
-	<string name="emprestimo_com_esta_categoria"> empréstimo(s) com esta categoria ?</string>
+	<string name="emprestimo_com_esta_categoria"> empréstimo(s) com esta categoria?</string>
 	<string name="deseja_excluir_esta_categoria">Deseja excluir esta categoria e \n </string>
 	<string name="exclusao">Exclusão</string>
 	

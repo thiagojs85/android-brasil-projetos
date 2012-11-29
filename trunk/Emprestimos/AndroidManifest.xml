@@ -6,18 +6,18 @@
     	<uses-permission android:name="android.permission.READ_CONTACTS" />
     	<uses-permission android:name="android.permission.VIBRATE" />
  	<uses-sdk android:minSdkVersion="7" android:targetSdkVersion="16"/>
-    <application android:icon="@drawable/icon" android:allowBackup="false">
-        <activity android:label="@string/app_name" android:name=".EmprestimoUI">
+    <application android:icon="@drawable/icon" android:allowBackup="false"  android:theme="@style/Theme.Sherlock">
+        <activity android:label="@string/app_name" android:name="EmprestimoActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".EditarEmprestimo" />
-        <activity android:name=".CategoriaUI" />
         <receiver android:name="Alarme"></receiver>
         <provider android:name="org.android.brasil.projetos.dao.DBContentProvider" 
             android:authorities="org.android.brasil.projetos.emprestimos" android:exported="false"></provider>
+        <activity android:name="CategoriaActivity"></activity>
+        <activity android:name="EditarEmprestimoActivity"></activity>
 
 </application>
 </manifest> 

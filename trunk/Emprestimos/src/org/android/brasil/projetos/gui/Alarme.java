@@ -54,7 +54,7 @@ public class Alarme extends BroadcastReceiver {
 						BitmapFactory.decodeResource(context.getResources(),
 								icon)).setTicker(tickerText).setWhen(when);
 		final Intent notificationIntent = new Intent(context,
-				EditarEmprestimo.class);
+				EditarEmprestimoFragment.class);
 
 		notificationIntent.putExtras(new Bundle());
 		notificationIntent.putExtra(CANCEL_NOTIFICATION, true);

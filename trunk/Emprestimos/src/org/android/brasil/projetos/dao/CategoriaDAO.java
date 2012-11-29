@@ -6,6 +6,7 @@ import org.android.brasil.projetos.model.Categoria;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.support.v4.content.Loader;
 
 public class CategoriaDAO extends BasicoDAO {
 
@@ -29,35 +30,28 @@ public class CategoriaDAO extends BasicoDAO {
 		return tb.toString();
 	}
 
-	private static final String CRIAR_TABELA_CATEGORIA = defineTable();
+	public static final String CRIAR_TABELA_CATEGORIA = defineTable();
 
-	public static final String TODOS = "Todos";
-	public static final String OUTRA = "Outra";
+	private static final String OUTRA = "Outra";
+	private static final String TODOS = "Todas";
+	public static final int TODAS_ID = 1;
+	public static final int OUTRA_ID = 5;
 
-	private static final String categoriaDefault = "insert into "
-			+ TABELA_CATEGORIA + " (descricao) values ('" + OUTRA + "')";
-	public static final String categoriaDefaultTodos = "insert into "
-			+ TABELA_CATEGORIA + " (descricao) values ('" + TODOS + "')";
+	public static final String categoriaTodas = "insert into "
+			+ TABELA_CATEGORIA + " (_id, descricao) values ("+TODAS_ID+", '" + TODOS + "')";
 	public static final String categoriaDefaultCD = "insert into "
-			+ TABELA_CATEGORIA + " (descricao) values ('CD')";
+			+ TABELA_CATEGORIA + " (_id, descricao) values (2, 'CD')";
 	public static final String categoriaDefaultDVD = "insert into "
-			+ TABELA_CATEGORIA + " (descricao) values ('DVD')";
+			+ TABELA_CATEGORIA + " (_id, descricao) values (3, 'DVD')";
 	public static final String categoriaDefaultLivro = "insert into "
-			+ TABELA_CATEGORIA + " (descricao) values ('Livro')";
-
-	public static String createTableCategoria() {
-		return CRIAR_TABELA_CATEGORIA;
-	}
-
+			+ TABELA_CATEGORIA + " (_id, descricao) values (4, 'Livro')";
+	public static final String categoriaDefaultOutra = "insert into "
+			+ TABELA_CATEGORIA + " (_id, descricao) values ("+OUTRA_ID+", '" + OUTRA + "')";
 	public static Categoria deCursorParaCategoria(Cursor c) {
 		Categoria cat = new Categoria();
 		cat.setId(c.getLong(c.getColumnIndex(COLUNA_ID)));
 		cat.setNomeCategoria(c.getString(c.getColumnIndex(COLUNA_DESCRICAO)));
 		return cat;
-	}
-
-	public static String insertCategoriaDefault() {
-		return categoriaDefault;
 	}
 
 	public long inserir(Categoria cat) {
@@ -126,5 +120,11 @@ public class CategoriaDAO extends BasicoDAO {
 
 		return jaExiste;
 	}
+	public Loader<Cursor> getLoaderAllContents() {
+		return getLoader(TABELA_CATEGORIA);
+	}
 
+	public Loader<Cursor> getLoaderContents(long idCat) {
+		return getLoader(TABELA_CATEGORIA,COLUNA_ID,String.valueOf(idCat));
+	}
 }

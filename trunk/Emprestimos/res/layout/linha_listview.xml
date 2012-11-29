@@ -2,4 +2,5 @@
 <TextView android:id="@+id/text1" xmlns:android="http://schemas.android.com/apk/res/android"
 	android:textSize="16sp"
 	android:padding="16sp"
+	android:background="@android:color/white"
 	style="@style/FillWrap.TextView"/>

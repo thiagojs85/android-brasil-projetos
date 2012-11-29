@@ -22,16 +22,11 @@ public class DBContentProvider extends ContentProvider {
 
 	@Override
 	public int delete(Uri uri, String selection, String[] selectionArgs) {
-		int uriType = uriMatcher.match(uri);
-		switch (uriType) {
-		case LIST:
-			break;
-		default:
-			throw new IllegalArgumentException("Unknown URI");
-		}
+
 		String table = uri.getLastPathSegment();
 		int count = mDb.delete(table, selection, selectionArgs);
 		getContext().getContentResolver().notifyChange(uri, null);
+
 		return count;
 	}
 
