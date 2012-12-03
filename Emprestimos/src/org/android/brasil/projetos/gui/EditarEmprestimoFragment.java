@@ -68,8 +68,14 @@ public class EditarEmprestimoFragment extends SherlockFragment {
 	private EditText etItem;
 	private EditText etDescricao;
 	private TextView tvContato;
+	
 	boolean notificacao = false;
+	
 	private long idEmprestimo;
+	private long idCategoria;
+	
+	private boolean firstload;
+	
 	private Spinner spNomes;
 	private Spinner spCategoria;
 
@@ -162,18 +168,17 @@ public class EditarEmprestimoFragment extends SherlockFragment {
 		if (ctc == null || ctc.isClosed()) {
 			ctc = new ContatosController(this.getActivity());
 		}
-
-		spCategoria.setAdapter(cc.getAdapter(CategoriaDAO.TODAS_ID));
-
+		firstload = true;
 		spNomes.setAdapter(ctc.getContatoAdapter());
 
 		spCategoria.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
-				if (id == CategoriaDAO.OUTRA_ID) {
-					Intent i = new Intent(EditarEmprestimoFragment.this.getActivity(), CategoriaActivity.class);
-					startActivityForResult(i, 0);
+				if (firstload) {
+					if (idCategoria > 0) {
+						carregarSpinnerCategoria(idCategoria);
+					}
 				}
+				firstload = false;
 			}
 
 			public void onNothingSelected(AdapterView<?> arg0) {
@@ -278,6 +283,7 @@ public class EditarEmprestimoFragment extends SherlockFragment {
 	}
 
 	public void updateItemView(long id) {
+		
 		idEmprestimo = id;
 		if (id > -1) {
 			populateFields(ec.getEmprestimo(id));
@@ -317,7 +323,6 @@ public class EditarEmprestimoFragment extends SherlockFragment {
 	}
 
 	private void carregarSpinnerCategoria(long idSelected) {
-		Toast.makeText(getActivity(), "ID da Categoria " + idSelected, Toast.LENGTH_LONG).show();
 		SpinnerAdapter adapterCategorias = spCategoria.getAdapter();
 
 		for (int i = 0; i < adapterCategorias.getCount(); ++i) {
@@ -406,10 +411,13 @@ public class EditarEmprestimoFragment extends SherlockFragment {
 				}
 			}
 			dataDevolucao.setTime(emprestimo.getData());
-			carregarSpinnerCategoria(emprestimo.getIdCategoria());
+			idCategoria = emprestimo.getIdCategoria();
+			firstload = true;
+			spCategoria.setAdapter(cc.getAdapter(CategoriaDAO.TODAS_ID));
 			atualizarData();
 		} else {
-			carregarSpinnerCategoria(CategoriaDAO.TODAS_ID);
+			idCategoria = -1;
+			spCategoria.setAdapter(cc.getAdapter(CategoriaDAO.TODAS_ID));
 			limparCamposTela();
 		}
 	}
