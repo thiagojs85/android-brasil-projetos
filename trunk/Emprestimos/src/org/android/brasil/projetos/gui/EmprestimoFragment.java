@@ -27,6 +27,7 @@ public class EmprestimoFragment extends SherlockListFragment {
 	private static final int INSERT_ID = Menu.FIRST;
 	private static final int DELETE_ID = Menu.FIRST + 1;
 
+	private boolean firstload;
 	private EmprestimoController ec;
 	private CategoriaController cc;
 	private Spinner spCategoria;
@@ -52,6 +53,7 @@ public class EmprestimoFragment extends SherlockListFragment {
 			container.removeAllViews();
 		}
 		View view = inflater.inflate(R.layout.emprestimo, container, false);
+		firstload = true;
 		spCategoria = (Spinner) view.findViewById(R.id.spCategoria);
 		return view;
 
@@ -108,26 +110,32 @@ public class EmprestimoFragment extends SherlockListFragment {
 			cc = new CategoriaController(this.getActivity());
 			SimpleCursorAdapter categoriaAdapter = cc.getAdapter(CategoriaDAO.TODAS_ID);
 			spCategoria.setAdapter(categoriaAdapter);
+
 		}
 
 		spCategoria.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-				setListAdapter(ec.getAdapter(id));			}
+				if (firstload) {
+					if (idCategoria > -1) {
+						for (int i = 0; i < spCategoria.getCount(); ++i) {
+							if (spCategoria.getItemIdAtPosition(i) == idCategoria) {
+								spCategoria.setSelection(i, true);
+								setListAdapter(ec.getAdapter(idCategoria));
+								break;
+							}
+						}
+					}
+				} else {
+					setListAdapter(ec.getAdapter(id));
+				}
+				firstload = false;
+			}
 
 			public void onNothingSelected(AdapterView<?> arg0) {
 
 			}
 		});
 
-
-		if (idCategoria > -1) {
-			for (int i = 0; i < spCategoria.getCount(); ++i) {
-				if (spCategoria.getItemIdAtPosition(i) == idCategoria) {
-					spCategoria.setSelection(i, true);
-				}
-			}
-		}
-		Toast.makeText(getActivity(), idCategoria+"  count"+spCategoria.getCount(),Toast.LENGTH_LONG).show();
 	}
 
 	/*
@@ -175,10 +183,6 @@ public class EmprestimoFragment extends SherlockListFragment {
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent intent) {
 		super.onActivityResult(requestCode, resultCode, intent);
-		if (cc == null) {
-			ec = new EmprestimoController(this.getActivity());
-			cc = new CategoriaController(this.getActivity());
-		}
 		fillData();
 	}
 }
