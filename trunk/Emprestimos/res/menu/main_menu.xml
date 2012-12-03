@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/btn_new_item"
+          android:icon="@drawable/icon"
+          android:title="Adicionar Item"
+          android:showAsAction="ifRoom|withText"/>
+    <item android:id="@+id/btn_new_category"
+          android:icon="@drawable/icon"
+          android:title="Adicionar Categoria" 
+          android:showAsAction="ifRoom|withText"/>
+</menu>

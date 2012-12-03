@@ -16,7 +16,7 @@ public class Emprestimo implements Serializable {
 	private int ativarAlarme;
 	private long idContato;
 	private long idCategoria;
-	private String contato;
+	private String nomeContato;
 
 	public static final int STATUS_EMPRESTAR = 0;
 	public static final int STATUS_PEGAR_EMPRESTADO = 1;
@@ -90,11 +90,11 @@ public class Emprestimo implements Serializable {
 		
 	}
 
-	public String getContato() {
-		return contato;
+	public String getNomeContato() {
+		return nomeContato;
 	}
 
-	public void setContato(String contato) {
-		this.contato = contato;
+	public void setNomeContato(String contato) {
+		this.nomeContato = contato;
 	}
 }

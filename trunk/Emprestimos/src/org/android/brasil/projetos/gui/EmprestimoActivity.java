@@ -17,11 +17,16 @@ package org.android.brasil.projetos.gui;
 
 import org.android.brasil.projetos.dao.EmprestimoDAO;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 
-public class EmprestimoActivity extends FragmentActivity 
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
+
+public class EmprestimoActivity extends SherlockFragmentActivity 
         implements EmprestimoFragment.OnItemSelectedListener {
 
     /** Called when the activity is first created. */
@@ -84,6 +89,28 @@ public class EmprestimoActivity extends FragmentActivity
             transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
             // Commit the transaction
             transaction.commit();
+        }
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getSupportMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+        return true;
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.btn_new_item:
+                onItemSelected(-1);
+                return true;
+            case R.id.btn_new_category:
+				Intent i = new Intent(this, CategoriaActivity.class);
+				startActivityForResult(i, EmprestimoFragment.ACTIVITY_CREATE);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 }

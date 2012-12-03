@@ -11,11 +11,8 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.SimpleCursorAdapter;
-import android.widget.Toast;
 
 public class EmprestimoController extends Controller {
-	// Random unique number.
-	private static final int EMPRESTIMO_CONTROLLER_ID = 1232130;
 
 	public EmprestimoController(FragmentActivity activity) {
 		super(activity);
@@ -36,14 +33,14 @@ public class EmprestimoController extends Controller {
 	public SimpleCursorAdapter getAdapter(long id) {
 		Bundle bundle = new Bundle();
 		bundle.putLong(EmprestimoDAO.COLUNA_ID_CATEGORIA, id);
-		if (act.getSupportLoaderManager().getLoader(EMPRESTIMO_CONTROLLER_ID) == null
+		if (act.getSupportLoaderManager().getLoader(getControllerIdentifier()) == null
 				|| !act.getSupportLoaderManager()
-						.getLoader(EMPRESTIMO_CONTROLLER_ID).isStarted()) {
-			act.getSupportLoaderManager().initLoader(EMPRESTIMO_CONTROLLER_ID,
+						.getLoader(getControllerIdentifier()).isStarted()) {
+			act.getSupportLoaderManager().initLoader(getControllerIdentifier(),
 					bundle, this);
 		} else {
 			act.getSupportLoaderManager().restartLoader(
-					EMPRESTIMO_CONTROLLER_ID, bundle, this);
+					getControllerIdentifier(), bundle, this);
 		}
 		return adapter;
 	}
