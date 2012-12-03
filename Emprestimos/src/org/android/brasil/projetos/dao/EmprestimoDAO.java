@@ -67,7 +67,7 @@ public class EmprestimoDAO extends BasicoDAO {
 		emp.setIdContato(c.getLong(c.getColumnIndex(COLUNA_ID_CONTATO)));
 		emp.setIdEmprestimo(c.getLong(c.getColumnIndex(COLUNA_ID_EMPRESTIMO)));
 		emp.setItem(c.getString(c.getColumnIndex(COLUNA_ITEM)));
-		emp.setContato(c.getString(c.getColumnIndex(COLUNA_CONTATO)));
+		emp.setNomeContato(c.getString(c.getColumnIndex(COLUNA_CONTATO)));
 
 		emp.setStatus(c.getInt(c.getColumnIndex(COLUNA_STATUS)) == Emprestimo.STATUS_EMPRESTAR ? Emprestimo.STATUS_EMPRESTAR
 				: Emprestimo.STATUS_PEGAR_EMPRESTADO);
@@ -84,7 +84,7 @@ public class EmprestimoDAO extends BasicoDAO {
 		values.put(COLUNA_ATIVAR_ALARME, emp.getAtivarAlarme());
 		values.put(COLUNA_ID_CONTATO, emp.getIdContato());
 		values.put(COLUNA_ID_CATEGORIA, emp.getIdCategoria());
-		values.put(COLUNA_CONTATO, emp.getContato());
+		values.put(COLUNA_CONTATO, emp.getNomeContato());
 		return values;
 	}
 

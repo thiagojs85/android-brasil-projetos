@@ -15,10 +15,17 @@
  */
 package org.android.brasil.projetos.gui;
 
-import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
+import org.android.brasil.projetos.model.Categoria;
 
-public class CategoriaActivity extends FragmentActivity  {
+import android.content.Intent;
+import android.os.Bundle;
+
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
+
+public class CategoriaActivity extends SherlockFragmentActivity  {
 
     /** Called when the activity is first created. */
     @Override
@@ -83,4 +90,23 @@ public class CategoriaActivity extends FragmentActivity  {
             transaction.commit();
         }
     }*/
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getSupportMenuInflater();
+        inflater.inflate(R.menu.categoria_menu, menu);
+        return true;
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.btn_new_category:
+                CategoriaFragment.dialogEditarCategoria(this, new Categoria(), -1);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 }

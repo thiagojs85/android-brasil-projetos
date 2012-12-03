@@ -11,11 +11,10 @@ import android.support.v4.content.Loader;
 import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.SimpleCursorAdapter;
 
-
 public class CategoriaController extends Controller {
 	public CategoriaController(FragmentActivity activity) {
 		super(activity);
-		
+
 		// Create an array to specify the fields we want to display in the list
 		// (only TITLE)
 		String[] from = new String[] { CategoriaDAO.COLUNA_DESCRICAO };
@@ -25,15 +24,20 @@ public class CategoriaController extends Controller {
 		int[] to = new int[] { R.id.text1 };
 
 		// Now create a simple cursor adapter and set it to display
-		adapter = new SimpleCursorAdapter(act,
-				R.layout.linha_spinner, null, from, to,CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+		adapter = new SimpleCursorAdapter(act, R.layout.linha_spinner, null, from, to,
+				CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
 	}
+
 	public SimpleCursorAdapter getAdapter(long id) {
 		Bundle bundle = new Bundle();
 		bundle.putLong(CategoriaDAO.COLUNA_ID, id);
-		act.getSupportLoaderManager().initLoader(getControllerIdentifier(), bundle, this);
+		if (act.getSupportLoaderManager().getLoader(getControllerIdentifier()) == null
+				|| !act.getSupportLoaderManager().getLoader(getControllerIdentifier()).isStarted()) {
+			act.getSupportLoaderManager().initLoader(getControllerIdentifier(), bundle, this);
+		} else {
+			act.getSupportLoaderManager().restartLoader(getControllerIdentifier(), bundle, this);
+		}
 		return adapter;
-
 	}
 
 	public Categoria getCategoria(long id) {
@@ -61,8 +65,7 @@ public class CategoriaController extends Controller {
 	}
 
 	public boolean isCategoriaPadrao(long idCategoria) {
-		if (idCategoria == CategoriaDAO.OUTRA_ID
-				|| idCategoria == CategoriaDAO.TODAS_ID) {
+		if (idCategoria == CategoriaDAO.OUTRA_ID || idCategoria == CategoriaDAO.TODAS_ID) {
 			return true;
 		} else {
 			return false;
@@ -71,8 +74,7 @@ public class CategoriaController extends Controller {
 
 	public boolean isDescricaoCategoriaJaExiste(String descricao) {
 
-		boolean existe = new CategoriaDAO(act)
-				.isDescricaoCategoriaJaExiste(descricao);
+		boolean existe = new CategoriaDAO(act).isDescricaoCategoriaJaExiste(descricao);
 
 		return existe;
 	}
@@ -96,9 +98,9 @@ public class CategoriaController extends Controller {
 	@Override
 	public Loader<Cursor> onCreateLoader(int arg0, Bundle arg1) {
 		long idCat = arg1.getLong(CategoriaDAO.COLUNA_ID, CategoriaDAO.TODAS_ID);
-		if(idCat == CategoriaDAO.TODAS_ID) {
+		if (idCat == CategoriaDAO.TODAS_ID) {
 			return new CategoriaDAO(act).getLoaderAllContents();
-		}else{
+		} else {
 			return new CategoriaDAO(act).getLoaderContents(idCat);
 		}
 	}
