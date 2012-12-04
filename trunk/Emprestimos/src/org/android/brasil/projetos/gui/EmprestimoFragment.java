@@ -3,7 +3,6 @@ package org.android.brasil.projetos.gui;
 import org.android.brasil.projetos.control.CategoriaController;
 import org.android.brasil.projetos.control.EmprestimoController;
 import org.android.brasil.projetos.dao.CategoriaDAO;
-import org.android.brasil.projetos.dao.EmprestimoDAO;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -15,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockListFragment;
 import com.actionbarsherlock.view.Menu;
@@ -108,11 +106,10 @@ public class EmprestimoFragment extends SherlockListFragment {
 		}
 		if (cc == null) {
 			cc = new CategoriaController(this.getActivity());
-			SimpleCursorAdapter categoriaAdapter = cc.getAdapter(CategoriaDAO.TODAS_ID);
-			spCategoria.setAdapter(categoriaAdapter);
-
 		}
-
+		SimpleCursorAdapter categoriaAdapter = cc.getAdapter(CategoriaDAO.TODAS_ID);
+		spCategoria.setAdapter(categoriaAdapter);
+		
 		spCategoria.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 				if (firstload) {
