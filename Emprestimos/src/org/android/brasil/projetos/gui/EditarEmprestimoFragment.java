@@ -68,14 +68,14 @@ public class EditarEmprestimoFragment extends SherlockFragment {
 	private EditText etItem;
 	private EditText etDescricao;
 	private TextView tvContato;
-	
+
 	boolean notificacao = false;
-	
+
 	private long idEmprestimo;
 	private long idCategoria;
-	
+
 	private boolean firstload;
-	
+
 	private Spinner spNomes;
 	private Spinner spCategoria;
 
@@ -101,15 +101,19 @@ public class EditarEmprestimoFragment extends SherlockFragment {
 		ctc.close();
 	}
 
-	private class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
+	private class DatePickerFragment extends DialogFragment implements
+			DatePickerDialog.OnDateSetListener {
 
 		@Override
 		public Dialog onCreateDialog(Bundle savedInstanceState) {
-			return new DatePickerDialog(getActivity(), this, dataDevolucao.get(Calendar.YEAR),
-					dataDevolucao.get(Calendar.MONTH), dataDevolucao.get(Calendar.DAY_OF_MONTH));
+			return new DatePickerDialog(getActivity(), this,
+					dataDevolucao.get(Calendar.YEAR),
+					dataDevolucao.get(Calendar.MONTH),
+					dataDevolucao.get(Calendar.DAY_OF_MONTH));
 		}
 
-		public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+		public void onDateSet(DatePicker view, int year, int monthOfYear,
+				int dayOfMonth) {
 			dataDevolucao.set(Calendar.YEAR, year);
 			dataDevolucao.set(Calendar.MONTH, monthOfYear);
 			dataDevolucao.set(Calendar.DAY_OF_MONTH, dayOfMonth);
@@ -117,7 +121,8 @@ public class EditarEmprestimoFragment extends SherlockFragment {
 		}
 	}
 
-	private class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
+	private class TimePickerFragment extends DialogFragment implements
+			TimePickerDialog.OnTimeSetListener {
 
 		@Override
 		public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -135,8 +140,10 @@ public class EditarEmprestimoFragment extends SherlockFragment {
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.editar_emprestimo, container, false);
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		View view = inflater.inflate(R.layout.editar_emprestimo, container,
+				false);
 		etItem = (EditText) view.findViewById(R.id.et_item);
 		etDescricao = (EditText) view.findViewById(R.id.et_descricao);
 		etDataDevolucao = (EditText) view.findViewById(R.id.et_data);
@@ -150,7 +157,8 @@ public class EditarEmprestimoFragment extends SherlockFragment {
 		cbContato = (CheckBox) view.findViewById(R.id.cb_contato);
 
 		rbEmprestar = (RadioButton) view.findViewById(R.id.rb_emprestar);
-		rbPegarEmprestado = (RadioButton) view.findViewById(R.id.rb_pegar_emprestado);
+		rbPegarEmprestado = (RadioButton) view
+				.findViewById(R.id.rb_pegar_emprestado);
 
 		tvContato = (TextView) view.findViewById(R.id.tv_contato);
 
@@ -171,20 +179,22 @@ public class EditarEmprestimoFragment extends SherlockFragment {
 		firstload = true;
 		spNomes.setAdapter(ctc.getContatoAdapter());
 
-		spCategoria.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-				if (firstload) {
-					if (idCategoria > 0) {
-						carregarSpinnerCategoria(idCategoria);
+		spCategoria
+				.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+					public void onItemSelected(AdapterView<?> parent,
+							View view, int position, long id) {
+						if (firstload) {
+							if (idCategoria > 0) {
+								carregarSpinnerCategoria(idCategoria);
+							}
+						}
+						firstload = false;
 					}
-				}
-				firstload = false;
-			}
 
-			public void onNothingSelected(AdapterView<?> arg0) {
+					public void onNothingSelected(AdapterView<?> arg0) {
 
-			}
-		});
+					}
+				});
 		rbEmprestar.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
 			public void onCheckedChanged(CompoundButton arg0, boolean arg1) {
@@ -195,21 +205,24 @@ public class EditarEmprestimoFragment extends SherlockFragment {
 			}
 		});
 
-		rbPegarEmprestado.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+		rbPegarEmprestado
+				.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
-			public void onCheckedChanged(CompoundButton arg0, boolean arg1) {
-				if (arg1) {
-					tvContato.setText(R.string.pegar_emprestado_de);
-				}
+					public void onCheckedChanged(CompoundButton arg0,
+							boolean arg1) {
+						if (arg1) {
+							tvContato.setText(R.string.pegar_emprestado_de);
+						}
 
-			}
-		});
+					}
+				});
 
 		etDataDevolucao.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View arg0) {
 				DialogFragment dialogFragment = new DatePickerFragment();
-				dialogFragment.show(getActivity().getSupportFragmentManager(), "DatePicker");
+				dialogFragment.show(getActivity().getSupportFragmentManager(),
+						"DatePicker");
 			}
 		});
 
@@ -217,7 +230,8 @@ public class EditarEmprestimoFragment extends SherlockFragment {
 
 			public void onClick(View arg0) {
 				DialogFragment dialogFragment = new TimePickerFragment();
-				dialogFragment.show(getActivity().getSupportFragmentManager(), "TimePicker");
+				dialogFragment.show(getActivity().getSupportFragmentManager(),
+						"TimePicker");
 			}
 		});
 
@@ -227,9 +241,11 @@ public class EditarEmprestimoFragment extends SherlockFragment {
 				if (validarCampos()) {
 					saveData();
 					EmprestimoFragment emprestimoFragment = (EmprestimoFragment) getActivity()
-							.getSupportFragmentManager().findFragmentById(R.id.ListItensFragment);
+							.getSupportFragmentManager().findFragmentById(
+									R.id.ListItensFragment);
 					if (emprestimoFragment == null) {
-						getActivity().getSupportFragmentManager().popBackStack();
+						getActivity().getSupportFragmentManager()
+								.popBackStack();
 					} else {
 						limparCamposTela();
 					}
@@ -238,7 +254,8 @@ public class EditarEmprestimoFragment extends SherlockFragment {
 		});
 
 		cbContato.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+			public void onCheckedChanged(CompoundButton buttonView,
+					boolean isChecked) {
 				if (isChecked) {
 					spNomes.setEnabled(false);
 					etContato.setEnabled(true);
@@ -260,8 +277,10 @@ public class EditarEmprestimoFragment extends SherlockFragment {
 
 		idEmprestimo = -1L;
 		if (savedInstanceState != null) {
-			idEmprestimo = savedInstanceState.getLong(EmprestimoDAO.TABELA_EMPRESTIMOS, -1);
-			Emprestimo emp = (Emprestimo) savedInstanceState.getSerializable("OBJ");
+			idEmprestimo = savedInstanceState.getLong(
+					EmprestimoDAO.TABELA_EMPRESTIMOS, -1);
+			Emprestimo emp = (Emprestimo) savedInstanceState
+					.getSerializable("OBJ");
 			if (emp != null) {
 				populateFields(emp);
 			}
@@ -269,7 +288,8 @@ public class EditarEmprestimoFragment extends SherlockFragment {
 		} else {
 			Bundle args = getArguments();
 			if (args != null) {
-				idEmprestimo = args.getLong(EmprestimoDAO.TABELA_EMPRESTIMOS, -1);
+				idEmprestimo = args.getLong(EmprestimoDAO.TABELA_EMPRESTIMOS,
+						-1);
 			}
 			updateItemView(idEmprestimo);
 		}
@@ -283,7 +303,7 @@ public class EditarEmprestimoFragment extends SherlockFragment {
 	}
 
 	public void updateItemView(long id) {
-		
+
 		idEmprestimo = id;
 		if (id > -1) {
 			populateFields(ec.getEmprestimo(id));
@@ -304,13 +324,16 @@ public class EditarEmprestimoFragment extends SherlockFragment {
 		super.onCreate(savedInstanceState);
 		Bundle args = getArguments();
 		if (args != null && args.getBoolean(Alarme.CANCEL_NOTIFICATION, false)) {
-			int idEmp = (int) args.getLong(EmprestimoDAO.TABELA_EMPRESTIMOS, -1);
+			int idEmp = (int) args
+					.getLong(EmprestimoDAO.TABELA_EMPRESTIMOS, -1);
 			if (idEmp > -1) {
-				NotificationManager nm = (NotificationManager) getActivity().getSystemService(
-						Context.NOTIFICATION_SERVICE);
+				NotificationManager nm = (NotificationManager) getActivity()
+						.getSystemService(Context.NOTIFICATION_SERVICE);
 				nm.cancel(getActivity().getText(R.string.app_name) + "", idEmp);
 			} else {
-				Toast.makeText(getActivity(), "ID invalido para cancelar notificação", Toast.LENGTH_LONG).show();
+				Toast.makeText(getActivity(),
+						"ID invalido para cancelar notificação",
+						Toast.LENGTH_LONG).show();
 			}
 		}
 
@@ -337,19 +360,24 @@ public class EditarEmprestimoFragment extends SherlockFragment {
 
 	private boolean validarCampos() {
 		String item = etItem.getText().toString();
-		Categoria cat = CategoriaDAO.deCursorParaCategoria((Cursor) spCategoria.getSelectedItem());
+		Categoria cat = CategoriaDAO.deCursorParaCategoria((Cursor) spCategoria
+				.getSelectedItem());
 		if (cat.getId() == CategoriaDAO.TODAS_ID) {
-			Toast.makeText(getActivity(), "Escolha uma categoria!", Toast.LENGTH_LONG).show();
-			return false;
-		}
-		if (item.trim().equals("")) {
-			Toast.makeText(EditarEmprestimoFragment.this.getActivity(), R.string.nome_do_item_deve_ser_informado,
+			Toast.makeText(getActivity(), "Escolha uma categoria!",
 					Toast.LENGTH_LONG).show();
 			return false;
 		}
+		if (item.trim().equals("")) {
+			Toast.makeText(EditarEmprestimoFragment.this.getActivity(),
+					R.string.nome_do_item_deve_ser_informado, Toast.LENGTH_LONG)
+					.show();
+			return false;
+		}
 		if (cbAlarme.isChecked()) {
-			if (dataDevolucao.getTime().getTime() < Calendar.getInstance().getTime().getTime()) {
-				Toast.makeText(EditarEmprestimoFragment.this.getActivity(), R.string.data_hora_devem_ser_informados,
+			if (dataDevolucao.getTime().getTime() < Calendar.getInstance()
+					.getTime().getTime()) {
+				Toast.makeText(EditarEmprestimoFragment.this.getActivity(),
+						R.string.data_hora_devem_ser_informados,
 						Toast.LENGTH_SHORT).show();
 				return false;
 			}
@@ -413,11 +441,17 @@ public class EditarEmprestimoFragment extends SherlockFragment {
 			dataDevolucao.setTime(emprestimo.getData());
 			idCategoria = emprestimo.getIdCategoria();
 			firstload = true;
-			spCategoria.setAdapter(cc.getAdapter(CategoriaDAO.TODAS_ID));
+			if (spCategoria.getAdapter() == null
+					|| spCategoria.getAdapter().getCount() == 0) {
+				spCategoria.setAdapter(cc.getAdapter(CategoriaDAO.TODAS_ID));
+			}
 			atualizarData();
 		} else {
 			idCategoria = -1;
-			spCategoria.setAdapter(cc.getAdapter(CategoriaDAO.TODAS_ID));
+			if (spCategoria.getAdapter() == null
+					|| spCategoria.getAdapter().getCount() == 0) {
+				spCategoria.setAdapter(cc.getAdapter(CategoriaDAO.TODAS_ID));
+			}
 			limparCamposTela();
 		}
 	}
@@ -440,9 +474,11 @@ public class EditarEmprestimoFragment extends SherlockFragment {
 
 	/*
 	 * @Override public void onRestoreInstanceState(Bundle savedInstanceState) {
-	 * super.onRestoreInstanceState(savedInstanceState); Emprestimo emp = (Emprestimo) savedInstanceState
-	 * .getSerializable(EmprestimoDAO.TABELA_EMPRESTIMOS); idEmprestimo = (Long) savedInstanceState
-	 * .getSerializable(EmprestimoDAO.TABELA_EMPRESTIMOS); populateFields(emp); }
+	 * super.onRestoreInstanceState(savedInstanceState); Emprestimo emp =
+	 * (Emprestimo) savedInstanceState
+	 * .getSerializable(EmprestimoDAO.TABELA_EMPRESTIMOS); idEmprestimo = (Long)
+	 * savedInstanceState .getSerializable(EmprestimoDAO.TABELA_EMPRESTIMOS);
+	 * populateFields(emp); }
 	 */
 
 	@Override
@@ -502,13 +538,17 @@ public class EditarEmprestimoFragment extends SherlockFragment {
 			Emprestimo emp = getEmprestimoFromInterface();
 			idEmprestimo = ec.inserirOuAtualizar(emp);
 			if (cbAlarme.isChecked()) {
-				Intent intent = new Intent(EditarEmprestimoFragment.this.getActivity(), Alarme.class);
+				Intent intent = new Intent(
+						EditarEmprestimoFragment.this.getActivity(),
+						Alarme.class);
 				intent.putExtra(EmprestimoDAO.TABELA_EMPRESTIMOS, idEmprestimo);
-				PendingIntent sender = PendingIntent.getBroadcast(EditarEmprestimoFragment.this.getActivity(), 0,
-						intent, PendingIntent.FLAG_UPDATE_CURRENT);
+				PendingIntent sender = PendingIntent.getBroadcast(
+						EditarEmprestimoFragment.this.getActivity(), 0, intent,
+						PendingIntent.FLAG_UPDATE_CURRENT);
 
 				getActivity();
-				AlarmManager am = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+				AlarmManager am = (AlarmManager) getActivity()
+						.getSystemService(Context.ALARM_SERVICE);
 				am.set(AlarmManager.RTC_WAKEUP, emp.getData().getTime(), sender);
 
 			}
@@ -518,7 +558,8 @@ public class EditarEmprestimoFragment extends SherlockFragment {
 
 	private void atualizarData() {
 
-		SimpleDateFormat simpleFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+		SimpleDateFormat simpleFormat = new SimpleDateFormat("dd/MM/yyyy",
+				Locale.getDefault());
 		etDataDevolucao.setText(simpleFormat.format(dataDevolucao.getTime()));
 
 		simpleFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
@@ -526,13 +567,16 @@ public class EditarEmprestimoFragment extends SherlockFragment {
 	}
 
 	/*
-	 * @Override public boolean onMenuItemSelected(int featureId, MenuItem item) { ec.devolverOuReceber(idEmprestimo);
-	 * item.setEnabled(false); return super.onMenuItemSelected(featureId, item); }
+	 * @Override public boolean onMenuItemSelected(int featureId, MenuItem item)
+	 * { ec.devolverOuReceber(idEmprestimo); item.setEnabled(false); return
+	 * super.onMenuItemSelected(featureId, item); }
 	 * 
-	 * @Override public boolean onCreateOptionsMenu(Menu menu) { super.onCreateOptionsMenu(menu);
+	 * @Override public boolean onCreateOptionsMenu(Menu menu) {
+	 * super.onCreateOptionsMenu(menu);
 	 * 
-	 * if (status == TipoStatus.EMPRESTADO.getId()) { menu.add(0, Menu.FIRST, 0, R.string.menu_devolver).setIcon(
-	 * R.drawable.devolver); status = TipoStatus.DEVOLVIDO.getId(); menu.add(0, Menu.FIRST + 1, 0, "Estornar")
+	 * if (status == TipoStatus.EMPRESTADO.getId()) { menu.add(0, Menu.FIRST, 0,
+	 * R.string.menu_devolver).setIcon( R.drawable.devolver); status =
+	 * TipoStatus.DEVOLVIDO.getId(); menu.add(0, Menu.FIRST + 1, 0, "Estornar")
 	 * .setIcon(R.drawable.devolver).setEnabled(false); } return true; }
 	 */
 
